@@ -122,5 +122,20 @@ public class UsuarioDAO
 
         return rol;
     }
+    public DataTable ObtenerBitacora()
+    {
+        DataTable dt = new DataTable();
+
+        using (SqlConnection conn = new SqlConnection(Conexion.cadena))
+        {
+            conn.Open();
+            string query = "SELECT * FROM Cambios ORDER BY fecha DESC";
+
+            SqlDataAdapter da = new SqlDataAdapter(query, conn);
+            da.Fill(dt);
+        }
+
+        return dt;
+    }
 
 }

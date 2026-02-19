@@ -36,7 +36,16 @@ namespace CapaPresentacion
 
         private void FrmMenuPrincipal_Load(object sender, EventArgs e)
         {
+            if (Sesion.Rol != "ADMIN")
+            {
+                btnBitacora.Visible = false;
+            }
+        }
 
+        private void btnBitacora_Click(object sender, EventArgs e)
+        {
+            FrmBitacora frm = new FrmBitacora();
+            frm.ShowDialog();
         }
     }
 }
