@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClaseNegocio;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -29,9 +30,26 @@ namespace CapaPresentacion
             frm.Show();
         }
 
-        private void btnSalir_Click(object sender, EventArgs e)
+        private void btnCerrarSesion_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            DialogResult resultado = MessageBox.Show(
+                "¿Desea cerrar sesión?",
+                "Cerrar Sesión",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (resultado == DialogResult.Yes)
+            {
+                BitacoraBL bl = new BitacoraBL();
+
+                // Registrar salida
+                bl.RegistrarSalida(Sesion.IdBitacoraActual);
+
+                FrmLogin login = new FrmLogin();
+                login.Show();
+
+                this.Close();
+            }
         }
 
         private void FrmMenuPrincipal_Load(object sender, EventArgs e)

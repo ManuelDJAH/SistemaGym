@@ -20,13 +20,19 @@ namespace CapaPresentacion
 
         private void FrmBitacora_Load(object sender, EventArgs e)
         {
-            UsuariosBL bl = new UsuariosBL();
-            dgvBitacora.DataSource = bl.MostrarBitacora();
+            // CAMBIOS RECIENTES (tabla Cambios)
+            UsuariosBL usuariosBL = new UsuariosBL();
+            dgvCambiosRecientes.DataSource = usuariosBL.MostrarBitacora();
+
+            // INICIOS DE SESIÓN (tabla BitacoraSesion)
+            BitacoraBL bitacoraBL = new BitacoraBL();
+            dgvIniciosSesion.DataSource = bitacoraBL.MostrarBitacora();
         }
 
         private void btnCerrar_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
     }
 }

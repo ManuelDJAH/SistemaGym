@@ -25,21 +25,26 @@ namespace CapaPresentacion
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            UsuariosBL bl = new UsuariosBL();
-            string rol = bl.Login(txtUsuario.Text, txtClave.Text);
+            UsuariosBL usuariosBL = new UsuariosBL();
+            string rol = usuariosBL.Login(txtUsuario.Text, txtClave.Text);
 
             if (rol != null)
             {
+                // Guardar datos de sesión
                 Sesion.Usuario = txtUsuario.Text;
                 Sesion.Rol = rol;
+
+                // Registrar entrada en bitácora
+                BitacoraBL bitacoraBL = new BitacoraBL();
+                Sesion.IdBitacoraActual = bitacoraBL.RegistrarEntrada(Sesion.Usuario);
 
                 MessageBox.Show("Bienvenido " + Sesion.Usuario);
 
                 FrmMenuPrincipal menu = new FrmMenuPrincipal();
-                this.Hide();
 
-                menu.ShowDialog(); // Bloquea hasta que se cierre
-                this.Close();      // Cierra completamente el login
+                this.Hide();
+                menu.ShowDialog();   // Espera a que el menú se cierre
+                this.Close();        // Cierra el login completamente
             }
             else
             {
@@ -47,6 +52,10 @@ namespace CapaPresentacion
             }
         }
 
+        private void btnSalir_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
         private void FrmLogin_Load(object sender, EventArgs e)
         {
         }

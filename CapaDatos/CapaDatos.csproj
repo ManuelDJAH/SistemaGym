@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsistenciaDAO.cs" />
+    <Compile Include="BitacoraDAO.cs" />
     <Compile Include="Conexion.cs" />
     <Compile Include="MembresiasDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
