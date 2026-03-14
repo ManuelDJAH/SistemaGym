@@ -69,11 +69,11 @@
             this.btnUsuarios.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUsuarios.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnUsuarios.Location = new System.Drawing.Point(83, 228);
-            this.btnUsuarios.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnUsuarios.Margin = new System.Windows.Forms.Padding(2);
             this.btnUsuarios.Name = "btnUsuarios";
             this.btnUsuarios.Size = new System.Drawing.Size(189, 33);
             this.btnUsuarios.TabIndex = 2;
-            this.btnUsuarios.Text = "&Registrar nuevo usuario";
+            this.btnUsuarios.Text = "&Usuarios";
             this.btnUsuarios.UseVisualStyleBackColor = false;
             this.btnUsuarios.Click += new System.EventHandler(this.btnUsuarios_Click);
             // 
@@ -86,7 +86,7 @@
             this.btnAsistencia.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAsistencia.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnAsistencia.Location = new System.Drawing.Point(83, 272);
-            this.btnAsistencia.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnAsistencia.Margin = new System.Windows.Forms.Padding(2);
             this.btnAsistencia.Name = "btnAsistencia";
             this.btnAsistencia.Size = new System.Drawing.Size(189, 33);
             this.btnAsistencia.TabIndex = 3;
@@ -121,9 +121,9 @@
             // btnBitacora
             // 
             this.btnBitacora.Location = new System.Drawing.Point(9, 432);
-            this.btnBitacora.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnBitacora.Margin = new System.Windows.Forms.Padding(2);
             this.btnBitacora.Name = "btnBitacora";
-            this.btnBitacora.Size = new System.Drawing.Size(105, 19);
+            this.btnBitacora.Size = new System.Drawing.Size(124, 19);
             this.btnBitacora.TabIndex = 7;
             this.btnBitacora.Text = "Cambios Recientes";
             this.btnBitacora.UseVisualStyleBackColor = true;
@@ -159,7 +159,7 @@
             this.Controls.Add(this.btnUsuarios);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FrmMenuPrincipal";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmMenuPrincipal";
