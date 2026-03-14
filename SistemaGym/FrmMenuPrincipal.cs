@@ -1,4 +1,5 @@
 ﻿using ClaseNegocio;
+using SistemaGym;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -64,6 +65,12 @@ namespace CapaPresentacion
         {
             FrmBitacora frm = new FrmBitacora();
             frm.ShowDialog();
+        }
+
+        private void btnInventario_Click(object sender, EventArgs e)
+        {
+            FrmInventario inv = new FrmInventario();
+            inv.Show();
         }
     }
 }

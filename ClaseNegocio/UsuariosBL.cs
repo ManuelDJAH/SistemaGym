@@ -57,5 +57,10 @@ namespace ClaseNegocio
             UsuarioDAO dao = new UsuarioDAO();
             return dao.ObtenerBitacora();
         }
+        public int ObtenerIdPorUsuario(string usuario)
+        {
+            UsuarioDAO dao = new UsuarioDAO();
+            return dao.ObtenerIdPorUsuario(usuario);
+        }
     }
 }

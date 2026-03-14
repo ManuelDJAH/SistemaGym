@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CapaPresentacion
 {
@@ -10,10 +6,9 @@ namespace CapaPresentacion
     {
         public static string Usuario { get; set; }
         public static string Rol { get; set; }
+        public static int IdUsuario { get; set; }  // ← NUEVO: id_usuario de UsuariosSistema
 
         public static int IdBitacoraActual;
         public static string UsuarioActual;
     }
-
-
 }

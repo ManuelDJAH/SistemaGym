@@ -1,23 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 using System.Windows.Forms;
 using ClaseNegocio;
 
 namespace CapaPresentacion
 {
-    using System;
-    using System.Data.SqlClient;
-    using System.Windows.Forms;
-
     public partial class FrmLogin : Form
     {
-
         public FrmLogin()
         {
             InitializeComponent();
@@ -33,6 +22,7 @@ namespace CapaPresentacion
                 // Guardar datos de sesión
                 Sesion.Usuario = txtUsuario.Text;
                 Sesion.Rol = rol;
+                Sesion.IdUsuario = usuariosBL.ObtenerIdPorUsuario(txtUsuario.Text);
 
                 // Registrar entrada en bitácora
                 BitacoraBL bitacoraBL = new BitacoraBL();
@@ -41,10 +31,9 @@ namespace CapaPresentacion
                 MessageBox.Show("Bienvenido " + Sesion.Usuario);
 
                 FrmMenuPrincipal menu = new FrmMenuPrincipal();
-
                 this.Hide();
-                menu.ShowDialog();   // Espera a que el menú se cierre
-                this.Close();        // Cierra el login completamente
+                menu.ShowDialog();
+                this.Close();
             }
             else
             {
@@ -56,11 +45,9 @@ namespace CapaPresentacion
         {
             Application.Exit();
         }
+
         private void FrmLogin_Load(object sender, EventArgs e)
         {
         }
-
     }
 }
-
-

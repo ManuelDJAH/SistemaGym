@@ -138,4 +138,19 @@ public class UsuarioDAO
         return dt;
     }
 
+    public int ObtenerIdPorUsuario(string usuario)
+    {
+        using (var con = Conexion.ObtenerConexion())
+        {
+            con.Open();
+            string sql = "SELECT id_usuario FROM UsuariosSistema WHERE usuario = @Usuario";
+            using (var cmd = new SqlCommand(sql, con))
+            {
+                cmd.Parameters.AddWithValue("@Usuario", usuario);
+                object resultado = cmd.ExecuteScalar();
+                return resultado != null ? Convert.ToInt32(resultado) : 0;
+            }
+        }
+    }
+
 }

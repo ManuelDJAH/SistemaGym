@@ -52,6 +52,12 @@
     <Compile Include="FrmBitacora.Designer.cs">
       <DependentUpon>FrmBitacora.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmInventario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmInventario.Designer.cs">
+      <DependentUpon>FrmInventario.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmListadoProducto.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -132,6 +138,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CapaDatos\CapaDatos.csproj">
+      <Project>{94926ef4-3612-4e6f-bc20-c0cc5984eac8}</Project>
+      <Name>CapaDatos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ClaseNegocio\ClaseNegocio.csproj">
       <Project>{d867c12f-dae4-4042-8131-4438c250df71}</Project>
       <Name>ClaseNegocio</Name>

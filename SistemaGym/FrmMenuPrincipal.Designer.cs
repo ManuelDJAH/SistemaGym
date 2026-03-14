@@ -36,6 +36,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.btnBitacora = new System.Windows.Forms.Button();
             this.btnCerrarSesion = new System.Windows.Forms.Button();
+            this.btnInventario = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -85,7 +86,7 @@
             this.btnAsistencia.FlatAppearance.BorderSize = 2;
             this.btnAsistencia.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAsistencia.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnAsistencia.Location = new System.Drawing.Point(83, 272);
+            this.btnAsistencia.Location = new System.Drawing.Point(83, 267);
             this.btnAsistencia.Margin = new System.Windows.Forms.Padding(2);
             this.btnAsistencia.Name = "btnAsistencia";
             this.btnAsistencia.Size = new System.Drawing.Size(189, 33);
@@ -146,11 +147,29 @@
             this.btnCerrarSesion.UseVisualStyleBackColor = false;
             this.btnCerrarSesion.Click += new System.EventHandler(this.btnCerrarSesion_Click);
             // 
+            // btnInventario
+            // 
+            this.btnInventario.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnInventario.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnInventario.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.btnInventario.FlatAppearance.BorderSize = 2;
+            this.btnInventario.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnInventario.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.btnInventario.Location = new System.Drawing.Point(83, 309);
+            this.btnInventario.Margin = new System.Windows.Forms.Padding(2);
+            this.btnInventario.Name = "btnInventario";
+            this.btnInventario.Size = new System.Drawing.Size(189, 33);
+            this.btnInventario.TabIndex = 9;
+            this.btnInventario.Text = "&Inventario";
+            this.btnInventario.UseVisualStyleBackColor = false;
+            this.btnInventario.Click += new System.EventHandler(this.btnInventario_Click);
+            // 
             // FrmMenuPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(834, 461);
+            this.Controls.Add(this.btnInventario);
             this.Controls.Add(this.btnCerrarSesion);
             this.Controls.Add(this.btnBitacora);
             this.Controls.Add(this.label4);
@@ -179,5 +198,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnBitacora;
         private System.Windows.Forms.Button btnCerrarSesion;
+        private System.Windows.Forms.Button btnInventario;
     }
 }
