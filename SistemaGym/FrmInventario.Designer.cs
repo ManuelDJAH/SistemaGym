@@ -51,6 +51,8 @@
             this.btnProdEditar = new System.Windows.Forms.Button();
             this.btnProdBaja = new System.Windows.Forms.Button();
             this.btnProdCancelar = new System.Windows.Forms.Button();
+            this.btnProdGenerarCodigo = new System.Windows.Forms.Button();
+            this.picCodigoBarras = new System.Windows.Forms.PictureBox();
 
             // ── TAB EQUIPO ───────────────────────────────────────
             this.pnlEqFiltro = new System.Windows.Forms.Panel();
@@ -154,6 +156,7 @@
             ((System.ComponentModel.ISupportInitialize)this.dgvDefectos).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.dgvAlertas).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.numProdStockMin).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)this.picCodigoBarras).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.numMovCantidad).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.numDefCant).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.picMovAlerta).BeginInit();
@@ -224,8 +227,6 @@
 
             // SplitContainer productos
             this.splitProductos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitProductos.Panel1MinSize = 10;
-            this.splitProductos.Panel2MinSize = 10;
 
             // Panel1 = DGV
             this.dgvProductos.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -355,6 +356,24 @@
             this.btnProdCancelar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnProdCancelar.Enabled = false;
             this.btnProdCancelar.Click += new System.EventHandler(this.btnProdCancelar_Click);
+            py += 36;
+
+            // ── Botón generar EAN-13 ──────────────────────────────
+            this.btnProdGenerarCodigo.Text = "⚙ Generar EAN-13";
+            this.btnProdGenerarCodigo.Location = new System.Drawing.Point(8, py);
+            this.btnProdGenerarCodigo.Size = new System.Drawing.Size(135, 26);
+            this.btnProdGenerarCodigo.BackColor = System.Drawing.Color.DarkSlateBlue;
+            this.btnProdGenerarCodigo.ForeColor = System.Drawing.Color.White;
+            this.btnProdGenerarCodigo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnProdGenerarCodigo.Click += new System.EventHandler(this.btnProdGenerarCodigo_Click);
+            py += 32;
+
+            // ── PictureBox imagen código de barras ────────────────
+            this.picCodigoBarras.Location = new System.Drawing.Point(8, py);
+            this.picCodigoBarras.Size = new System.Drawing.Size(258, 75);
+            this.picCodigoBarras.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picCodigoBarras.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picCodigoBarras.BackColor = System.Drawing.Color.White;
 
             this.pnlProdForm.Controls.AddRange(new System.Windows.Forms.Control[] {
                 this.lblProdTitulo, this.lblProdCodigo, this.txtProdCodigo, this.btnProdEscanear,
@@ -362,7 +381,8 @@
                 this.lblProdPrecio, this.txtProdPrecio, this.lblProdStockMin, this.numProdStockMin,
                 this.chkProdCaducidad, this.lblProdCaducidad, this.dtpProdCaducidad,
                 this.btnProdNuevo, this.btnProdGuardar, this.btnProdEditar,
-                this.btnProdBaja, this.btnProdCancelar });
+                this.btnProdBaja, this.btnProdCancelar,
+                this.btnProdGenerarCodigo, this.picCodigoBarras });
             this.splitProductos.Panel2.Controls.Add(this.pnlProdForm);
 
             this.tabProductos.Controls.Add(this.splitProductos);
@@ -401,8 +421,6 @@
                 this.lblEqFiltroEstado, this.cboEqFiltroEstado, this.btnEqFiltrar, this.btnEqTodos });
 
             this.splitEquipo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitEquipo.Panel1MinSize = 10;
-            this.splitEquipo.Panel2MinSize = 10;
 
             this.dgvEquipo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvEquipo.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -849,6 +867,7 @@
             ((System.ComponentModel.ISupportInitialize)this.dgvDefectos).EndInit();
             ((System.ComponentModel.ISupportInitialize)this.dgvAlertas).EndInit();
             ((System.ComponentModel.ISupportInitialize)this.numProdStockMin).EndInit();
+            ((System.ComponentModel.ISupportInitialize)this.picCodigoBarras).EndInit();
             ((System.ComponentModel.ISupportInitialize)this.numMovCantidad).EndInit();
             ((System.ComponentModel.ISupportInitialize)this.numDefCant).EndInit();
             ((System.ComponentModel.ISupportInitialize)this.picMovAlerta).EndInit();
@@ -874,8 +893,9 @@
         private System.Windows.Forms.CheckBox chkProdCaducidad;
         private System.Windows.Forms.Button btnProdFiltrar, btnProdTodos, btnProdEscanear,
                                                  btnProdNuevo, btnProdGuardar, btnProdEditar,
-                                                 btnProdBaja, btnProdCancelar;
+                                                 btnProdBaja, btnProdCancelar, btnProdGenerarCodigo;
         private System.Windows.Forms.DataGridView dgvProductos;
+        private System.Windows.Forms.PictureBox picCodigoBarras;
         // Equipo
         private System.Windows.Forms.Panel pnlEqFiltro, pnlEqForm;
         private System.Windows.Forms.Label lblEqFiltroEstado, lblEqTitulo, lblEqNombre,

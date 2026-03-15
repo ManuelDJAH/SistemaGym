@@ -17,18 +17,20 @@ namespace CapaPresentacion
 {
     public partial class FrmInventario : Form
     {
-        // ── BL ──────────────────────────────────────────────────────
+        // Codigo de barras 
+        private readonly CodigoBarrasBL _cbBL = new CodigoBarrasBL();
+        // BL 
         private readonly InventarioBL _bl = new InventarioBL();
 
-        // ── Estado de edición de Productos ──────────────────────────
+        // Estado de edición de Productos 
         private int _prodIDSeleccionado = 0;
         private bool _prodModoEdicion = false;
 
-        // ── Estado de edición de Equipo ──────────────────────────────
+        //  Estado de edición de Equipo 
         private int _eqIDSeleccionado = 0;
         private bool _eqModoEdicion = false;
 
-        // ── Producto encontrado en Movimientos ───────────────────────
+        // Producto encontrado en Movimientos 
         private Producto _prodMovimiento = null;
 
         // ════════════════════════════════════════════════════════════
@@ -161,6 +163,9 @@ namespace CapaPresentacion
                 btnProdBaja.Enabled = true;
                 _prodModoEdicion = false;
                 ProdModoLectura();
+
+                // ── Mostrar imagen del código de barras ──────────────
+                MostrarCodigoBarras(p.Codigo);
             }
         }
 
@@ -241,6 +246,42 @@ namespace CapaPresentacion
             ProdModoLectura();
         }
 
+        private void MostrarCodigoBarras(string codigo)
+        {
+            if (picCodigoBarras == null) return;
+            if (string.IsNullOrWhiteSpace(codigo)) { picCodigoBarras.Image = null; return; }
+
+            var (ok, msg, bmp) = _cbBL.GenerarImagen(codigo);
+            picCodigoBarras.Image = ok ? bmp : null;
+            picCodigoBarras.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+        }
+        private void btnProdGenerarCodigo_Click(object sender, EventArgs e)
+        {
+            if (_prodIDSeleccionado == 0)
+            {
+                MessageBox.Show("Primero guarda el producto para generar su código.",
+                    "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // Obtener categoría del producto seleccionado
+            var prod = _bl.BuscarPorCodigoBarras(txtProdCodigo.Text);
+            int catID = prod?.CategoriaID ?? 1;
+
+            var (ok, msg, codigo) = _cbBL.GenerarYGuardarCodigo(_prodIDSeleccionado, catID);
+
+            if (ok)
+            {
+                txtProdCodigo.Text = codigo;
+                MostrarCodigoBarras(codigo);
+                MessageBox.Show(msg, "Código generado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                CargarProductos(); // Refrescar tabla
+            }
+            else
+            {
+                MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void chkProdCaducidad_CheckedChanged(object sender, EventArgs e)
         {
             dtpProdCaducidad.Enabled = chkProdCaducidad.Checked;
@@ -534,7 +575,7 @@ namespace CapaPresentacion
         {
             if (_prodMovimiento == null)
             {
-                MessageBox.Show("Primero busca un producto por código de barras.",
+                MessageBox.Show("Primero busca un producto por código.",
                     "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -543,15 +584,49 @@ namespace CapaPresentacion
             int cantidad = (int)numMovCantidad.Value;
             string motivo = txtMovMotivo.Text.Trim();
 
-            var (ok, msg) = tipo == "E"
-                ? _bl.RegistrarEntrada(_prodMovimiento.ProductoID, cantidad, motivo, Sesion.IdUsuario)
-                : _bl.RegistrarSalida(_prodMovimiento.ProductoID, cantidad, motivo, Sesion.IdUsuario);
+            if (tipo == "E")
+            {
+                // Entrada normal — sin ajuste de precios
+                var (ok, msg) = _bl.RegistrarEntrada(
+                    _prodMovimiento.ProductoID, cantidad, motivo, Sesion.IdUsuario);
 
-            MessageBox.Show(msg, ok ? "Movimiento registrado" : "Error",
-                MessageBoxButtons.OK,
-                ok ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+                MessageBox.Show(msg, ok ? "Entrada registrada" : "Error",
+                    MessageBoxButtons.OK,
+                    ok ? MessageBoxIcon.Information : MessageBoxIcon.Error);
 
-            if (ok) LimpiarMovimiento();
+                if (ok) LimpiarMovimiento();
+            }
+            else
+            {
+                // Salida — preguntar si es venta (ajusta precios) o salida normal
+                var resp = MessageBox.Show(
+                    "¿Esta salida es una VENTA?\n\n" +
+                    "• SÍ → registra venta y ajusta precios (+10% este producto, -10% resto)\n" +
+                    "• NO → salida normal sin cambio de precios",
+                    "Tipo de salida",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                bool esVenta = (resp == DialogResult.Yes);
+                bool ok; string msg;
+
+                if (esVenta)
+                {
+                    (ok, msg) = _cbBL.RegistrarVentaConAjustePrecio(
+                        _prodMovimiento.ProductoID, cantidad, motivo, Sesion.IdUsuario);
+                }
+                else
+                {
+                    (ok, msg) = _bl.RegistrarSalida(
+                        _prodMovimiento.ProductoID, cantidad, motivo, Sesion.IdUsuario);
+                }
+
+                MessageBox.Show(msg, ok ? "Salida registrada" : "Error",
+                    MessageBoxButtons.OK,
+                    ok ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+
+                if (ok) LimpiarMovimiento();
+            }
         }
 
         private void btnMovLimpiar_Click(object sender, EventArgs e) => LimpiarMovimiento();
