@@ -58,12 +58,6 @@
     <Compile Include="FrmInventario.Designer.cs">
       <DependentUpon>FrmInventario.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmListadoProducto.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmListadoProducto.Designer.cs">
-      <DependentUpon>FrmListadoProducto.cs</DependentUpon>
-    </Compile>
     <Compile Include="FrmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,8 +94,8 @@
     <EmbeddedResource Include="FrmBitacora.resx">
       <DependentUpon>FrmBitacora.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmListadoProducto.resx">
-      <DependentUpon>FrmListadoProducto.cs</DependentUpon>
+    <EmbeddedResource Include="FrmInventario.resx">
+      <DependentUpon>FrmInventario.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>

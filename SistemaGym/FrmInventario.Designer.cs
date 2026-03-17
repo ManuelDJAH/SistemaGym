@@ -164,8 +164,8 @@
 
             // ── FORM ─────────────────────────────────────────────
             this.Text = "Inventario — Sistema Gym";
-            this.Size = new System.Drawing.Size(850, 500);
-            this.MinimumSize = new System.Drawing.Size(850, 500);
+            this.Size = new System.Drawing.Size(850, 700);
+            this.MinimumSize = new System.Drawing.Size(850, 700);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Load += new System.EventHandler(this.FrmInventario_Load);
@@ -551,7 +551,7 @@
             //  TAB MOVIMIENTOS
             // ════════════════════════════════════════════════════
             this.pnlMovForm.Location = new System.Drawing.Point(20, 10);
-            this.pnlMovForm.Size = new System.Drawing.Size(480, 390);
+            this.pnlMovForm.Size = new System.Drawing.Size(480, 460);
             this.pnlMovForm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 
             int mv = 12;
