@@ -209,5 +209,23 @@ namespace ClaseNegocio
             if (p.StockMinimo < 0)
                 throw new ArgumentException("El stock mínimo no puede ser negativo.");
         }
+
+        public (bool ok, string mensaje) RegistrarVenta(int productoID, int cantidad,
+                                                  string motivo, int usuarioID)
+        {
+            try
+            {
+                if (cantidad <= 0)
+                    return (false, "La cantidad debe ser mayor a cero.");
+                _dao.RegistrarMovimiento(productoID, "S", cantidad, motivo, usuarioID, esVenta: true);
+                return (true, $"Venta de {cantidad} unidad(es) registrada. Precios ajustados automáticamente.");
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                return (false, ex.Message.Contains("Stock insuficiente")
+                    ? ex.Message
+                    : $"Error: {ex.Message}");
+            }
+        }
     }
 }
