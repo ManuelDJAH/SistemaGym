@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="AsistenciaBL.cs" />
     <Compile Include="BitacoraBL.cs" />
+    <Compile Include="CNProveedor.cs" />
     <Compile Include="CodigoBarrasBL.cs" />
     <Compile Include="InventarioBL.cs" />
     <Compile Include="MembresiasBL.cs" />

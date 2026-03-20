@@ -72,5 +72,11 @@ namespace CapaPresentacion
             FrmInventario inv = new FrmInventario();
             inv.Show();
         }
+
+        private void btnProveedores_Click(object sender, EventArgs e)
+        {
+            FrmListadoProveedor frm = new FrmListadoProveedor();
+            frm.Show();
+        }
     }
 }
