@@ -7,12 +7,6 @@ namespace CapaDatos
 {
     public class InventarioDAO
     {
-        // ════════════════════════════════════════════════════════════
-        //  CATEGORÍAS
-        // ════════════════════════════════════════════════════════════
-
-        /// <summary>Devuelve todas las categorías, opcionalmente filtradas por área.</summary>
-        /// <param name="tipoArea">"PRODUCTO", "EQUIPO" o null para todas.</param>
         public List<Categoria> ObtenerCategorias(string tipoArea = null)
         {
             var lista = new List<Categoria>();
@@ -42,11 +36,6 @@ namespace CapaDatos
             return lista;
         }
 
-        // ════════════════════════════════════════════════════════════
-        //  PRODUCTOS
-        // ════════════════════════════════════════════════════════════
-
-        /// <summary>Lista todos los productos activos, con filtro opcional por categoría.</summary>
         public List<Producto> ObtenerProductos(int? categoriaID = null)
         {
             var lista = new List<Producto>();
@@ -77,7 +66,6 @@ namespace CapaDatos
             return lista;
         }
 
-        /// <summary>Busca un producto por su código de barras.</summary>
         public Producto ObtenerProductoPorCodigo(string codigo)
         {
             using (var con = Conexion.ObtenerConexion())
@@ -101,8 +89,6 @@ namespace CapaDatos
             }
             return null;
         }
-
-        /// <summary>Inserta un nuevo producto. Devuelve el ID generado.</summary>
         public int InsertarProducto(Producto p)
         {
             using (var con = Conexion.ObtenerConexion())
@@ -130,8 +116,6 @@ namespace CapaDatos
                 }
             }
         }
-
-        /// <summary>Actualiza nombre, categoría, precio y stock mínimo de un producto.</summary>
         public bool ActualizarProducto(Producto p)
         {
             using (var con = Conexion.ObtenerConexion())
@@ -160,8 +144,6 @@ namespace CapaDatos
                 }
             }
         }
-
-        /// <summary>Baja lógica de un producto (Activo = 0).</summary>
         public bool EliminarProducto(int productoID)
         {
             using (var con = Conexion.ObtenerConexion())
@@ -175,10 +157,7 @@ namespace CapaDatos
                 }
             }
         }
-
-        // ════════════════════════════════════════════════════════════
         //  EQUIPO
-        // ════════════════════════════════════════════════════════════
 
         public List<Equipo> ObtenerEquipos(string estado = null)
         {
@@ -279,17 +258,9 @@ namespace CapaDatos
                 }
             }
         }
-
-        // ════════════════════════════════════════════════════════════
         //  MOVIMIENTOS  (Entradas y Salidas)
-        // ════════════════════════════════════════════════════════════
-
-        /// <summary>
-        /// Registra una entrada o salida usando el SP de SQL Server.
-        /// El trigger actualiza el stock automáticamente.
-        /// </summary>
         public bool RegistrarMovimiento(int productoID, string tipo, int cantidad,
-                                        string motivo, int usuarioID)
+                                string motivo, int usuarioID, bool esVenta = false)
         {
             string sp = tipo == "E" ? "sp_Inv_Entrada" : "sp_Inv_Salida";
 
@@ -298,20 +269,21 @@ namespace CapaDatos
                 con.Open();
                 using (var cmd = new SqlCommand(sp, con))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@ProductoID", productoID);
                     cmd.Parameters.AddWithValue("@Cantidad", cantidad);
                     cmd.Parameters.AddWithValue("@Motivo",
                         motivo != null ? (object)motivo : DBNull.Value);
                     cmd.Parameters.AddWithValue("@UsuarioID", usuarioID);
 
+                    if (tipo == "S")
+                        cmd.Parameters.AddWithValue("@EsVenta", esVenta ? 1 : 0);
+
                     cmd.ExecuteNonQuery();
                     return true;
                 }
             }
         }
-
-        /// <summary>Historial completo o filtrado por producto.</summary>
         public List<Movimiento> ObtenerHistorial(int? productoID = null,
                                                   DateTime? desde = null,
                                                   DateTime? hasta = null)
@@ -364,10 +336,7 @@ namespace CapaDatos
             }
             return lista;
         }
-
-        // ════════════════════════════════════════════════════════════
         //  DEFECTOS
-        // ════════════════════════════════════════════════════════════
 
         public bool RegistrarDefecto(Defecto d)
         {

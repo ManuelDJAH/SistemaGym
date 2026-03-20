@@ -19,28 +19,21 @@ namespace CapaPresentacion
     {
         // Codigo de barras 
         private readonly CodigoBarrasBL _cbBL = new CodigoBarrasBL();
-        // BL 
+        //
         private readonly InventarioBL _bl = new InventarioBL();
 
-        // Estado de edición de Productos 
         private int _prodIDSeleccionado = 0;
         private bool _prodModoEdicion = false;
 
-        //  Estado de edición de Equipo 
         private int _eqIDSeleccionado = 0;
         private bool _eqModoEdicion = false;
 
-        // Producto encontrado en Movimientos 
         private Producto _prodMovimiento = null;
 
-        // ════════════════════════════════════════════════════════════
-        //  CONSTRUCTOR
-        // ════════════════════════════════════════════════════════════
         public FrmInventario()
         {
             InitializeComponent();
 
-            // Establecer splitter después de que el form tiene tamaño real
             this.Shown += (s, e) => {
                 splitProductos.SplitterDistance = (int)(splitProductos.Width * 0.58);
                 splitEquipo.SplitterDistance = (int)(splitEquipo.Width * 0.58);
@@ -53,12 +46,9 @@ namespace CapaPresentacion
 
         private void FrmInventario_Load(object sender, EventArgs e)
         {
-            // Ya no se necesita aquí
+
         }
 
-        // ════════════════════════════════════════════════════════════
-        //  TAB CHANGE  — carga datos al cambiar de pestaña
-        // ════════════════════════════════════════════════════════════
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (tabControl.SelectedIndex)
@@ -72,9 +62,6 @@ namespace CapaPresentacion
             }
         }
 
-        // ════════════════════════════════════════════════════════════
-        //  HELPERS GENERALES
-        // ════════════════════════════════════════════════════════════
         private void CargarCatsFiltro()
         {
             if (cboProdCategoria == null) return;
@@ -92,9 +79,7 @@ namespace CapaPresentacion
             cboProdCat.ValueMember = "CategoriaID";
         }
 
-        // ════════════════════════════════════════════════════════════
         //  TAB 1 — PRODUCTOS
-        // ════════════════════════════════════════════════════════════
         private void CargarProductos(int? catID = null)
         {
             if (dgvProductos == null) return;
@@ -103,7 +88,6 @@ namespace CapaPresentacion
             dgvProductos.DataSource = null;
             dgvProductos.DataSource = lista;
 
-            // Columnas visibles
             foreach (DataGridViewColumn col in dgvProductos.Columns)
                 col.Visible = false;
 
@@ -116,7 +100,6 @@ namespace CapaPresentacion
             MostrarCol(dgvProductos, "FechaCaducidad", "Caduca", 90);
             MostrarCol(dgvProductos, "EstadoAlerta", "Estado", 90);
 
-            // Colorear filas según alerta
             foreach (DataGridViewRow row in dgvProductos.Rows)
             {
                 string alerta = row.Cells["EstadoAlerta"].Value?.ToString();
@@ -164,7 +147,6 @@ namespace CapaPresentacion
                 _prodModoEdicion = false;
                 ProdModoLectura();
 
-                // ── Mostrar imagen del código de barras ──────────────
                 MostrarCodigoBarras(p.Codigo);
             }
         }
@@ -182,7 +164,7 @@ namespace CapaPresentacion
             if (_prodIDSeleccionado == 0) return;
             _prodModoEdicion = true;
             ProdModoCaptura();
-            txtProdCodigo.ReadOnly = true; // El código no se puede cambiar
+            txtProdCodigo.ReadOnly = true;
         }
 
         private void btnProdGuardar_Click(object sender, EventArgs e)
@@ -264,7 +246,6 @@ namespace CapaPresentacion
                 return;
             }
 
-            // Obtener categoría del producto seleccionado
             var prod = _bl.BuscarPorCodigoBarras(txtProdCodigo.Text);
             int catID = prod?.CategoriaID ?? 1;
 
@@ -275,7 +256,7 @@ namespace CapaPresentacion
                 txtProdCodigo.Text = codigo;
                 MostrarCodigoBarras(codigo);
                 MessageBox.Show(msg, "Código generado", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                CargarProductos(); // Refrescar tabla
+                CargarProductos();
             }
             else
             {
@@ -290,7 +271,6 @@ namespace CapaPresentacion
 
         private void btnProdEscanear_Click(object sender, EventArgs e)
         {
-            // El foco va al txtProdCodigo para que el escáner escriba ahí
             txtProdCodigo.Clear();
             txtProdCodigo.Focus();
             MessageBox.Show(
@@ -612,12 +592,12 @@ namespace CapaPresentacion
 
                 if (esVenta)
                 {
-                    (ok, msg) = _cbBL.RegistrarVentaConAjustePrecio(
+                    (ok, msg) = _bl.RegistrarVenta(
                         _prodMovimiento.ProductoID, cantidad, motivo, Sesion.IdUsuario);
                 }
                 else
                 {
-                    (ok, msg) = _bl.RegistrarSalida(
+                    (ok, msg) = _bl.RegistrarVenta(
                         _prodMovimiento.ProductoID, cantidad, motivo, Sesion.IdUsuario);
                 }
 

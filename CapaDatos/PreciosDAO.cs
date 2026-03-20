@@ -11,11 +11,6 @@ namespace CapaDatos
 {
     public class PreciosDAO
     {
-        /// <summary>
-        /// Aplica el ajuste de precios después de una venta.
-        /// Se ejecuta en una sola transacción para garantizar consistencia.
-        /// </summary>
-        /// <param name="productoVendidoID">ID del producto que se vendió.</param>
         public void AjustarPreciosPorVenta(int productoVendidoID)
         {
             using (var con = Conexion.ObtenerConexion())
@@ -66,9 +61,6 @@ namespace CapaDatos
             }
         }
 
-        /// <summary>
-        /// Actualiza el código de barras (campo Codigo) de un producto.
-        /// </summary>
         public bool ActualizarCodigo(int productoID, string nuevoCodigo)
         {
             using (var con = Conexion.ObtenerConexion())
