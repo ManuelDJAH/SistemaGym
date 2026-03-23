@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CapaDatos;
 using ClaseNegocio;
+using CapaNegocio;
 
 // Alias para evitar ambigüedad con los modelos en CapaDatos
 using Categoria = CapaDatos.Categoria;
@@ -19,36 +20,50 @@ namespace CapaPresentacion
     {
         // Codigo de barras 
         private readonly CodigoBarrasBL _cbBL = new CodigoBarrasBL();
-        //
+        private readonly RestockBL _restockBL = new RestockBL();
+        // BL 
         private readonly InventarioBL _bl = new InventarioBL();
 
+        // Estado de edición de Productos 
         private int _prodIDSeleccionado = 0;
         private bool _prodModoEdicion = false;
 
+        //  Estado de edición de Equipo 
         private int _eqIDSeleccionado = 0;
         private bool _eqModoEdicion = false;
 
+        // Producto encontrado en Movimientos 
         private Producto _prodMovimiento = null;
 
+        // ════════════════════════════════════════════════════════════
+        //  CONSTRUCTOR
+        // ════════════════════════════════════════════════════════════
         public FrmInventario()
         {
             InitializeComponent();
 
+            // Establecer splitter después de que el form tiene tamaño real
             this.Shown += (s, e) => {
-                splitProductos.SplitterDistance = (int)(splitProductos.Width * 0.58);
-                splitEquipo.SplitterDistance = (int)(splitEquipo.Width * 0.58);
+                if (splitProductos != null && splitProductos.Width > 0)
+                    splitProductos.SplitterDistance = (int)(splitProductos.Width * 0.58);
+                if (splitEquipo != null && splitEquipo.Width > 0)
+                    splitEquipo.SplitterDistance = (int)(splitEquipo.Width * 0.58);
             };
 
             CargarCatsFiltro();
+            CargarProveedoresFiltro();
             CargarProductos();
             CargarAlertasContador();
         }
 
         private void FrmInventario_Load(object sender, EventArgs e)
         {
-
+            // Ya no se necesita aquí
         }
 
+        // ════════════════════════════════════════════════════════════
+        //  TAB CHANGE  — carga datos al cambiar de pestaña
+        // ════════════════════════════════════════════════════════════
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (tabControl.SelectedIndex)
@@ -60,6 +75,22 @@ namespace CapaPresentacion
                 case 4: CargarDefectos(); break;
                 case 5: CargarAlertas(); break;
             }
+        }
+
+        // ════════════════════════════════════════════════════════════
+        //  HELPERS GENERALES
+        // ════════════════════════════════════════════════════════════
+        private void CargarProveedoresFiltro()
+        {
+            if (cboProdProveedor == null) return;
+            var provs = CNProveedor.Listar();
+            // Agregar opcion vacia al inicio
+            provs.Rows.InsertAt(provs.NewRow(), 0);
+            provs.Rows[0]["idproveedor"] = DBNull.Value;
+            provs.Rows[0]["nombre"]      = "(Sin proveedor)";
+            cboProdProveedor.DataSource    = provs;
+            cboProdProveedor.DisplayMember = "nombre";
+            cboProdProveedor.ValueMember   = "idproveedor";
         }
 
         private void CargarCatsFiltro()
@@ -79,7 +110,9 @@ namespace CapaPresentacion
             cboProdCat.ValueMember = "CategoriaID";
         }
 
+        // ════════════════════════════════════════════════════════════
         //  TAB 1 — PRODUCTOS
+        // ════════════════════════════════════════════════════════════
         private void CargarProductos(int? catID = null)
         {
             if (dgvProductos == null) return;
@@ -88,6 +121,7 @@ namespace CapaPresentacion
             dgvProductos.DataSource = null;
             dgvProductos.DataSource = lista;
 
+            // Columnas visibles
             foreach (DataGridViewColumn col in dgvProductos.Columns)
                 col.Visible = false;
 
@@ -99,7 +133,9 @@ namespace CapaPresentacion
             MostrarCol(dgvProductos, "StockMinimo", "Mín.", 50);
             MostrarCol(dgvProductos, "FechaCaducidad", "Caduca", 90);
             MostrarCol(dgvProductos, "EstadoAlerta", "Estado", 90);
+            MostrarCol(dgvProductos, "ProveedorNombre", "Proveedor", 140);
 
+            // Colorear filas según alerta
             foreach (DataGridViewRow row in dgvProductos.Rows)
             {
                 string alerta = row.Cells["EstadoAlerta"].Value?.ToString();
@@ -147,6 +183,13 @@ namespace CapaPresentacion
                 _prodModoEdicion = false;
                 ProdModoLectura();
 
+                // ── Cargar proveedor del producto seleccionado ───────
+                if (p.IdProveedor > 0)
+                    cboProdProveedor.SelectedValue = p.IdProveedor;
+                else
+                    cboProdProveedor.SelectedIndex = 0;
+
+                // ── Mostrar imagen del código de barras ──────────────
                 MostrarCodigoBarras(p.Codigo);
             }
         }
@@ -164,7 +207,7 @@ namespace CapaPresentacion
             if (_prodIDSeleccionado == 0) return;
             _prodModoEdicion = true;
             ProdModoCaptura();
-            txtProdCodigo.ReadOnly = true;
+            txtProdCodigo.ReadOnly = true; // El código no se puede cambiar
         }
 
         private void btnProdGuardar_Click(object sender, EventArgs e)
@@ -187,19 +230,37 @@ namespace CapaPresentacion
                 FechaCaducidad = chkProdCaducidad.Checked ? dtpProdCaducidad.Value : (DateTime?)null
             };
 
+            // Obtener idProveedor seleccionado de forma segura
+            int? idProv = null;
+            try
+            {
+                if (cboProdProveedor.SelectedIndex > 0 &&
+                    cboProdProveedor.SelectedValue != null &&
+                    cboProdProveedor.SelectedValue != DBNull.Value)
+                    idProv = Convert.ToInt32(cboProdProveedor.SelectedValue);
+            }
+            catch { idProv = null; }
+
             if (_prodModoEdicion)
             {
                 var (ok, msg) = _bl.ActualizarProducto(p);
                 MessageBox.Show(msg, ok ? "Éxito" : "Error",
                     MessageBoxButtons.OK,
                     ok ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+                // Asignar proveedor en edición — siempre que guardó bien
+                if (ok)
+                    _restockBL.AsignarProveedor(_prodIDSeleccionado,
+                        idProv.HasValue ? idProv.Value : 0);
             }
             else
             {
-                var (ok, msg, _) = _bl.AltaProducto(p);
+                var (ok, msg, id) = _bl.AltaProducto(p);
                 MessageBox.Show(msg, ok ? "Éxito" : "Error",
                     MessageBoxButtons.OK,
                     ok ? MessageBoxIcon.Information : MessageBoxIcon.Error);
+                // Asignar proveedor al producto recién creado
+                if (ok && idProv.HasValue)
+                    _restockBL.AsignarProveedor(id, idProv.Value);
             }
 
             CargarProductos();
@@ -246,6 +307,7 @@ namespace CapaPresentacion
                 return;
             }
 
+            // Obtener categoría del producto seleccionado
             var prod = _bl.BuscarPorCodigoBarras(txtProdCodigo.Text);
             int catID = prod?.CategoriaID ?? 1;
 
@@ -256,7 +318,7 @@ namespace CapaPresentacion
                 txtProdCodigo.Text = codigo;
                 MostrarCodigoBarras(codigo);
                 MessageBox.Show(msg, "Código generado", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                CargarProductos();
+                CargarProductos(); // Refrescar tabla
             }
             else
             {
@@ -271,6 +333,7 @@ namespace CapaPresentacion
 
         private void btnProdEscanear_Click(object sender, EventArgs e)
         {
+            // El foco va al txtProdCodigo para que el escáner escriba ahí
             txtProdCodigo.Clear();
             txtProdCodigo.Focus();
             MessageBox.Show(
@@ -286,6 +349,7 @@ namespace CapaPresentacion
             txtProdNombre.ReadOnly = false;
             txtProdPrecio.ReadOnly = false;
             cboProdCat.Enabled = true;
+            cboProdProveedor.Enabled = true;
             numProdStockMin.Enabled = true;
             chkProdCaducidad.Enabled = true;
             btnProdGuardar.Enabled = true;
@@ -301,6 +365,7 @@ namespace CapaPresentacion
             txtProdNombre.ReadOnly = true;
             txtProdPrecio.ReadOnly = true;
             cboProdCat.Enabled = false;
+            cboProdProveedor.Enabled = false;
             numProdStockMin.Enabled = false;
             chkProdCaducidad.Enabled = false;
             dtpProdCaducidad.Enabled = false;
@@ -592,12 +657,12 @@ namespace CapaPresentacion
 
                 if (esVenta)
                 {
-                    (ok, msg) = _bl.RegistrarVenta(
+                    (ok, msg) = _cbBL.RegistrarVentaConAjustePrecio(
                         _prodMovimiento.ProductoID, cantidad, motivo, Sesion.IdUsuario);
                 }
                 else
                 {
-                    (ok, msg) = _bl.RegistrarVenta(
+                    (ok, msg) = _bl.RegistrarSalida(
                         _prodMovimiento.ProductoID, cantidad, motivo, Sesion.IdUsuario);
                 }
 
@@ -605,7 +670,43 @@ namespace CapaPresentacion
                     MessageBoxButtons.OK,
                     ok ? MessageBoxIcon.Information : MessageBoxIcon.Error);
 
-                if (ok) LimpiarMovimiento();
+                if (ok)
+                {
+                    LimpiarMovimiento();
+                    VerificarAlertasRestock();
+                }
+            }
+        }
+
+        private void VerificarAlertasRestock()
+        {
+            try
+            {
+                RestockBL bl = new RestockBL();
+                var ordenes  = bl.ListarOrdenes("PENDIENTE");
+                if (ordenes.Count == 0) return;
+
+                string msg = "⚠ Stock bajo detectado. Se generaron órdenes de restock: ";
+                foreach (var o in ordenes)
+                {
+                    msg += $"• {o.Producto} " + $"  Stock actual: {o.StockActual}  (mínimo: {o.StockMinimo}) "
+                         + $"  Proveedor: {o.Proveedor}  |  Tel: {o.TelProveedor} ";
+                }
+                msg += "¿Desea abrir el módulo de Órdenes de Restock ahora?";
+
+                DialogResult res = MessageBox.Show(msg, "⚠ Alerta de Restock",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (res == DialogResult.Yes)
+                {
+                    FrmOrdenesRestock frm = new FrmOrdenesRestock();
+                    frm.Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error en alerta restock: " + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

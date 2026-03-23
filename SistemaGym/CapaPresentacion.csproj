@@ -76,6 +76,12 @@
     <Compile Include="FrmMenuPrincipal.Designer.cs">
       <DependentUpon>FrmMenuPrincipal.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmOrdenesRestock.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmOrdenesRestock.Designer.cs">
+      <DependentUpon>FrmOrdenesRestock.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmRegistrarProveedor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,9 +105,6 @@
     <Compile Include="Sesion.cs" />
     <EmbeddedResource Include="FrmBitacora.resx">
       <DependentUpon>FrmBitacora.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FrmInventario.resx">
-      <DependentUpon>FrmInventario.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>

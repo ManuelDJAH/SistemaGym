@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -46,9 +46,11 @@ namespace CapaDatos
                     SELECT p.ProductoID, p.Codigo, p.Nombre, p.CategoriaID,
                            c.Nombre AS CategoriaNombre,
                            p.Precio, p.StockActual, p.StockMinimo,
-                           p.FechaCaducidad, p.Activo, p.FechaRegistro
+                           p.FechaCaducidad, p.Activo, p.FechaRegistro,
+                           p.idproveedor, pr.nombre AS ProveedorNombre
                     FROM   Inv_Productos p
-                    JOIN   Inv_Categorias c ON p.CategoriaID = c.CategoriaID
+                    JOIN   Inv_Categorias c  ON p.CategoriaID  = c.CategoriaID
+                    LEFT JOIN Proveedores pr ON p.idproveedor  = pr.idproveedor
                     WHERE  p.Activo = 1"
                     + (categoriaID.HasValue ? " AND p.CategoriaID = @CatID" : "")
                     + " ORDER BY c.Nombre, p.Nombre";
@@ -75,9 +77,11 @@ namespace CapaDatos
                     SELECT p.ProductoID, p.Codigo, p.Nombre, p.CategoriaID,
                            c.Nombre AS CategoriaNombre,
                            p.Precio, p.StockActual, p.StockMinimo,
-                           p.FechaCaducidad, p.Activo, p.FechaRegistro
+                           p.FechaCaducidad, p.Activo, p.FechaRegistro,
+                           p.idproveedor, pr.nombre AS ProveedorNombre
                     FROM   Inv_Productos p
-                    JOIN   Inv_Categorias c ON p.CategoriaID = c.CategoriaID
+                    JOIN   Inv_Categorias c  ON p.CategoriaID = c.CategoriaID
+                    LEFT JOIN Proveedores pr ON p.idproveedor = pr.idproveedor
                     WHERE  p.Codigo = @Codigo";
 
                 using (var cmd = new SqlCommand(sql, con))
@@ -276,9 +280,6 @@ namespace CapaDatos
                         motivo != null ? (object)motivo : DBNull.Value);
                     cmd.Parameters.AddWithValue("@UsuarioID", usuarioID);
 
-                    if (tipo == "S")
-                        cmd.Parameters.AddWithValue("@EsVenta", esVenta ? 1 : 0);
-
                     cmd.ExecuteNonQuery();
                     return true;
                 }
@@ -473,7 +474,9 @@ namespace CapaDatos
             StockMinimo = (int)dr["StockMinimo"],
             FechaCaducidad = dr["FechaCaducidad"] as DateTime?,
             Activo = (bool)dr["Activo"],
-            FechaRegistro = (DateTime)dr["FechaRegistro"]
+            FechaRegistro = (DateTime)dr["FechaRegistro"],
+            IdProveedor = dr["idproveedor"] == DBNull.Value ? 0 : (int)dr["idproveedor"],
+            ProveedorNombre = dr["ProveedorNombre"] as string
         };
 
         private Equipo MapearEquipo(SqlDataReader dr) => new Equipo

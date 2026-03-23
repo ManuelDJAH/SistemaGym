@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace CapaDatos
 {
@@ -31,6 +31,9 @@ namespace CapaDatos
         public DateTime? FechaCaducidad { get; set; }
         public bool Activo { get; set; }
         public DateTime FechaRegistro { get; set; }
+        public int IdProveedor { get; set; }
+        public string ProveedorNombre { get; set; }  // Solo lectura (JOIN)
+
 
         // Propiedad calculada para mostrar en UI
         public string EstadoAlerta

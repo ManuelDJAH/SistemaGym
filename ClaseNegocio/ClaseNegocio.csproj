@@ -49,6 +49,7 @@
     <Compile Include="InventarioBL.cs" />
     <Compile Include="MembresiasBL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RestockBL.cs" />
     <Compile Include="UsuariosBL.cs" />
   </ItemGroup>
   <ItemGroup>
