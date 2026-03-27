@@ -75,7 +75,7 @@ namespace CapaPresentacion
 
         private void btnProveedores_Click(object sender, EventArgs e)
         {
-            FrmListadoProveedor frm = new FrmListadoProveedor();
+            FrmProveedores frm = new FrmProveedores();
             frm.Show();
         }
     }

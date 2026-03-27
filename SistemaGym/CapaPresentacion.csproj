@@ -58,12 +58,6 @@
     <Compile Include="FrmInventario.Designer.cs">
       <DependentUpon>FrmInventario.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmListadoProveedor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmListadoProveedor.Designer.cs">
-      <DependentUpon>FrmListadoProveedor.cs</DependentUpon>
-    </Compile>
     <Compile Include="FrmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,17 +70,11 @@
     <Compile Include="FrmMenuPrincipal.Designer.cs">
       <DependentUpon>FrmMenuPrincipal.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmOrdenesRestock.cs">
+    <Compile Include="FrmProveedores.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmOrdenesRestock.Designer.cs">
-      <DependentUpon>FrmOrdenesRestock.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FrmRegistrarProveedor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmRegistrarProveedor.Designer.cs">
-      <DependentUpon>FrmRegistrarProveedor.cs</DependentUpon>
+    <Compile Include="FrmProveedores.Designer.cs">
+      <DependentUpon>FrmProveedores.cs</DependentUpon>
     </Compile>
     <Compile Include="RegUsuarios.cs">
       <SubType>Form</SubType>
@@ -106,14 +94,17 @@
     <EmbeddedResource Include="FrmBitacora.resx">
       <DependentUpon>FrmBitacora.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmInventario.resx">
+      <DependentUpon>FrmInventario.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmLogin.resx">
       <DependentUpon>FrmLogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmMenuPrincipal.resx">
       <DependentUpon>FrmMenuPrincipal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmRegistrarProveedor.resx">
-      <DependentUpon>FrmRegistrarProveedor.cs</DependentUpon>
+    <EmbeddedResource Include="FrmProveedores.resx">
+      <DependentUpon>FrmProveedores.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RegUsuarios.resx">
       <DependentUpon>RegUsuarios.cs</DependentUpon>
