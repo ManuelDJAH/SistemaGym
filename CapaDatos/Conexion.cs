@@ -2,14 +2,24 @@
 
 namespace CapaDatos
 {
-    public class Conexion
+
+    public static class Conexion
     {
-        public static string cadena =
-            "Server=localhost\\SQLEXPRESS;Database=GymDB;Trusted_Connection=True;";
+        // ── Cadena fija para Windows Forms ───────────────────────────
+        private static string _connectionString =
+            @"Server=localhost\SQLEXPRESS;Database=GymDB;Trusted_Connection=True;";
+
+        public static void SetConnectionString(string connectionString)
+        {
+            if (!string.IsNullOrWhiteSpace(connectionString))
+                _connectionString = connectionString;
+        }
+
+        public static string cadena => _connectionString;
 
         public static SqlConnection ObtenerConexion()
         {
-            return new SqlConnection(cadena);
+            return new SqlConnection(_connectionString);
         }
     }
 }
