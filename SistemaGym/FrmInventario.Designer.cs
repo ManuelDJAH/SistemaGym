@@ -205,7 +205,7 @@ namespace CapaPresentacion
             // 
             this.splitProductos.Panel2.Controls.Add(this.pnlProdForm);
             this.splitProductos.Size = new System.Drawing.Size(813, 466);
-            this.splitProductos.SplitterDistance = 655;
+            this.splitProductos.SplitterDistance = 539;
             this.splitProductos.SplitterWidth = 3;
             this.splitProductos.TabIndex = 0;
             // 
@@ -221,7 +221,7 @@ namespace CapaPresentacion
             this.dgvProductos.ReadOnly = true;
             this.dgvProductos.RowHeadersWidth = 51;
             this.dgvProductos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvProductos.Size = new System.Drawing.Size(655, 466);
+            this.dgvProductos.Size = new System.Drawing.Size(539, 466);
             this.dgvProductos.TabIndex = 0;
             this.dgvProductos.SelectionChanged += new System.EventHandler(this.dgvProductos_SelectionChanged);
             // 
@@ -256,7 +256,7 @@ namespace CapaPresentacion
             this.pnlProdForm.Location = new System.Drawing.Point(0, 0);
             this.pnlProdForm.Margin = new System.Windows.Forms.Padding(2);
             this.pnlProdForm.Name = "pnlProdForm";
-            this.pnlProdForm.Size = new System.Drawing.Size(155, 466);
+            this.pnlProdForm.Size = new System.Drawing.Size(271, 466);
             this.pnlProdForm.TabIndex = 0;
             // 
             // lblProdTitulo
@@ -294,7 +294,7 @@ namespace CapaPresentacion
             this.btnProdEscanear.Location = new System.Drawing.Point(178, 29);
             this.btnProdEscanear.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdEscanear.Name = "btnProdEscanear";
-            this.btnProdEscanear.Size = new System.Drawing.Size(56, 20);
+            this.btnProdEscanear.Size = new System.Drawing.Size(67, 20);
             this.btnProdEscanear.TabIndex = 3;
             this.btnProdEscanear.Text = "Escanear";
             this.btnProdEscanear.Click += new System.EventHandler(this.btnProdEscanear_Click);
@@ -432,7 +432,7 @@ namespace CapaPresentacion
             // dtpProdCaducidad
             // 
             this.dtpProdCaducidad.Enabled = false;
-            this.dtpProdCaducidad.Location = new System.Drawing.Point(68, 238);
+            this.dtpProdCaducidad.Location = new System.Drawing.Point(86, 238);
             this.dtpProdCaducidad.Margin = new System.Windows.Forms.Padding(2);
             this.dtpProdCaducidad.Name = "dtpProdCaducidad";
             this.dtpProdCaducidad.Size = new System.Drawing.Size(106, 20);
@@ -538,7 +538,7 @@ namespace CapaPresentacion
             // cboProdCategoria
             // 
             this.cboProdCategoria.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboProdCategoria.Location = new System.Drawing.Point(52, 6);
+            this.cboProdCategoria.Location = new System.Drawing.Point(61, 6);
             this.cboProdCategoria.Margin = new System.Windows.Forms.Padding(2);
             this.cboProdCategoria.Name = "cboProdCategoria";
             this.cboProdCategoria.Size = new System.Drawing.Size(121, 21);
@@ -546,7 +546,7 @@ namespace CapaPresentacion
             // 
             // btnProdFiltrar
             // 
-            this.btnProdFiltrar.Location = new System.Drawing.Point(180, 5);
+            this.btnProdFiltrar.Location = new System.Drawing.Point(185, 5);
             this.btnProdFiltrar.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdFiltrar.Name = "btnProdFiltrar";
             this.btnProdFiltrar.Size = new System.Drawing.Size(52, 21);
@@ -591,7 +591,7 @@ namespace CapaPresentacion
             // 
             this.splitEquipo.Panel2.Controls.Add(this.pnlEqForm);
             this.splitEquipo.Size = new System.Drawing.Size(813, 466);
-            this.splitEquipo.SplitterDistance = 655;
+            this.splitEquipo.SplitterDistance = 538;
             this.splitEquipo.SplitterWidth = 3;
             this.splitEquipo.TabIndex = 0;
             // 
@@ -607,7 +607,7 @@ namespace CapaPresentacion
             this.dgvEquipo.ReadOnly = true;
             this.dgvEquipo.RowHeadersWidth = 51;
             this.dgvEquipo.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvEquipo.Size = new System.Drawing.Size(655, 466);
+            this.dgvEquipo.Size = new System.Drawing.Size(538, 466);
             this.dgvEquipo.TabIndex = 0;
             this.dgvEquipo.SelectionChanged += new System.EventHandler(this.dgvEquipo_SelectionChanged);
             // 
@@ -635,7 +635,7 @@ namespace CapaPresentacion
             this.pnlEqForm.Location = new System.Drawing.Point(0, 0);
             this.pnlEqForm.Margin = new System.Windows.Forms.Padding(2);
             this.pnlEqForm.Name = "pnlEqForm";
-            this.pnlEqForm.Size = new System.Drawing.Size(155, 466);
+            this.pnlEqForm.Size = new System.Drawing.Size(272, 466);
             this.pnlEqForm.TabIndex = 0;
             // 
             // lblEqTitulo
@@ -736,7 +736,7 @@ namespace CapaPresentacion
             // dtpEqFecha
             // 
             this.dtpEqFecha.Enabled = false;
-            this.dtpEqFecha.Location = new System.Drawing.Point(68, 108);
+            this.dtpEqFecha.Location = new System.Drawing.Point(87, 108);
             this.dtpEqFecha.Margin = new System.Windows.Forms.Padding(2);
             this.dtpEqFecha.Name = "dtpEqFecha";
             this.dtpEqFecha.Size = new System.Drawing.Size(106, 20);
@@ -846,7 +846,7 @@ namespace CapaPresentacion
             "BUENO",
             "DAÑADO",
             "BAJA"});
-            this.cboEqFiltroEstado.Location = new System.Drawing.Point(45, 6);
+            this.cboEqFiltroEstado.Location = new System.Drawing.Point(48, 6);
             this.cboEqFiltroEstado.Margin = new System.Windows.Forms.Padding(2);
             this.cboEqFiltroEstado.Name = "cboEqFiltroEstado";
             this.cboEqFiltroEstado.Size = new System.Drawing.Size(91, 21);
@@ -1035,7 +1035,7 @@ namespace CapaPresentacion
             // rbMovSalida
             // 
             this.rbMovSalida.AutoSize = true;
-            this.rbMovSalida.Location = new System.Drawing.Point(139, 120);
+            this.rbMovSalida.Location = new System.Drawing.Point(150, 120);
             this.rbMovSalida.Margin = new System.Windows.Forms.Padding(2);
             this.rbMovSalida.Name = "rbMovSalida";
             this.rbMovSalida.Size = new System.Drawing.Size(54, 17);
@@ -1167,7 +1167,7 @@ namespace CapaPresentacion
             // 
             // dtpHistDesde
             // 
-            this.dtpHistDesde.Location = new System.Drawing.Point(41, 7);
+            this.dtpHistDesde.Location = new System.Drawing.Point(47, 7);
             this.dtpHistDesde.Margin = new System.Windows.Forms.Padding(2);
             this.dtpHistDesde.Name = "dtpHistDesde";
             this.dtpHistDesde.Size = new System.Drawing.Size(91, 20);
@@ -1176,7 +1176,7 @@ namespace CapaPresentacion
             // lblHistHasta
             // 
             this.lblHistHasta.AutoSize = true;
-            this.lblHistHasta.Location = new System.Drawing.Point(139, 10);
+            this.lblHistHasta.Location = new System.Drawing.Point(145, 10);
             this.lblHistHasta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblHistHasta.Name = "lblHistHasta";
             this.lblHistHasta.Size = new System.Drawing.Size(38, 13);
@@ -1185,7 +1185,7 @@ namespace CapaPresentacion
             // 
             // dtpHistHasta
             // 
-            this.dtpHistHasta.Location = new System.Drawing.Point(172, 7);
+            this.dtpHistHasta.Location = new System.Drawing.Point(185, 7);
             this.dtpHistHasta.Margin = new System.Windows.Forms.Padding(2);
             this.dtpHistHasta.Name = "dtpHistHasta";
             this.dtpHistHasta.Size = new System.Drawing.Size(91, 20);
@@ -1194,7 +1194,7 @@ namespace CapaPresentacion
             // lblHistProd
             // 
             this.lblHistProd.AutoSize = true;
-            this.lblHistProd.Location = new System.Drawing.Point(270, 10);
+            this.lblHistProd.Location = new System.Drawing.Point(283, 10);
             this.lblHistProd.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblHistProd.Name = "lblHistProd";
             this.lblHistProd.Size = new System.Drawing.Size(53, 13);
@@ -1204,7 +1204,7 @@ namespace CapaPresentacion
             // cboHistProd
             // 
             this.cboHistProd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboHistProd.Location = new System.Drawing.Point(315, 7);
+            this.cboHistProd.Location = new System.Drawing.Point(337, 7);
             this.cboHistProd.Margin = new System.Windows.Forms.Padding(2);
             this.cboHistProd.Name = "cboHistProd";
             this.cboHistProd.Size = new System.Drawing.Size(121, 21);
@@ -1212,7 +1212,7 @@ namespace CapaPresentacion
             // 
             // btnHistBuscar
             // 
-            this.btnHistBuscar.Location = new System.Drawing.Point(442, 6);
+            this.btnHistBuscar.Location = new System.Drawing.Point(464, 6);
             this.btnHistBuscar.Margin = new System.Windows.Forms.Padding(2);
             this.btnHistBuscar.Name = "btnHistBuscar";
             this.btnHistBuscar.Size = new System.Drawing.Size(52, 21);
@@ -1222,7 +1222,7 @@ namespace CapaPresentacion
             // 
             // btnHistTodos
             // 
-            this.btnHistTodos.Location = new System.Drawing.Point(501, 6);
+            this.btnHistTodos.Location = new System.Drawing.Point(523, 6);
             this.btnHistTodos.Margin = new System.Windows.Forms.Padding(2);
             this.btnHistTodos.Name = "btnHistTodos";
             this.btnHistTodos.Size = new System.Drawing.Size(52, 21);
