@@ -7,6 +7,7 @@ namespace ClaseNegocio
     {
         BitacoraDAO dao = new BitacoraDAO();
 
+        // ── Métodos existentes (no tocar) ────────────────────────────
         public int RegistrarEntrada(string usuario)
         {
             return dao.RegistrarEntrada(usuario);
@@ -20,6 +21,17 @@ namespace ClaseNegocio
         public DataTable MostrarBitacora()
         {
             return dao.MostrarBitacora();
+        }
+
+        // ── Métodos nuevos para FrmAdmin ─────────────────────────────
+        public DataTable ObtenerSesiones()
+        {
+            return dao.ObtenerSesiones();
+        }
+
+        public DataTable ObtenerCambios()
+        {
+            return dao.ObtenerCambios();
         }
     }
 }

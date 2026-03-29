@@ -6,10 +6,6 @@ using ClaseNegocio;
 
 namespace CapaPresentacion
 {
-    /// <summary>
-    /// Panel de administración — solo accesible con rol ADMIN.
-    /// Tabs: Bitácora (cambios + sesiones) | Respaldo BD
-    /// </summary>
     public partial class FrmAdmin : Form
     {
         private readonly RespaldoBL _respaldoBL = new RespaldoBL();
@@ -21,25 +17,27 @@ namespace CapaPresentacion
 
         private void FrmAdmin_Load(object sender, EventArgs e)
         {
-            // Cargar bitácora al abrir (reutiliza la lógica existente de FrmBitacora)
             CargarBitacora();
         }
 
         // ════════════════════════════════════════════════════════════
-        //  TAB BITÁCORA  (misma lógica que FrmBitacora)
+        //  TAB BITÁCORA
         // ════════════════════════════════════════════════════════════
         private void CargarBitacora()
         {
             try
             {
                 BitacoraBL bl = new BitacoraBL();
-                var dt = bl.MostrarBitacora();
-                dgvCambios.DataSource = dt;
-                dgvSesiones.DataSource = dt;
+
+                // Cambios — tabla Cambios
+                dgvCambios.DataSource = bl.ObtenerCambios();
+
+                // Sesiones — tabla BitacoraSesion
+                dgvSesiones.DataSource = bl.ObtenerSesiones();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar bitácora: " + ex.Message,
+                MessageBox.Show("Error al cargar bitacora: " + ex.Message,
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -56,7 +54,7 @@ namespace CapaPresentacion
         {
             using (var dlg = new FolderBrowserDialog())
             {
-                dlg.Description = "Selecciona la carpeta donde se guardará el respaldo";
+                dlg.Description = "Selecciona la carpeta donde se guardara el respaldo";
                 dlg.ShowNewFolderButton = true;
 
                 if (dlg.ShowDialog() == DialogResult.OK)
@@ -76,14 +74,13 @@ namespace CapaPresentacion
             }
 
             var confirm = MessageBox.Show(
-                $"Se generará un respaldo completo de GymDB en:\n\n{carpeta}\n\n¿Continuar?",
+                $"Se generara un respaldo completo de GymDB en:\n\n{carpeta}\n\n¿Continuar?",
                 "Confirmar respaldo",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
             if (confirm != DialogResult.Yes) return;
 
-            // Deshabilitar botón y mostrar progreso
             btnGenerarRespaldo.Enabled = false;
             lblEstadoRespaldo.Text = "Generando respaldo... por favor espera.";
             lblEstadoRespaldo.ForeColor = System.Drawing.Color.DarkOrange;
@@ -111,9 +108,7 @@ namespace CapaPresentacion
             {
                 lblEstadoRespaldo.Text = "Error al generar respaldo.";
                 lblEstadoRespaldo.ForeColor = System.Drawing.Color.Firebrick;
-
-                MessageBox.Show(mensaje, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

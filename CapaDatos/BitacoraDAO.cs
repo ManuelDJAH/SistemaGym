@@ -56,5 +56,48 @@ namespace CapaDatos
                 return dt;
             }
         }
+        public System.Data.DataTable ObtenerSesiones()
+        {
+            using (var con = Conexion.ObtenerConexion())
+            {
+                con.Open();
+                string sql = @"
+            SELECT IdBitacora     AS 'ID',
+                   Usuario        AS 'Usuario',
+                   FechaEntrada   AS 'Fecha Entrada',
+                   FechaSalida    AS 'Fecha Salida'
+            FROM   BitacoraSesion
+            ORDER  BY FechaEntrada DESC";
+
+                var da = new System.Data.SqlClient.SqlDataAdapter(sql, con);
+                var dt = new System.Data.DataTable();
+                da.Fill(dt);
+                return dt;
+            }
+        }
+
+        public System.Data.DataTable ObtenerCambios()
+        {
+            using (var con = Conexion.ObtenerConexion())
+            {
+                con.Open();
+                string sql = @"
+            SELECT c.id_cambio      AS 'ID',
+                   u.usuario        AS 'Usuario',
+                   c.accion         AS 'Accion',
+                   c.campo          AS 'Campo',
+                   c.valor_anterior AS 'Valor Anterior',
+                   c.valor_nuevo    AS 'Valor Nuevo',
+                   c.fecha          AS 'Fecha'
+            FROM   Cambios c
+            LEFT JOIN UsuariosSistema u ON c.id_usuario = u.id_usuario
+            ORDER  BY c.fecha DESC";
+
+                var da = new System.Data.SqlClient.SqlDataAdapter(sql, con);
+                var dt = new System.Data.DataTable();
+                da.Fill(dt);
+                return dt;
+            }
+        }
     }
 }
