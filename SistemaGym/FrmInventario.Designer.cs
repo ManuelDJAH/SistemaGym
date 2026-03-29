@@ -171,9 +171,10 @@ namespace CapaPresentacion
             this.tabControl.Controls.Add(this.tabAlertas);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1100, 650);
+            this.tabControl.Size = new System.Drawing.Size(825, 528);
             this.tabControl.TabIndex = 0;
             this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
@@ -181,17 +182,19 @@ namespace CapaPresentacion
             // 
             this.tabProductos.Controls.Add(this.splitProductos);
             this.tabProductos.Controls.Add(this.pnlProdFiltro);
-            this.tabProductos.Location = new System.Drawing.Point(4, 25);
+            this.tabProductos.Location = new System.Drawing.Point(4, 22);
+            this.tabProductos.Margin = new System.Windows.Forms.Padding(2);
             this.tabProductos.Name = "tabProductos";
-            this.tabProductos.Padding = new System.Windows.Forms.Padding(3);
-            this.tabProductos.Size = new System.Drawing.Size(1092, 621);
+            this.tabProductos.Padding = new System.Windows.Forms.Padding(2);
+            this.tabProductos.Size = new System.Drawing.Size(817, 502);
             this.tabProductos.TabIndex = 0;
             this.tabProductos.Text = "Productos";
             // 
             // splitProductos
             // 
             this.splitProductos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitProductos.Location = new System.Drawing.Point(3, 43);
+            this.splitProductos.Location = new System.Drawing.Point(2, 34);
+            this.splitProductos.Margin = new System.Windows.Forms.Padding(2);
             this.splitProductos.Name = "splitProductos";
             // 
             // splitProductos.Panel1
@@ -201,8 +204,9 @@ namespace CapaPresentacion
             // splitProductos.Panel2
             // 
             this.splitProductos.Panel2.Controls.Add(this.pnlProdForm);
-            this.splitProductos.Size = new System.Drawing.Size(1086, 575);
-            this.splitProductos.SplitterDistance = 876;
+            this.splitProductos.Size = new System.Drawing.Size(813, 466);
+            this.splitProductos.SplitterDistance = 655;
+            this.splitProductos.SplitterWidth = 3;
             this.splitProductos.TabIndex = 0;
             // 
             // dgvProductos
@@ -211,12 +215,13 @@ namespace CapaPresentacion
             this.dgvProductos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvProductos.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvProductos.Location = new System.Drawing.Point(0, 0);
+            this.dgvProductos.Margin = new System.Windows.Forms.Padding(2);
             this.dgvProductos.MultiSelect = false;
             this.dgvProductos.Name = "dgvProductos";
             this.dgvProductos.ReadOnly = true;
             this.dgvProductos.RowHeadersWidth = 51;
             this.dgvProductos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvProductos.Size = new System.Drawing.Size(876, 575);
+            this.dgvProductos.Size = new System.Drawing.Size(655, 466);
             this.dgvProductos.TabIndex = 0;
             this.dgvProductos.SelectionChanged += new System.EventHandler(this.dgvProductos_SelectionChanged);
             // 
@@ -249,51 +254,57 @@ namespace CapaPresentacion
             this.pnlProdForm.Controls.Add(this.btnProdBaja);
             this.pnlProdForm.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlProdForm.Location = new System.Drawing.Point(0, 0);
+            this.pnlProdForm.Margin = new System.Windows.Forms.Padding(2);
             this.pnlProdForm.Name = "pnlProdForm";
-            this.pnlProdForm.Size = new System.Drawing.Size(206, 575);
+            this.pnlProdForm.Size = new System.Drawing.Size(155, 466);
             this.pnlProdForm.TabIndex = 0;
             // 
             // lblProdTitulo
             // 
             this.lblProdTitulo.AutoSize = true;
             this.lblProdTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold);
-            this.lblProdTitulo.Location = new System.Drawing.Point(5, 5);
+            this.lblProdTitulo.Location = new System.Drawing.Point(4, 4);
+            this.lblProdTitulo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProdTitulo.Name = "lblProdTitulo";
-            this.lblProdTitulo.Size = new System.Drawing.Size(94, 24);
+            this.lblProdTitulo.Size = new System.Drawing.Size(77, 18);
             this.lblProdTitulo.TabIndex = 0;
             this.lblProdTitulo.Text = "Producto";
             // 
             // lblProdCodigo
             // 
             this.lblProdCodigo.AutoSize = true;
-            this.lblProdCodigo.Location = new System.Drawing.Point(5, 40);
+            this.lblProdCodigo.Location = new System.Drawing.Point(4, 32);
+            this.lblProdCodigo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProdCodigo.Name = "lblProdCodigo";
-            this.lblProdCodigo.Size = new System.Drawing.Size(54, 16);
+            this.lblProdCodigo.Size = new System.Drawing.Size(43, 13);
             this.lblProdCodigo.TabIndex = 1;
             this.lblProdCodigo.Text = "Código:";
             // 
             // txtProdCodigo
             // 
-            this.txtProdCodigo.Location = new System.Drawing.Point(90, 37);
+            this.txtProdCodigo.Location = new System.Drawing.Point(68, 30);
+            this.txtProdCodigo.Margin = new System.Windows.Forms.Padding(2);
             this.txtProdCodigo.Name = "txtProdCodigo";
             this.txtProdCodigo.ReadOnly = true;
-            this.txtProdCodigo.Size = new System.Drawing.Size(140, 22);
+            this.txtProdCodigo.Size = new System.Drawing.Size(106, 20);
             this.txtProdCodigo.TabIndex = 2;
             // 
             // btnProdEscanear
             // 
-            this.btnProdEscanear.Location = new System.Drawing.Point(238, 36);
+            this.btnProdEscanear.Location = new System.Drawing.Point(178, 29);
+            this.btnProdEscanear.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdEscanear.Name = "btnProdEscanear";
-            this.btnProdEscanear.Size = new System.Drawing.Size(75, 24);
+            this.btnProdEscanear.Size = new System.Drawing.Size(56, 20);
             this.btnProdEscanear.TabIndex = 3;
             this.btnProdEscanear.Text = "Escanear";
             this.btnProdEscanear.Click += new System.EventHandler(this.btnProdEscanear_Click);
             // 
             // btnProdGenerarCodigo
             // 
-            this.btnProdGenerarCodigo.Location = new System.Drawing.Point(90, 65);
+            this.btnProdGenerarCodigo.Location = new System.Drawing.Point(68, 53);
+            this.btnProdGenerarCodigo.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdGenerarCodigo.Name = "btnProdGenerarCodigo";
-            this.btnProdGenerarCodigo.Size = new System.Drawing.Size(90, 24);
+            this.btnProdGenerarCodigo.Size = new System.Drawing.Size(68, 20);
             this.btnProdGenerarCodigo.TabIndex = 4;
             this.btnProdGenerarCodigo.Text = "Generar CB";
             this.btnProdGenerarCodigo.Click += new System.EventHandler(this.btnProdGenerarCodigo_Click);
@@ -301,9 +312,10 @@ namespace CapaPresentacion
             // picCodigoBarras
             // 
             this.picCodigoBarras.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picCodigoBarras.Location = new System.Drawing.Point(5, 95);
+            this.picCodigoBarras.Location = new System.Drawing.Point(4, 77);
+            this.picCodigoBarras.Margin = new System.Windows.Forms.Padding(2);
             this.picCodigoBarras.Name = "picCodigoBarras";
-            this.picCodigoBarras.Size = new System.Drawing.Size(310, 60);
+            this.picCodigoBarras.Size = new System.Drawing.Size(233, 49);
             this.picCodigoBarras.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picCodigoBarras.TabIndex = 5;
             this.picCodigoBarras.TabStop = false;
@@ -311,26 +323,29 @@ namespace CapaPresentacion
             // lblProdNombre
             // 
             this.lblProdNombre.AutoSize = true;
-            this.lblProdNombre.Location = new System.Drawing.Point(5, 168);
+            this.lblProdNombre.Location = new System.Drawing.Point(4, 136);
+            this.lblProdNombre.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProdNombre.Name = "lblProdNombre";
-            this.lblProdNombre.Size = new System.Drawing.Size(59, 16);
+            this.lblProdNombre.Size = new System.Drawing.Size(47, 13);
             this.lblProdNombre.TabIndex = 6;
             this.lblProdNombre.Text = "Nombre:";
             // 
             // txtProdNombre
             // 
-            this.txtProdNombre.Location = new System.Drawing.Point(90, 165);
+            this.txtProdNombre.Location = new System.Drawing.Point(68, 134);
+            this.txtProdNombre.Margin = new System.Windows.Forms.Padding(2);
             this.txtProdNombre.Name = "txtProdNombre";
             this.txtProdNombre.ReadOnly = true;
-            this.txtProdNombre.Size = new System.Drawing.Size(220, 22);
+            this.txtProdNombre.Size = new System.Drawing.Size(166, 20);
             this.txtProdNombre.TabIndex = 7;
             // 
             // lblProdCat
             // 
             this.lblProdCat.AutoSize = true;
-            this.lblProdCat.Location = new System.Drawing.Point(5, 200);
+            this.lblProdCat.Location = new System.Drawing.Point(4, 162);
+            this.lblProdCat.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProdCat.Name = "lblProdCat";
-            this.lblProdCat.Size = new System.Drawing.Size(69, 16);
+            this.lblProdCat.Size = new System.Drawing.Size(57, 13);
             this.lblProdCat.TabIndex = 8;
             this.lblProdCat.Text = "Categoría:";
             // 
@@ -338,49 +353,54 @@ namespace CapaPresentacion
             // 
             this.cboProdCat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboProdCat.Enabled = false;
-            this.cboProdCat.Location = new System.Drawing.Point(90, 197);
+            this.cboProdCat.Location = new System.Drawing.Point(68, 160);
+            this.cboProdCat.Margin = new System.Windows.Forms.Padding(2);
             this.cboProdCat.Name = "cboProdCat";
-            this.cboProdCat.Size = new System.Drawing.Size(180, 24);
+            this.cboProdCat.Size = new System.Drawing.Size(136, 21);
             this.cboProdCat.TabIndex = 9;
             // 
             // lblProdPrecio
             // 
             this.lblProdPrecio.AutoSize = true;
-            this.lblProdPrecio.Location = new System.Drawing.Point(5, 232);
+            this.lblProdPrecio.Location = new System.Drawing.Point(4, 188);
+            this.lblProdPrecio.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProdPrecio.Name = "lblProdPrecio";
-            this.lblProdPrecio.Size = new System.Drawing.Size(49, 16);
+            this.lblProdPrecio.Size = new System.Drawing.Size(40, 13);
             this.lblProdPrecio.TabIndex = 10;
             this.lblProdPrecio.Text = "Precio:";
             // 
             // txtProdPrecio
             // 
-            this.txtProdPrecio.Location = new System.Drawing.Point(90, 229);
+            this.txtProdPrecio.Location = new System.Drawing.Point(68, 186);
+            this.txtProdPrecio.Margin = new System.Windows.Forms.Padding(2);
             this.txtProdPrecio.Name = "txtProdPrecio";
             this.txtProdPrecio.ReadOnly = true;
-            this.txtProdPrecio.Size = new System.Drawing.Size(100, 22);
+            this.txtProdPrecio.Size = new System.Drawing.Size(76, 20);
             this.txtProdPrecio.TabIndex = 11;
             this.txtProdPrecio.Text = "0.00";
             // 
             // lblProdStockMin
             // 
             this.lblProdStockMin.AutoSize = true;
-            this.lblProdStockMin.Location = new System.Drawing.Point(5, 264);
+            this.lblProdStockMin.Location = new System.Drawing.Point(4, 214);
+            this.lblProdStockMin.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProdStockMin.Name = "lblProdStockMin";
-            this.lblProdStockMin.Size = new System.Drawing.Size(68, 16);
+            this.lblProdStockMin.Size = new System.Drawing.Size(60, 13);
             this.lblProdStockMin.TabIndex = 12;
             this.lblProdStockMin.Text = "Stock Mín:";
             // 
             // numProdStockMin
             // 
             this.numProdStockMin.Enabled = false;
-            this.numProdStockMin.Location = new System.Drawing.Point(90, 261);
+            this.numProdStockMin.Location = new System.Drawing.Point(68, 212);
+            this.numProdStockMin.Margin = new System.Windows.Forms.Padding(2);
             this.numProdStockMin.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
             this.numProdStockMin.Name = "numProdStockMin";
-            this.numProdStockMin.Size = new System.Drawing.Size(70, 22);
+            this.numProdStockMin.Size = new System.Drawing.Size(52, 20);
             this.numProdStockMin.TabIndex = 13;
             this.numProdStockMin.Value = new decimal(new int[] {
             3,
@@ -392,9 +412,10 @@ namespace CapaPresentacion
             // 
             this.chkProdCaducidad.AutoSize = true;
             this.chkProdCaducidad.Enabled = false;
-            this.chkProdCaducidad.Location = new System.Drawing.Point(5, 296);
+            this.chkProdCaducidad.Location = new System.Drawing.Point(4, 240);
+            this.chkProdCaducidad.Margin = new System.Windows.Forms.Padding(2);
             this.chkProdCaducidad.Name = "chkProdCaducidad";
-            this.chkProdCaducidad.Size = new System.Drawing.Size(98, 20);
+            this.chkProdCaducidad.Size = new System.Drawing.Size(81, 17);
             this.chkProdCaducidad.TabIndex = 14;
             this.chkProdCaducidad.Text = "Fecha Cad:";
             this.chkProdCaducidad.CheckedChanged += new System.EventHandler(this.chkProdCaducidad_CheckedChanged);
@@ -402,25 +423,28 @@ namespace CapaPresentacion
             // lblProdCaducidad
             // 
             this.lblProdCaducidad.AutoSize = true;
-            this.lblProdCaducidad.Location = new System.Drawing.Point(5, 296);
+            this.lblProdCaducidad.Location = new System.Drawing.Point(4, 240);
+            this.lblProdCaducidad.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProdCaducidad.Name = "lblProdCaducidad";
-            this.lblProdCaducidad.Size = new System.Drawing.Size(0, 16);
+            this.lblProdCaducidad.Size = new System.Drawing.Size(0, 13);
             this.lblProdCaducidad.TabIndex = 15;
             // 
             // dtpProdCaducidad
             // 
             this.dtpProdCaducidad.Enabled = false;
-            this.dtpProdCaducidad.Location = new System.Drawing.Point(90, 293);
+            this.dtpProdCaducidad.Location = new System.Drawing.Point(68, 238);
+            this.dtpProdCaducidad.Margin = new System.Windows.Forms.Padding(2);
             this.dtpProdCaducidad.Name = "dtpProdCaducidad";
-            this.dtpProdCaducidad.Size = new System.Drawing.Size(140, 22);
+            this.dtpProdCaducidad.Size = new System.Drawing.Size(106, 20);
             this.dtpProdCaducidad.TabIndex = 16;
             // 
             // lblProdProveedor
             // 
             this.lblProdProveedor.AutoSize = true;
-            this.lblProdProveedor.Location = new System.Drawing.Point(5, 328);
+            this.lblProdProveedor.Location = new System.Drawing.Point(4, 266);
+            this.lblProdProveedor.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProdProveedor.Name = "lblProdProveedor";
-            this.lblProdProveedor.Size = new System.Drawing.Size(74, 16);
+            this.lblProdProveedor.Size = new System.Drawing.Size(59, 13);
             this.lblProdProveedor.TabIndex = 17;
             this.lblProdProveedor.Text = "Proveedor:";
             // 
@@ -428,16 +452,18 @@ namespace CapaPresentacion
             // 
             this.cboProdProveedor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboProdProveedor.Enabled = false;
-            this.cboProdProveedor.Location = new System.Drawing.Point(90, 325);
+            this.cboProdProveedor.Location = new System.Drawing.Point(68, 264);
+            this.cboProdProveedor.Margin = new System.Windows.Forms.Padding(2);
             this.cboProdProveedor.Name = "cboProdProveedor";
-            this.cboProdProveedor.Size = new System.Drawing.Size(210, 24);
+            this.cboProdProveedor.Size = new System.Drawing.Size(158, 21);
             this.cboProdProveedor.TabIndex = 18;
             // 
             // btnProdNuevo
             // 
-            this.btnProdNuevo.Location = new System.Drawing.Point(5, 335);
+            this.btnProdNuevo.Location = new System.Drawing.Point(4, 291);
+            this.btnProdNuevo.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdNuevo.Name = "btnProdNuevo";
-            this.btnProdNuevo.Size = new System.Drawing.Size(70, 26);
+            this.btnProdNuevo.Size = new System.Drawing.Size(52, 21);
             this.btnProdNuevo.TabIndex = 19;
             this.btnProdNuevo.Text = "Nuevo";
             this.btnProdNuevo.Click += new System.EventHandler(this.btnProdNuevo_Click);
@@ -445,9 +471,10 @@ namespace CapaPresentacion
             // btnProdEditar
             // 
             this.btnProdEditar.Enabled = false;
-            this.btnProdEditar.Location = new System.Drawing.Point(82, 335);
+            this.btnProdEditar.Location = new System.Drawing.Point(62, 291);
+            this.btnProdEditar.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdEditar.Name = "btnProdEditar";
-            this.btnProdEditar.Size = new System.Drawing.Size(70, 26);
+            this.btnProdEditar.Size = new System.Drawing.Size(52, 21);
             this.btnProdEditar.TabIndex = 20;
             this.btnProdEditar.Text = "Editar";
             this.btnProdEditar.Click += new System.EventHandler(this.btnProdEditar_Click);
@@ -455,9 +482,10 @@ namespace CapaPresentacion
             // btnProdGuardar
             // 
             this.btnProdGuardar.Enabled = false;
-            this.btnProdGuardar.Location = new System.Drawing.Point(5, 368);
+            this.btnProdGuardar.Location = new System.Drawing.Point(4, 318);
+            this.btnProdGuardar.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdGuardar.Name = "btnProdGuardar";
-            this.btnProdGuardar.Size = new System.Drawing.Size(70, 26);
+            this.btnProdGuardar.Size = new System.Drawing.Size(52, 21);
             this.btnProdGuardar.TabIndex = 21;
             this.btnProdGuardar.Text = "Guardar";
             this.btnProdGuardar.Click += new System.EventHandler(this.btnProdGuardar_Click);
@@ -465,9 +493,10 @@ namespace CapaPresentacion
             // btnProdCancelar
             // 
             this.btnProdCancelar.Enabled = false;
-            this.btnProdCancelar.Location = new System.Drawing.Point(82, 368);
+            this.btnProdCancelar.Location = new System.Drawing.Point(62, 318);
+            this.btnProdCancelar.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdCancelar.Name = "btnProdCancelar";
-            this.btnProdCancelar.Size = new System.Drawing.Size(70, 26);
+            this.btnProdCancelar.Size = new System.Drawing.Size(52, 21);
             this.btnProdCancelar.TabIndex = 22;
             this.btnProdCancelar.Text = "Cancelar";
             this.btnProdCancelar.Click += new System.EventHandler(this.btnProdCancelar_Click);
@@ -475,9 +504,10 @@ namespace CapaPresentacion
             // btnProdBaja
             // 
             this.btnProdBaja.Enabled = false;
-            this.btnProdBaja.Location = new System.Drawing.Point(160, 335);
+            this.btnProdBaja.Location = new System.Drawing.Point(120, 291);
+            this.btnProdBaja.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdBaja.Name = "btnProdBaja";
-            this.btnProdBaja.Size = new System.Drawing.Size(70, 26);
+            this.btnProdBaja.Size = new System.Drawing.Size(52, 21);
             this.btnProdBaja.TabIndex = 23;
             this.btnProdBaja.Text = "Dar Baja";
             this.btnProdBaja.Click += new System.EventHandler(this.btnProdBaja_Click);
@@ -489,42 +519,47 @@ namespace CapaPresentacion
             this.pnlProdFiltro.Controls.Add(this.btnProdFiltrar);
             this.pnlProdFiltro.Controls.Add(this.btnProdTodos);
             this.pnlProdFiltro.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlProdFiltro.Location = new System.Drawing.Point(3, 3);
+            this.pnlProdFiltro.Location = new System.Drawing.Point(2, 2);
+            this.pnlProdFiltro.Margin = new System.Windows.Forms.Padding(2);
             this.pnlProdFiltro.Name = "pnlProdFiltro";
-            this.pnlProdFiltro.Size = new System.Drawing.Size(1086, 40);
+            this.pnlProdFiltro.Size = new System.Drawing.Size(813, 32);
             this.pnlProdFiltro.TabIndex = 1;
             // 
             // lblProdFiltro
             // 
             this.lblProdFiltro.AutoSize = true;
-            this.lblProdFiltro.Location = new System.Drawing.Point(5, 10);
+            this.lblProdFiltro.Location = new System.Drawing.Point(4, 8);
+            this.lblProdFiltro.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProdFiltro.Name = "lblProdFiltro";
-            this.lblProdFiltro.Size = new System.Drawing.Size(69, 16);
+            this.lblProdFiltro.Size = new System.Drawing.Size(57, 13);
             this.lblProdFiltro.TabIndex = 0;
             this.lblProdFiltro.Text = "Categoría:";
             // 
             // cboProdCategoria
             // 
             this.cboProdCategoria.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboProdCategoria.Location = new System.Drawing.Point(70, 7);
+            this.cboProdCategoria.Location = new System.Drawing.Point(52, 6);
+            this.cboProdCategoria.Margin = new System.Windows.Forms.Padding(2);
             this.cboProdCategoria.Name = "cboProdCategoria";
-            this.cboProdCategoria.Size = new System.Drawing.Size(160, 24);
+            this.cboProdCategoria.Size = new System.Drawing.Size(121, 21);
             this.cboProdCategoria.TabIndex = 1;
             // 
             // btnProdFiltrar
             // 
-            this.btnProdFiltrar.Location = new System.Drawing.Point(240, 6);
+            this.btnProdFiltrar.Location = new System.Drawing.Point(180, 5);
+            this.btnProdFiltrar.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdFiltrar.Name = "btnProdFiltrar";
-            this.btnProdFiltrar.Size = new System.Drawing.Size(70, 26);
+            this.btnProdFiltrar.Size = new System.Drawing.Size(52, 21);
             this.btnProdFiltrar.TabIndex = 2;
             this.btnProdFiltrar.Text = "Filtrar";
             this.btnProdFiltrar.Click += new System.EventHandler(this.btnProdFiltrar_Click);
             // 
             // btnProdTodos
             // 
-            this.btnProdTodos.Location = new System.Drawing.Point(318, 6);
+            this.btnProdTodos.Location = new System.Drawing.Point(238, 5);
+            this.btnProdTodos.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdTodos.Name = "btnProdTodos";
-            this.btnProdTodos.Size = new System.Drawing.Size(70, 26);
+            this.btnProdTodos.Size = new System.Drawing.Size(52, 21);
             this.btnProdTodos.TabIndex = 3;
             this.btnProdTodos.Text = "Todos";
             this.btnProdTodos.Click += new System.EventHandler(this.btnProdTodos_Click);
@@ -533,17 +568,19 @@ namespace CapaPresentacion
             // 
             this.tabEquipo.Controls.Add(this.splitEquipo);
             this.tabEquipo.Controls.Add(this.pnlEqFiltro);
-            this.tabEquipo.Location = new System.Drawing.Point(4, 25);
+            this.tabEquipo.Location = new System.Drawing.Point(4, 22);
+            this.tabEquipo.Margin = new System.Windows.Forms.Padding(2);
             this.tabEquipo.Name = "tabEquipo";
-            this.tabEquipo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEquipo.Size = new System.Drawing.Size(1092, 621);
+            this.tabEquipo.Padding = new System.Windows.Forms.Padding(2);
+            this.tabEquipo.Size = new System.Drawing.Size(817, 502);
             this.tabEquipo.TabIndex = 1;
             this.tabEquipo.Text = "Equipo";
             // 
             // splitEquipo
             // 
             this.splitEquipo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitEquipo.Location = new System.Drawing.Point(3, 43);
+            this.splitEquipo.Location = new System.Drawing.Point(2, 34);
+            this.splitEquipo.Margin = new System.Windows.Forms.Padding(2);
             this.splitEquipo.Name = "splitEquipo";
             // 
             // splitEquipo.Panel1
@@ -553,8 +590,9 @@ namespace CapaPresentacion
             // splitEquipo.Panel2
             // 
             this.splitEquipo.Panel2.Controls.Add(this.pnlEqForm);
-            this.splitEquipo.Size = new System.Drawing.Size(1086, 575);
-            this.splitEquipo.SplitterDistance = 876;
+            this.splitEquipo.Size = new System.Drawing.Size(813, 466);
+            this.splitEquipo.SplitterDistance = 655;
+            this.splitEquipo.SplitterWidth = 3;
             this.splitEquipo.TabIndex = 0;
             // 
             // dgvEquipo
@@ -563,12 +601,13 @@ namespace CapaPresentacion
             this.dgvEquipo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEquipo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvEquipo.Location = new System.Drawing.Point(0, 0);
+            this.dgvEquipo.Margin = new System.Windows.Forms.Padding(2);
             this.dgvEquipo.MultiSelect = false;
             this.dgvEquipo.Name = "dgvEquipo";
             this.dgvEquipo.ReadOnly = true;
             this.dgvEquipo.RowHeadersWidth = 51;
             this.dgvEquipo.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvEquipo.Size = new System.Drawing.Size(876, 575);
+            this.dgvEquipo.Size = new System.Drawing.Size(655, 466);
             this.dgvEquipo.TabIndex = 0;
             this.dgvEquipo.SelectionChanged += new System.EventHandler(this.dgvEquipo_SelectionChanged);
             // 
@@ -594,43 +633,48 @@ namespace CapaPresentacion
             this.pnlEqForm.Controls.Add(this.btnEqBaja);
             this.pnlEqForm.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlEqForm.Location = new System.Drawing.Point(0, 0);
+            this.pnlEqForm.Margin = new System.Windows.Forms.Padding(2);
             this.pnlEqForm.Name = "pnlEqForm";
-            this.pnlEqForm.Size = new System.Drawing.Size(206, 575);
+            this.pnlEqForm.Size = new System.Drawing.Size(155, 466);
             this.pnlEqForm.TabIndex = 0;
             // 
             // lblEqTitulo
             // 
             this.lblEqTitulo.AutoSize = true;
             this.lblEqTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold);
-            this.lblEqTitulo.Location = new System.Drawing.Point(5, 5);
+            this.lblEqTitulo.Location = new System.Drawing.Point(4, 4);
+            this.lblEqTitulo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblEqTitulo.Name = "lblEqTitulo";
-            this.lblEqTitulo.Size = new System.Drawing.Size(77, 24);
+            this.lblEqTitulo.Size = new System.Drawing.Size(60, 18);
             this.lblEqTitulo.TabIndex = 0;
             this.lblEqTitulo.Text = "Equipo";
             // 
             // lblEqNombre
             // 
             this.lblEqNombre.AutoSize = true;
-            this.lblEqNombre.Location = new System.Drawing.Point(5, 40);
+            this.lblEqNombre.Location = new System.Drawing.Point(4, 32);
+            this.lblEqNombre.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblEqNombre.Name = "lblEqNombre";
-            this.lblEqNombre.Size = new System.Drawing.Size(59, 16);
+            this.lblEqNombre.Size = new System.Drawing.Size(47, 13);
             this.lblEqNombre.TabIndex = 1;
             this.lblEqNombre.Text = "Nombre:";
             // 
             // txtEqNombre
             // 
-            this.txtEqNombre.Location = new System.Drawing.Point(90, 37);
+            this.txtEqNombre.Location = new System.Drawing.Point(68, 30);
+            this.txtEqNombre.Margin = new System.Windows.Forms.Padding(2);
             this.txtEqNombre.Name = "txtEqNombre";
             this.txtEqNombre.ReadOnly = true;
-            this.txtEqNombre.Size = new System.Drawing.Size(200, 22);
+            this.txtEqNombre.Size = new System.Drawing.Size(151, 20);
             this.txtEqNombre.TabIndex = 2;
             // 
             // lblEqCat
             // 
             this.lblEqCat.AutoSize = true;
-            this.lblEqCat.Location = new System.Drawing.Point(5, 72);
+            this.lblEqCat.Location = new System.Drawing.Point(4, 58);
+            this.lblEqCat.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblEqCat.Name = "lblEqCat";
-            this.lblEqCat.Size = new System.Drawing.Size(69, 16);
+            this.lblEqCat.Size = new System.Drawing.Size(57, 13);
             this.lblEqCat.TabIndex = 3;
             this.lblEqCat.Text = "Categoría:";
             // 
@@ -638,17 +682,19 @@ namespace CapaPresentacion
             // 
             this.cboEqCat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboEqCat.Enabled = false;
-            this.cboEqCat.Location = new System.Drawing.Point(90, 69);
+            this.cboEqCat.Location = new System.Drawing.Point(68, 56);
+            this.cboEqCat.Margin = new System.Windows.Forms.Padding(2);
             this.cboEqCat.Name = "cboEqCat";
-            this.cboEqCat.Size = new System.Drawing.Size(180, 24);
+            this.cboEqCat.Size = new System.Drawing.Size(136, 21);
             this.cboEqCat.TabIndex = 4;
             // 
             // lblEqEstado
             // 
             this.lblEqEstado.AutoSize = true;
-            this.lblEqEstado.Location = new System.Drawing.Point(5, 104);
+            this.lblEqEstado.Location = new System.Drawing.Point(4, 84);
+            this.lblEqEstado.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblEqEstado.Name = "lblEqEstado";
-            this.lblEqEstado.Size = new System.Drawing.Size(53, 16);
+            this.lblEqEstado.Size = new System.Drawing.Size(43, 13);
             this.lblEqEstado.TabIndex = 5;
             this.lblEqEstado.Text = "Estado:";
             // 
@@ -660,18 +706,20 @@ namespace CapaPresentacion
             "BUENO",
             "DAÑADO",
             "BAJA"});
-            this.cboEqEstado.Location = new System.Drawing.Point(90, 101);
+            this.cboEqEstado.Location = new System.Drawing.Point(68, 82);
+            this.cboEqEstado.Margin = new System.Windows.Forms.Padding(2);
             this.cboEqEstado.Name = "cboEqEstado";
-            this.cboEqEstado.Size = new System.Drawing.Size(120, 24);
+            this.cboEqEstado.Size = new System.Drawing.Size(91, 21);
             this.cboEqEstado.TabIndex = 6;
             // 
             // chkEqFecha
             // 
             this.chkEqFecha.AutoSize = true;
             this.chkEqFecha.Enabled = false;
-            this.chkEqFecha.Location = new System.Drawing.Point(5, 136);
+            this.chkEqFecha.Location = new System.Drawing.Point(4, 110);
+            this.chkEqFecha.Margin = new System.Windows.Forms.Padding(2);
             this.chkEqFecha.Name = "chkEqFecha";
-            this.chkEqFecha.Size = new System.Drawing.Size(102, 20);
+            this.chkEqFecha.Size = new System.Drawing.Size(83, 17);
             this.chkEqFecha.TabIndex = 7;
             this.chkEqFecha.Text = "Adquisición:";
             this.chkEqFecha.CheckedChanged += new System.EventHandler(this.chkEqFecha_CheckedChanged);
@@ -679,42 +727,47 @@ namespace CapaPresentacion
             // lblEqFecha
             // 
             this.lblEqFecha.AutoSize = true;
-            this.lblEqFecha.Location = new System.Drawing.Point(5, 136);
+            this.lblEqFecha.Location = new System.Drawing.Point(4, 110);
+            this.lblEqFecha.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblEqFecha.Name = "lblEqFecha";
-            this.lblEqFecha.Size = new System.Drawing.Size(0, 16);
+            this.lblEqFecha.Size = new System.Drawing.Size(0, 13);
             this.lblEqFecha.TabIndex = 8;
             // 
             // dtpEqFecha
             // 
             this.dtpEqFecha.Enabled = false;
-            this.dtpEqFecha.Location = new System.Drawing.Point(90, 133);
+            this.dtpEqFecha.Location = new System.Drawing.Point(68, 108);
+            this.dtpEqFecha.Margin = new System.Windows.Forms.Padding(2);
             this.dtpEqFecha.Name = "dtpEqFecha";
-            this.dtpEqFecha.Size = new System.Drawing.Size(140, 22);
+            this.dtpEqFecha.Size = new System.Drawing.Size(106, 20);
             this.dtpEqFecha.TabIndex = 9;
             // 
             // lblEqObs
             // 
             this.lblEqObs.AutoSize = true;
-            this.lblEqObs.Location = new System.Drawing.Point(5, 168);
+            this.lblEqObs.Location = new System.Drawing.Point(4, 136);
+            this.lblEqObs.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblEqObs.Name = "lblEqObs";
-            this.lblEqObs.Size = new System.Drawing.Size(102, 16);
+            this.lblEqObs.Size = new System.Drawing.Size(81, 13);
             this.lblEqObs.TabIndex = 10;
             this.lblEqObs.Text = "Observaciones:";
             // 
             // txtEqObs
             // 
-            this.txtEqObs.Location = new System.Drawing.Point(5, 188);
+            this.txtEqObs.Location = new System.Drawing.Point(4, 153);
+            this.txtEqObs.Margin = new System.Windows.Forms.Padding(2);
             this.txtEqObs.Multiline = true;
             this.txtEqObs.Name = "txtEqObs";
             this.txtEqObs.ReadOnly = true;
-            this.txtEqObs.Size = new System.Drawing.Size(290, 60);
+            this.txtEqObs.Size = new System.Drawing.Size(218, 50);
             this.txtEqObs.TabIndex = 11;
             // 
             // btnEqNuevo
             // 
-            this.btnEqNuevo.Location = new System.Drawing.Point(5, 260);
+            this.btnEqNuevo.Location = new System.Drawing.Point(4, 211);
+            this.btnEqNuevo.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqNuevo.Name = "btnEqNuevo";
-            this.btnEqNuevo.Size = new System.Drawing.Size(70, 26);
+            this.btnEqNuevo.Size = new System.Drawing.Size(52, 21);
             this.btnEqNuevo.TabIndex = 12;
             this.btnEqNuevo.Text = "Nuevo";
             this.btnEqNuevo.Click += new System.EventHandler(this.btnEqNuevo_Click);
@@ -722,9 +775,10 @@ namespace CapaPresentacion
             // btnEqEditar
             // 
             this.btnEqEditar.Enabled = false;
-            this.btnEqEditar.Location = new System.Drawing.Point(82, 260);
+            this.btnEqEditar.Location = new System.Drawing.Point(62, 211);
+            this.btnEqEditar.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqEditar.Name = "btnEqEditar";
-            this.btnEqEditar.Size = new System.Drawing.Size(70, 26);
+            this.btnEqEditar.Size = new System.Drawing.Size(52, 21);
             this.btnEqEditar.TabIndex = 13;
             this.btnEqEditar.Text = "Editar";
             this.btnEqEditar.Click += new System.EventHandler(this.btnEqEditar_Click);
@@ -732,9 +786,10 @@ namespace CapaPresentacion
             // btnEqGuardar
             // 
             this.btnEqGuardar.Enabled = false;
-            this.btnEqGuardar.Location = new System.Drawing.Point(5, 293);
+            this.btnEqGuardar.Location = new System.Drawing.Point(4, 238);
+            this.btnEqGuardar.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqGuardar.Name = "btnEqGuardar";
-            this.btnEqGuardar.Size = new System.Drawing.Size(70, 26);
+            this.btnEqGuardar.Size = new System.Drawing.Size(52, 21);
             this.btnEqGuardar.TabIndex = 14;
             this.btnEqGuardar.Text = "Guardar";
             this.btnEqGuardar.Click += new System.EventHandler(this.btnEqGuardar_Click);
@@ -742,9 +797,10 @@ namespace CapaPresentacion
             // btnEqCancelar
             // 
             this.btnEqCancelar.Enabled = false;
-            this.btnEqCancelar.Location = new System.Drawing.Point(82, 293);
+            this.btnEqCancelar.Location = new System.Drawing.Point(62, 238);
+            this.btnEqCancelar.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqCancelar.Name = "btnEqCancelar";
-            this.btnEqCancelar.Size = new System.Drawing.Size(70, 26);
+            this.btnEqCancelar.Size = new System.Drawing.Size(52, 21);
             this.btnEqCancelar.TabIndex = 15;
             this.btnEqCancelar.Text = "Cancelar";
             this.btnEqCancelar.Click += new System.EventHandler(this.btnEqCancelar_Click);
@@ -752,9 +808,10 @@ namespace CapaPresentacion
             // btnEqBaja
             // 
             this.btnEqBaja.Enabled = false;
-            this.btnEqBaja.Location = new System.Drawing.Point(160, 260);
+            this.btnEqBaja.Location = new System.Drawing.Point(120, 211);
+            this.btnEqBaja.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqBaja.Name = "btnEqBaja";
-            this.btnEqBaja.Size = new System.Drawing.Size(70, 26);
+            this.btnEqBaja.Size = new System.Drawing.Size(52, 21);
             this.btnEqBaja.TabIndex = 16;
             this.btnEqBaja.Text = "Dar Baja";
             this.btnEqBaja.Click += new System.EventHandler(this.btnEqBaja_Click);
@@ -766,17 +823,19 @@ namespace CapaPresentacion
             this.pnlEqFiltro.Controls.Add(this.btnEqFiltrar);
             this.pnlEqFiltro.Controls.Add(this.btnEqTodos);
             this.pnlEqFiltro.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlEqFiltro.Location = new System.Drawing.Point(3, 3);
+            this.pnlEqFiltro.Location = new System.Drawing.Point(2, 2);
+            this.pnlEqFiltro.Margin = new System.Windows.Forms.Padding(2);
             this.pnlEqFiltro.Name = "pnlEqFiltro";
-            this.pnlEqFiltro.Size = new System.Drawing.Size(1086, 40);
+            this.pnlEqFiltro.Size = new System.Drawing.Size(813, 32);
             this.pnlEqFiltro.TabIndex = 1;
             // 
             // lblEqFiltroEstado
             // 
             this.lblEqFiltroEstado.AutoSize = true;
-            this.lblEqFiltroEstado.Location = new System.Drawing.Point(5, 10);
+            this.lblEqFiltroEstado.Location = new System.Drawing.Point(4, 8);
+            this.lblEqFiltroEstado.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblEqFiltroEstado.Name = "lblEqFiltroEstado";
-            this.lblEqFiltroEstado.Size = new System.Drawing.Size(53, 16);
+            this.lblEqFiltroEstado.Size = new System.Drawing.Size(43, 13);
             this.lblEqFiltroEstado.TabIndex = 0;
             this.lblEqFiltroEstado.Text = "Estado:";
             // 
@@ -787,25 +846,28 @@ namespace CapaPresentacion
             "BUENO",
             "DAÑADO",
             "BAJA"});
-            this.cboEqFiltroEstado.Location = new System.Drawing.Point(60, 7);
+            this.cboEqFiltroEstado.Location = new System.Drawing.Point(45, 6);
+            this.cboEqFiltroEstado.Margin = new System.Windows.Forms.Padding(2);
             this.cboEqFiltroEstado.Name = "cboEqFiltroEstado";
-            this.cboEqFiltroEstado.Size = new System.Drawing.Size(120, 24);
+            this.cboEqFiltroEstado.Size = new System.Drawing.Size(91, 21);
             this.cboEqFiltroEstado.TabIndex = 1;
             // 
             // btnEqFiltrar
             // 
-            this.btnEqFiltrar.Location = new System.Drawing.Point(190, 6);
+            this.btnEqFiltrar.Location = new System.Drawing.Point(142, 5);
+            this.btnEqFiltrar.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqFiltrar.Name = "btnEqFiltrar";
-            this.btnEqFiltrar.Size = new System.Drawing.Size(70, 26);
+            this.btnEqFiltrar.Size = new System.Drawing.Size(52, 21);
             this.btnEqFiltrar.TabIndex = 2;
             this.btnEqFiltrar.Text = "Filtrar";
             this.btnEqFiltrar.Click += new System.EventHandler(this.btnEqFiltrar_Click);
             // 
             // btnEqTodos
             // 
-            this.btnEqTodos.Location = new System.Drawing.Point(268, 6);
+            this.btnEqTodos.Location = new System.Drawing.Point(201, 5);
+            this.btnEqTodos.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqTodos.Name = "btnEqTodos";
-            this.btnEqTodos.Size = new System.Drawing.Size(70, 26);
+            this.btnEqTodos.Size = new System.Drawing.Size(52, 21);
             this.btnEqTodos.TabIndex = 3;
             this.btnEqTodos.Text = "Todos";
             this.btnEqTodos.Click += new System.EventHandler(this.btnEqTodos_Click);
@@ -813,10 +875,11 @@ namespace CapaPresentacion
             // tabMovimientos
             // 
             this.tabMovimientos.Controls.Add(this.pnlMovForm);
-            this.tabMovimientos.Location = new System.Drawing.Point(4, 25);
+            this.tabMovimientos.Location = new System.Drawing.Point(4, 22);
+            this.tabMovimientos.Margin = new System.Windows.Forms.Padding(2);
             this.tabMovimientos.Name = "tabMovimientos";
-            this.tabMovimientos.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMovimientos.Size = new System.Drawing.Size(1092, 621);
+            this.tabMovimientos.Padding = new System.Windows.Forms.Padding(2);
+            this.tabMovimientos.Size = new System.Drawing.Size(817, 502);
             this.tabMovimientos.TabIndex = 2;
             this.tabMovimientos.Text = "Movimientos";
             // 
@@ -843,43 +906,48 @@ namespace CapaPresentacion
             this.pnlMovForm.Controls.Add(this.btnMovRegistrar);
             this.pnlMovForm.Controls.Add(this.btnMovLimpiar);
             this.pnlMovForm.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMovForm.Location = new System.Drawing.Point(3, 3);
+            this.pnlMovForm.Location = new System.Drawing.Point(2, 2);
+            this.pnlMovForm.Margin = new System.Windows.Forms.Padding(2);
             this.pnlMovForm.Name = "pnlMovForm";
-            this.pnlMovForm.Size = new System.Drawing.Size(1086, 615);
+            this.pnlMovForm.Size = new System.Drawing.Size(813, 498);
             this.pnlMovForm.TabIndex = 0;
             // 
             // lblMovTitulo
             // 
             this.lblMovTitulo.AutoSize = true;
             this.lblMovTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold);
-            this.lblMovTitulo.Location = new System.Drawing.Point(10, 10);
+            this.lblMovTitulo.Location = new System.Drawing.Point(8, 8);
+            this.lblMovTitulo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMovTitulo.Name = "lblMovTitulo";
-            this.lblMovTitulo.Size = new System.Drawing.Size(206, 24);
+            this.lblMovTitulo.Size = new System.Drawing.Size(169, 18);
             this.lblMovTitulo.TabIndex = 0;
             this.lblMovTitulo.Text = "Registrar Movimiento";
             // 
             // lblMovCodigo
             // 
             this.lblMovCodigo.AutoSize = true;
-            this.lblMovCodigo.Location = new System.Drawing.Point(10, 50);
+            this.lblMovCodigo.Location = new System.Drawing.Point(8, 41);
+            this.lblMovCodigo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMovCodigo.Name = "lblMovCodigo";
-            this.lblMovCodigo.Size = new System.Drawing.Size(54, 16);
+            this.lblMovCodigo.Size = new System.Drawing.Size(43, 13);
             this.lblMovCodigo.TabIndex = 1;
             this.lblMovCodigo.Text = "Código:";
             // 
             // txtMovCodigo
             // 
-            this.txtMovCodigo.Location = new System.Drawing.Point(110, 47);
+            this.txtMovCodigo.Location = new System.Drawing.Point(82, 38);
+            this.txtMovCodigo.Margin = new System.Windows.Forms.Padding(2);
             this.txtMovCodigo.Name = "txtMovCodigo";
-            this.txtMovCodigo.Size = new System.Drawing.Size(180, 22);
+            this.txtMovCodigo.Size = new System.Drawing.Size(136, 20);
             this.txtMovCodigo.TabIndex = 2;
             this.txtMovCodigo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMovCodigo_KeyDown);
             // 
             // btnMovBuscar
             // 
-            this.btnMovBuscar.Location = new System.Drawing.Point(298, 46);
+            this.btnMovBuscar.Location = new System.Drawing.Point(224, 37);
+            this.btnMovBuscar.Margin = new System.Windows.Forms.Padding(2);
             this.btnMovBuscar.Name = "btnMovBuscar";
-            this.btnMovBuscar.Size = new System.Drawing.Size(70, 26);
+            this.btnMovBuscar.Size = new System.Drawing.Size(52, 21);
             this.btnMovBuscar.TabIndex = 3;
             this.btnMovBuscar.Text = "Buscar";
             this.btnMovBuscar.Click += new System.EventHandler(this.btnMovBuscar_Click);
@@ -887,50 +955,56 @@ namespace CapaPresentacion
             // lblMovProducto
             // 
             this.lblMovProducto.AutoSize = true;
-            this.lblMovProducto.Location = new System.Drawing.Point(10, 85);
+            this.lblMovProducto.Location = new System.Drawing.Point(8, 69);
+            this.lblMovProducto.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMovProducto.Name = "lblMovProducto";
-            this.lblMovProducto.Size = new System.Drawing.Size(64, 16);
+            this.lblMovProducto.Size = new System.Drawing.Size(53, 13);
             this.lblMovProducto.TabIndex = 4;
             this.lblMovProducto.Text = "Producto:";
             // 
             // txtMovProducto
             // 
-            this.txtMovProducto.Location = new System.Drawing.Point(110, 82);
+            this.txtMovProducto.Location = new System.Drawing.Point(82, 67);
+            this.txtMovProducto.Margin = new System.Windows.Forms.Padding(2);
             this.txtMovProducto.Name = "txtMovProducto";
             this.txtMovProducto.ReadOnly = true;
-            this.txtMovProducto.Size = new System.Drawing.Size(300, 22);
+            this.txtMovProducto.Size = new System.Drawing.Size(226, 20);
             this.txtMovProducto.TabIndex = 5;
             // 
             // lblMovStock
             // 
             this.lblMovStock.AutoSize = true;
-            this.lblMovStock.Location = new System.Drawing.Point(10, 118);
+            this.lblMovStock.Location = new System.Drawing.Point(8, 96);
+            this.lblMovStock.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMovStock.Name = "lblMovStock";
-            this.lblMovStock.Size = new System.Drawing.Size(83, 16);
+            this.lblMovStock.Size = new System.Drawing.Size(70, 13);
             this.lblMovStock.TabIndex = 6;
             this.lblMovStock.Text = "Stock actual:";
             // 
             // txtMovStock
             // 
-            this.txtMovStock.Location = new System.Drawing.Point(110, 115);
+            this.txtMovStock.Location = new System.Drawing.Point(82, 93);
+            this.txtMovStock.Margin = new System.Windows.Forms.Padding(2);
             this.txtMovStock.Name = "txtMovStock";
             this.txtMovStock.ReadOnly = true;
-            this.txtMovStock.Size = new System.Drawing.Size(80, 22);
+            this.txtMovStock.Size = new System.Drawing.Size(61, 20);
             this.txtMovStock.TabIndex = 7;
             // 
             // lblMovAlerta
             // 
             this.lblMovAlerta.AutoSize = true;
             this.lblMovAlerta.ForeColor = System.Drawing.Color.Red;
-            this.lblMovAlerta.Location = new System.Drawing.Point(200, 118);
+            this.lblMovAlerta.Location = new System.Drawing.Point(150, 96);
+            this.lblMovAlerta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMovAlerta.Name = "lblMovAlerta";
-            this.lblMovAlerta.Size = new System.Drawing.Size(0, 16);
+            this.lblMovAlerta.Size = new System.Drawing.Size(0, 13);
             this.lblMovAlerta.TabIndex = 8;
             this.lblMovAlerta.Visible = false;
             // 
             // picMovAlerta
             // 
-            this.picMovAlerta.Location = new System.Drawing.Point(110, 140);
+            this.picMovAlerta.Location = new System.Drawing.Point(82, 114);
+            this.picMovAlerta.Margin = new System.Windows.Forms.Padding(2);
             this.picMovAlerta.Name = "picMovAlerta";
             this.picMovAlerta.Size = new System.Drawing.Size(0, 0);
             this.picMovAlerta.TabIndex = 9;
@@ -939,9 +1013,10 @@ namespace CapaPresentacion
             // lblMovTipo
             // 
             this.lblMovTipo.AutoSize = true;
-            this.lblMovTipo.Location = new System.Drawing.Point(10, 150);
+            this.lblMovTipo.Location = new System.Drawing.Point(8, 122);
+            this.lblMovTipo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMovTipo.Name = "lblMovTipo";
-            this.lblMovTipo.Size = new System.Drawing.Size(38, 16);
+            this.lblMovTipo.Size = new System.Drawing.Size(31, 13);
             this.lblMovTipo.TabIndex = 10;
             this.lblMovTipo.Text = "Tipo:";
             // 
@@ -949,9 +1024,10 @@ namespace CapaPresentacion
             // 
             this.rbMovEntrada.AutoSize = true;
             this.rbMovEntrada.Checked = true;
-            this.rbMovEntrada.Location = new System.Drawing.Point(110, 148);
+            this.rbMovEntrada.Location = new System.Drawing.Point(82, 120);
+            this.rbMovEntrada.Margin = new System.Windows.Forms.Padding(2);
             this.rbMovEntrada.Name = "rbMovEntrada";
-            this.rbMovEntrada.Size = new System.Drawing.Size(75, 20);
+            this.rbMovEntrada.Size = new System.Drawing.Size(62, 17);
             this.rbMovEntrada.TabIndex = 11;
             this.rbMovEntrada.TabStop = true;
             this.rbMovEntrada.Text = "Entrada";
@@ -959,24 +1035,27 @@ namespace CapaPresentacion
             // rbMovSalida
             // 
             this.rbMovSalida.AutoSize = true;
-            this.rbMovSalida.Location = new System.Drawing.Point(185, 148);
+            this.rbMovSalida.Location = new System.Drawing.Point(139, 120);
+            this.rbMovSalida.Margin = new System.Windows.Forms.Padding(2);
             this.rbMovSalida.Name = "rbMovSalida";
-            this.rbMovSalida.Size = new System.Drawing.Size(67, 20);
+            this.rbMovSalida.Size = new System.Drawing.Size(54, 17);
             this.rbMovSalida.TabIndex = 12;
             this.rbMovSalida.Text = "Salida";
             // 
             // lblMovCantidad
             // 
             this.lblMovCantidad.AutoSize = true;
-            this.lblMovCantidad.Location = new System.Drawing.Point(10, 183);
+            this.lblMovCantidad.Location = new System.Drawing.Point(8, 149);
+            this.lblMovCantidad.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMovCantidad.Name = "lblMovCantidad";
-            this.lblMovCantidad.Size = new System.Drawing.Size(64, 16);
+            this.lblMovCantidad.Size = new System.Drawing.Size(52, 13);
             this.lblMovCantidad.TabIndex = 13;
             this.lblMovCantidad.Text = "Cantidad:";
             // 
             // numMovCantidad
             // 
-            this.numMovCantidad.Location = new System.Drawing.Point(110, 180);
+            this.numMovCantidad.Location = new System.Drawing.Point(82, 146);
+            this.numMovCantidad.Margin = new System.Windows.Forms.Padding(2);
             this.numMovCantidad.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -988,7 +1067,7 @@ namespace CapaPresentacion
             0,
             0});
             this.numMovCantidad.Name = "numMovCantidad";
-            this.numMovCantidad.Size = new System.Drawing.Size(80, 22);
+            this.numMovCantidad.Size = new System.Drawing.Size(60, 20);
             this.numMovCantidad.TabIndex = 14;
             this.numMovCantidad.Value = new decimal(new int[] {
             1,
@@ -999,33 +1078,37 @@ namespace CapaPresentacion
             // lblMovMotivo
             // 
             this.lblMovMotivo.AutoSize = true;
-            this.lblMovMotivo.Location = new System.Drawing.Point(10, 215);
+            this.lblMovMotivo.Location = new System.Drawing.Point(8, 175);
+            this.lblMovMotivo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMovMotivo.Name = "lblMovMotivo";
-            this.lblMovMotivo.Size = new System.Drawing.Size(50, 16);
+            this.lblMovMotivo.Size = new System.Drawing.Size(42, 13);
             this.lblMovMotivo.TabIndex = 15;
             this.lblMovMotivo.Text = "Motivo:";
             // 
             // txtMovMotivo
             // 
-            this.txtMovMotivo.Location = new System.Drawing.Point(110, 212);
+            this.txtMovMotivo.Location = new System.Drawing.Point(82, 172);
+            this.txtMovMotivo.Margin = new System.Windows.Forms.Padding(2);
             this.txtMovMotivo.Name = "txtMovMotivo";
-            this.txtMovMotivo.Size = new System.Drawing.Size(300, 22);
+            this.txtMovMotivo.Size = new System.Drawing.Size(226, 20);
             this.txtMovMotivo.TabIndex = 16;
             // 
             // btnMovRegistrar
             // 
-            this.btnMovRegistrar.Location = new System.Drawing.Point(110, 248);
+            this.btnMovRegistrar.Location = new System.Drawing.Point(82, 202);
+            this.btnMovRegistrar.Margin = new System.Windows.Forms.Padding(2);
             this.btnMovRegistrar.Name = "btnMovRegistrar";
-            this.btnMovRegistrar.Size = new System.Drawing.Size(90, 28);
+            this.btnMovRegistrar.Size = new System.Drawing.Size(68, 23);
             this.btnMovRegistrar.TabIndex = 17;
             this.btnMovRegistrar.Text = "Registrar";
             this.btnMovRegistrar.Click += new System.EventHandler(this.btnMovRegistrar_Click);
             // 
             // btnMovLimpiar
             // 
-            this.btnMovLimpiar.Location = new System.Drawing.Point(208, 248);
+            this.btnMovLimpiar.Location = new System.Drawing.Point(156, 202);
+            this.btnMovLimpiar.Margin = new System.Windows.Forms.Padding(2);
             this.btnMovLimpiar.Name = "btnMovLimpiar";
-            this.btnMovLimpiar.Size = new System.Drawing.Size(90, 28);
+            this.btnMovLimpiar.Size = new System.Drawing.Size(68, 23);
             this.btnMovLimpiar.TabIndex = 18;
             this.btnMovLimpiar.Text = "Limpiar";
             this.btnMovLimpiar.Click += new System.EventHandler(this.btnMovLimpiar_Click);
@@ -1034,10 +1117,11 @@ namespace CapaPresentacion
             // 
             this.tabHistorial.Controls.Add(this.dgvHistorial);
             this.tabHistorial.Controls.Add(this.pnlHistFiltro);
-            this.tabHistorial.Location = new System.Drawing.Point(4, 25);
+            this.tabHistorial.Location = new System.Drawing.Point(4, 22);
+            this.tabHistorial.Margin = new System.Windows.Forms.Padding(2);
             this.tabHistorial.Name = "tabHistorial";
-            this.tabHistorial.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHistorial.Size = new System.Drawing.Size(1092, 621);
+            this.tabHistorial.Padding = new System.Windows.Forms.Padding(2);
+            this.tabHistorial.Size = new System.Drawing.Size(817, 502);
             this.tabHistorial.TabIndex = 3;
             this.tabHistorial.Text = "Historial";
             // 
@@ -1046,11 +1130,12 @@ namespace CapaPresentacion
             this.dgvHistorial.AllowUserToAddRows = false;
             this.dgvHistorial.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvHistorial.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvHistorial.Location = new System.Drawing.Point(3, 48);
+            this.dgvHistorial.Location = new System.Drawing.Point(2, 39);
+            this.dgvHistorial.Margin = new System.Windows.Forms.Padding(2);
             this.dgvHistorial.Name = "dgvHistorial";
             this.dgvHistorial.ReadOnly = true;
             this.dgvHistorial.RowHeadersWidth = 51;
-            this.dgvHistorial.Size = new System.Drawing.Size(1086, 570);
+            this.dgvHistorial.Size = new System.Drawing.Size(813, 461);
             this.dgvHistorial.TabIndex = 0;
             // 
             // pnlHistFiltro
@@ -1064,74 +1149,83 @@ namespace CapaPresentacion
             this.pnlHistFiltro.Controls.Add(this.btnHistBuscar);
             this.pnlHistFiltro.Controls.Add(this.btnHistTodos);
             this.pnlHistFiltro.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHistFiltro.Location = new System.Drawing.Point(3, 3);
+            this.pnlHistFiltro.Location = new System.Drawing.Point(2, 2);
+            this.pnlHistFiltro.Margin = new System.Windows.Forms.Padding(2);
             this.pnlHistFiltro.Name = "pnlHistFiltro";
-            this.pnlHistFiltro.Size = new System.Drawing.Size(1086, 45);
+            this.pnlHistFiltro.Size = new System.Drawing.Size(813, 37);
             this.pnlHistFiltro.TabIndex = 1;
             // 
             // lblHistDesde
             // 
             this.lblHistDesde.AutoSize = true;
-            this.lblHistDesde.Location = new System.Drawing.Point(5, 12);
+            this.lblHistDesde.Location = new System.Drawing.Point(4, 10);
+            this.lblHistDesde.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblHistDesde.Name = "lblHistDesde";
-            this.lblHistDesde.Size = new System.Drawing.Size(51, 16);
+            this.lblHistDesde.Size = new System.Drawing.Size(41, 13);
             this.lblHistDesde.TabIndex = 0;
             this.lblHistDesde.Text = "Desde:";
             // 
             // dtpHistDesde
             // 
-            this.dtpHistDesde.Location = new System.Drawing.Point(55, 9);
+            this.dtpHistDesde.Location = new System.Drawing.Point(41, 7);
+            this.dtpHistDesde.Margin = new System.Windows.Forms.Padding(2);
             this.dtpHistDesde.Name = "dtpHistDesde";
-            this.dtpHistDesde.Size = new System.Drawing.Size(120, 22);
+            this.dtpHistDesde.Size = new System.Drawing.Size(91, 20);
             this.dtpHistDesde.TabIndex = 1;
             // 
             // lblHistHasta
             // 
             this.lblHistHasta.AutoSize = true;
-            this.lblHistHasta.Location = new System.Drawing.Point(185, 12);
+            this.lblHistHasta.Location = new System.Drawing.Point(139, 10);
+            this.lblHistHasta.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblHistHasta.Name = "lblHistHasta";
-            this.lblHistHasta.Size = new System.Drawing.Size(46, 16);
+            this.lblHistHasta.Size = new System.Drawing.Size(38, 13);
             this.lblHistHasta.TabIndex = 2;
             this.lblHistHasta.Text = "Hasta:";
             // 
             // dtpHistHasta
             // 
-            this.dtpHistHasta.Location = new System.Drawing.Point(230, 9);
+            this.dtpHistHasta.Location = new System.Drawing.Point(172, 7);
+            this.dtpHistHasta.Margin = new System.Windows.Forms.Padding(2);
             this.dtpHistHasta.Name = "dtpHistHasta";
-            this.dtpHistHasta.Size = new System.Drawing.Size(120, 22);
+            this.dtpHistHasta.Size = new System.Drawing.Size(91, 20);
             this.dtpHistHasta.TabIndex = 3;
             // 
             // lblHistProd
             // 
             this.lblHistProd.AutoSize = true;
-            this.lblHistProd.Location = new System.Drawing.Point(360, 12);
+            this.lblHistProd.Location = new System.Drawing.Point(270, 10);
+            this.lblHistProd.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblHistProd.Name = "lblHistProd";
-            this.lblHistProd.Size = new System.Drawing.Size(64, 16);
+            this.lblHistProd.Size = new System.Drawing.Size(53, 13);
             this.lblHistProd.TabIndex = 4;
             this.lblHistProd.Text = "Producto:";
             // 
             // cboHistProd
             // 
             this.cboHistProd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboHistProd.Location = new System.Drawing.Point(420, 9);
+            this.cboHistProd.Location = new System.Drawing.Point(315, 7);
+            this.cboHistProd.Margin = new System.Windows.Forms.Padding(2);
             this.cboHistProd.Name = "cboHistProd";
-            this.cboHistProd.Size = new System.Drawing.Size(160, 24);
+            this.cboHistProd.Size = new System.Drawing.Size(121, 21);
             this.cboHistProd.TabIndex = 5;
             // 
             // btnHistBuscar
             // 
-            this.btnHistBuscar.Location = new System.Drawing.Point(590, 8);
+            this.btnHistBuscar.Location = new System.Drawing.Point(442, 6);
+            this.btnHistBuscar.Margin = new System.Windows.Forms.Padding(2);
             this.btnHistBuscar.Name = "btnHistBuscar";
-            this.btnHistBuscar.Size = new System.Drawing.Size(70, 26);
+            this.btnHistBuscar.Size = new System.Drawing.Size(52, 21);
             this.btnHistBuscar.TabIndex = 6;
             this.btnHistBuscar.Text = "Buscar";
             this.btnHistBuscar.Click += new System.EventHandler(this.btnHistBuscar_Click);
             // 
             // btnHistTodos
             // 
-            this.btnHistTodos.Location = new System.Drawing.Point(668, 8);
+            this.btnHistTodos.Location = new System.Drawing.Point(501, 6);
+            this.btnHistTodos.Margin = new System.Windows.Forms.Padding(2);
             this.btnHistTodos.Name = "btnHistTodos";
-            this.btnHistTodos.Size = new System.Drawing.Size(70, 26);
+            this.btnHistTodos.Size = new System.Drawing.Size(52, 21);
             this.btnHistTodos.TabIndex = 7;
             this.btnHistTodos.Text = "Todos";
             this.btnHistTodos.Click += new System.EventHandler(this.btnHistTodos_Click);
@@ -1140,10 +1234,11 @@ namespace CapaPresentacion
             // 
             this.tabDefectos.Controls.Add(this.dgvDefectos);
             this.tabDefectos.Controls.Add(this.pnlDefForm);
-            this.tabDefectos.Location = new System.Drawing.Point(4, 25);
+            this.tabDefectos.Location = new System.Drawing.Point(4, 22);
+            this.tabDefectos.Margin = new System.Windows.Forms.Padding(2);
             this.tabDefectos.Name = "tabDefectos";
-            this.tabDefectos.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDefectos.Size = new System.Drawing.Size(1092, 621);
+            this.tabDefectos.Padding = new System.Windows.Forms.Padding(2);
+            this.tabDefectos.Size = new System.Drawing.Size(817, 502);
             this.tabDefectos.TabIndex = 4;
             this.tabDefectos.Text = "Defectos";
             // 
@@ -1152,11 +1247,12 @@ namespace CapaPresentacion
             this.dgvDefectos.AllowUserToAddRows = false;
             this.dgvDefectos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvDefectos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvDefectos.Location = new System.Drawing.Point(3, 133);
+            this.dgvDefectos.Location = new System.Drawing.Point(2, 108);
+            this.dgvDefectos.Margin = new System.Windows.Forms.Padding(2);
             this.dgvDefectos.Name = "dgvDefectos";
             this.dgvDefectos.ReadOnly = true;
             this.dgvDefectos.RowHeadersWidth = 51;
-            this.dgvDefectos.Size = new System.Drawing.Size(1086, 485);
+            this.dgvDefectos.Size = new System.Drawing.Size(813, 392);
             this.dgvDefectos.TabIndex = 0;
             // 
             // pnlDefForm
@@ -1174,66 +1270,74 @@ namespace CapaPresentacion
             this.pnlDefForm.Controls.Add(this.cboDefFiltro);
             this.pnlDefForm.Controls.Add(this.btnDefFiltrar);
             this.pnlDefForm.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlDefForm.Location = new System.Drawing.Point(3, 3);
+            this.pnlDefForm.Location = new System.Drawing.Point(2, 2);
+            this.pnlDefForm.Margin = new System.Windows.Forms.Padding(2);
             this.pnlDefForm.Name = "pnlDefForm";
-            this.pnlDefForm.Size = new System.Drawing.Size(1086, 130);
+            this.pnlDefForm.Size = new System.Drawing.Size(813, 106);
             this.pnlDefForm.TabIndex = 1;
             // 
             // lblDefTitulo
             // 
             this.lblDefTitulo.AutoSize = true;
             this.lblDefTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.lblDefTitulo.Location = new System.Drawing.Point(5, 5);
+            this.lblDefTitulo.Location = new System.Drawing.Point(4, 4);
+            this.lblDefTitulo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDefTitulo.Name = "lblDefTitulo";
-            this.lblDefTitulo.Size = new System.Drawing.Size(159, 20);
+            this.lblDefTitulo.Size = new System.Drawing.Size(136, 17);
             this.lblDefTitulo.TabIndex = 0;
             this.lblDefTitulo.Text = "Registrar Defecto";
             // 
             // lblDefProd
             // 
             this.lblDefProd.AutoSize = true;
-            this.lblDefProd.Location = new System.Drawing.Point(5, 35);
+            this.lblDefProd.Location = new System.Drawing.Point(4, 28);
+            this.lblDefProd.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDefProd.Name = "lblDefProd";
-            this.lblDefProd.Size = new System.Drawing.Size(64, 16);
+            this.lblDefProd.Size = new System.Drawing.Size(53, 13);
             this.lblDefProd.TabIndex = 1;
             this.lblDefProd.Text = "Producto:";
             // 
             // cboDefProd
             // 
             this.cboDefProd.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboDefProd.Location = new System.Drawing.Point(90, 32);
+            this.cboDefProd.Location = new System.Drawing.Point(68, 26);
+            this.cboDefProd.Margin = new System.Windows.Forms.Padding(2);
             this.cboDefProd.Name = "cboDefProd";
-            this.cboDefProd.Size = new System.Drawing.Size(200, 24);
+            this.cboDefProd.Size = new System.Drawing.Size(151, 21);
             this.cboDefProd.TabIndex = 2;
             // 
             // lblDefDesc
             // 
             this.lblDefDesc.AutoSize = true;
-            this.lblDefDesc.Location = new System.Drawing.Point(5, 65);
+            this.lblDefDesc.Location = new System.Drawing.Point(4, 53);
+            this.lblDefDesc.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDefDesc.Name = "lblDefDesc";
-            this.lblDefDesc.Size = new System.Drawing.Size(82, 16);
+            this.lblDefDesc.Size = new System.Drawing.Size(66, 13);
             this.lblDefDesc.TabIndex = 3;
             this.lblDefDesc.Text = "Descripción:";
             // 
             // txtDefDesc
             // 
-            this.txtDefDesc.Location = new System.Drawing.Point(90, 62);
+            this.txtDefDesc.Location = new System.Drawing.Point(68, 50);
+            this.txtDefDesc.Margin = new System.Windows.Forms.Padding(2);
             this.txtDefDesc.Name = "txtDefDesc";
-            this.txtDefDesc.Size = new System.Drawing.Size(300, 22);
+            this.txtDefDesc.Size = new System.Drawing.Size(226, 20);
             this.txtDefDesc.TabIndex = 4;
             // 
             // lblDefCant
             // 
             this.lblDefCant.AutoSize = true;
-            this.lblDefCant.Location = new System.Drawing.Point(5, 95);
+            this.lblDefCant.Location = new System.Drawing.Point(4, 77);
+            this.lblDefCant.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDefCant.Name = "lblDefCant";
-            this.lblDefCant.Size = new System.Drawing.Size(64, 16);
+            this.lblDefCant.Size = new System.Drawing.Size(52, 13);
             this.lblDefCant.TabIndex = 5;
             this.lblDefCant.Text = "Cantidad:";
             // 
             // numDefCant
             // 
-            this.numDefCant.Location = new System.Drawing.Point(90, 92);
+            this.numDefCant.Location = new System.Drawing.Point(68, 75);
+            this.numDefCant.Margin = new System.Windows.Forms.Padding(2);
             this.numDefCant.Maximum = new decimal(new int[] {
             9999,
             0,
@@ -1245,7 +1349,7 @@ namespace CapaPresentacion
             0,
             0});
             this.numDefCant.Name = "numDefCant";
-            this.numDefCant.Size = new System.Drawing.Size(70, 22);
+            this.numDefCant.Size = new System.Drawing.Size(52, 20);
             this.numDefCant.TabIndex = 6;
             this.numDefCant.Value = new decimal(new int[] {
             1,
@@ -1255,18 +1359,20 @@ namespace CapaPresentacion
             // 
             // btnDefRegistrar
             // 
-            this.btnDefRegistrar.Location = new System.Drawing.Point(170, 91);
+            this.btnDefRegistrar.Location = new System.Drawing.Point(128, 74);
+            this.btnDefRegistrar.Margin = new System.Windows.Forms.Padding(2);
             this.btnDefRegistrar.Name = "btnDefRegistrar";
-            this.btnDefRegistrar.Size = new System.Drawing.Size(80, 26);
+            this.btnDefRegistrar.Size = new System.Drawing.Size(60, 21);
             this.btnDefRegistrar.TabIndex = 7;
             this.btnDefRegistrar.Text = "Registrar";
             this.btnDefRegistrar.Click += new System.EventHandler(this.btnDefRegistrar_Click);
             // 
             // btnDefLimpiar
             // 
-            this.btnDefLimpiar.Location = new System.Drawing.Point(258, 91);
+            this.btnDefLimpiar.Location = new System.Drawing.Point(194, 74);
+            this.btnDefLimpiar.Margin = new System.Windows.Forms.Padding(2);
             this.btnDefLimpiar.Name = "btnDefLimpiar";
-            this.btnDefLimpiar.Size = new System.Drawing.Size(80, 26);
+            this.btnDefLimpiar.Size = new System.Drawing.Size(60, 21);
             this.btnDefLimpiar.TabIndex = 8;
             this.btnDefLimpiar.Text = "Limpiar";
             this.btnDefLimpiar.Click += new System.EventHandler(this.btnDefLimpiar_Click);
@@ -1274,25 +1380,28 @@ namespace CapaPresentacion
             // lblDefFiltro
             // 
             this.lblDefFiltro.AutoSize = true;
-            this.lblDefFiltro.Location = new System.Drawing.Point(350, 35);
+            this.lblDefFiltro.Location = new System.Drawing.Point(262, 28);
+            this.lblDefFiltro.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDefFiltro.Name = "lblDefFiltro";
-            this.lblDefFiltro.Size = new System.Drawing.Size(110, 16);
+            this.lblDefFiltro.Size = new System.Drawing.Size(89, 13);
             this.lblDefFiltro.TabIndex = 9;
             this.lblDefFiltro.Text = "Ver por producto:";
             // 
             // cboDefFiltro
             // 
             this.cboDefFiltro.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboDefFiltro.Location = new System.Drawing.Point(470, 32);
+            this.cboDefFiltro.Location = new System.Drawing.Point(352, 26);
+            this.cboDefFiltro.Margin = new System.Windows.Forms.Padding(2);
             this.cboDefFiltro.Name = "cboDefFiltro";
-            this.cboDefFiltro.Size = new System.Drawing.Size(180, 24);
+            this.cboDefFiltro.Size = new System.Drawing.Size(136, 21);
             this.cboDefFiltro.TabIndex = 10;
             // 
             // btnDefFiltrar
             // 
-            this.btnDefFiltrar.Location = new System.Drawing.Point(658, 31);
+            this.btnDefFiltrar.Location = new System.Drawing.Point(494, 25);
+            this.btnDefFiltrar.Margin = new System.Windows.Forms.Padding(2);
             this.btnDefFiltrar.Name = "btnDefFiltrar";
-            this.btnDefFiltrar.Size = new System.Drawing.Size(70, 26);
+            this.btnDefFiltrar.Size = new System.Drawing.Size(52, 21);
             this.btnDefFiltrar.TabIndex = 11;
             this.btnDefFiltrar.Text = "Filtrar";
             this.btnDefFiltrar.Click += new System.EventHandler(this.btnDefFiltrar_Click);
@@ -1301,10 +1410,11 @@ namespace CapaPresentacion
             // 
             this.tabAlertas.Controls.Add(this.dgvAlertas);
             this.tabAlertas.Controls.Add(this.pnlAlertasBotones);
-            this.tabAlertas.Location = new System.Drawing.Point(4, 25);
+            this.tabAlertas.Location = new System.Drawing.Point(4, 22);
+            this.tabAlertas.Margin = new System.Windows.Forms.Padding(2);
             this.tabAlertas.Name = "tabAlertas";
-            this.tabAlertas.Padding = new System.Windows.Forms.Padding(3);
-            this.tabAlertas.Size = new System.Drawing.Size(1092, 621);
+            this.tabAlertas.Padding = new System.Windows.Forms.Padding(2);
+            this.tabAlertas.Size = new System.Drawing.Size(817, 502);
             this.tabAlertas.TabIndex = 5;
             this.tabAlertas.Text = "Alertas";
             // 
@@ -1313,11 +1423,12 @@ namespace CapaPresentacion
             this.dgvAlertas.AllowUserToAddRows = false;
             this.dgvAlertas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvAlertas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvAlertas.Location = new System.Drawing.Point(3, 43);
+            this.dgvAlertas.Location = new System.Drawing.Point(2, 34);
+            this.dgvAlertas.Margin = new System.Windows.Forms.Padding(2);
             this.dgvAlertas.Name = "dgvAlertas";
             this.dgvAlertas.ReadOnly = true;
             this.dgvAlertas.RowHeadersWidth = 51;
-            this.dgvAlertas.Size = new System.Drawing.Size(1086, 575);
+            this.dgvAlertas.Size = new System.Drawing.Size(813, 466);
             this.dgvAlertas.TabIndex = 0;
             // 
             // pnlAlertasBotones
@@ -1326,45 +1437,49 @@ namespace CapaPresentacion
             this.pnlAlertasBotones.Controls.Add(this.btnAlertaRefrescar);
             this.pnlAlertasBotones.Controls.Add(this.btnAlertaAtender);
             this.pnlAlertasBotones.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlAlertasBotones.Location = new System.Drawing.Point(3, 3);
+            this.pnlAlertasBotones.Location = new System.Drawing.Point(2, 2);
+            this.pnlAlertasBotones.Margin = new System.Windows.Forms.Padding(2);
             this.pnlAlertasBotones.Name = "pnlAlertasBotones";
-            this.pnlAlertasBotones.Size = new System.Drawing.Size(1086, 40);
+            this.pnlAlertasBotones.Size = new System.Drawing.Size(813, 32);
             this.pnlAlertasBotones.TabIndex = 1;
             // 
             // lblAlertaContador
             // 
             this.lblAlertaContador.AutoSize = true;
-            this.lblAlertaContador.Location = new System.Drawing.Point(5, 12);
+            this.lblAlertaContador.Location = new System.Drawing.Point(4, 10);
+            this.lblAlertaContador.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblAlertaContador.Name = "lblAlertaContador";
-            this.lblAlertaContador.Size = new System.Drawing.Size(132, 16);
+            this.lblAlertaContador.Size = new System.Drawing.Size(106, 13);
             this.lblAlertaContador.TabIndex = 0;
             this.lblAlertaContador.Text = "Alertas pendientes: 0";
             // 
             // btnAlertaRefrescar
             // 
-            this.btnAlertaRefrescar.Location = new System.Drawing.Point(200, 8);
+            this.btnAlertaRefrescar.Location = new System.Drawing.Point(150, 6);
+            this.btnAlertaRefrescar.Margin = new System.Windows.Forms.Padding(2);
             this.btnAlertaRefrescar.Name = "btnAlertaRefrescar";
-            this.btnAlertaRefrescar.Size = new System.Drawing.Size(80, 26);
+            this.btnAlertaRefrescar.Size = new System.Drawing.Size(60, 21);
             this.btnAlertaRefrescar.TabIndex = 1;
             this.btnAlertaRefrescar.Text = "Refrescar";
             this.btnAlertaRefrescar.Click += new System.EventHandler(this.btnAlertaRefrescar_Click);
             // 
             // btnAlertaAtender
             // 
-            this.btnAlertaAtender.Location = new System.Drawing.Point(288, 8);
+            this.btnAlertaAtender.Location = new System.Drawing.Point(216, 6);
+            this.btnAlertaAtender.Margin = new System.Windows.Forms.Padding(2);
             this.btnAlertaAtender.Name = "btnAlertaAtender";
-            this.btnAlertaAtender.Size = new System.Drawing.Size(80, 26);
+            this.btnAlertaAtender.Size = new System.Drawing.Size(60, 21);
             this.btnAlertaAtender.TabIndex = 2;
             this.btnAlertaAtender.Text = "Atendida";
             this.btnAlertaAtender.Click += new System.EventHandler(this.btnAlertaAtender_Click);
             // 
             // FrmInventario
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1100, 650);
+            this.ClientSize = new System.Drawing.Size(825, 528);
             this.Controls.Add(this.tabControl);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FrmInventario";
             this.Text = "Inventario";
             this.Load += new System.EventHandler(this.FrmInventario_Load);

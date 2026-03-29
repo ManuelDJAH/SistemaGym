@@ -7,6 +7,9 @@ namespace CapaDatos
 {
     public class InventarioDAO
     {
+        // ════════════════════════════════════════════════════════════
+        //  CATEGORÍAS
+        // ════════════════════════════════════════════════════════════
         public List<Categoria> ObtenerCategorias(string tipoArea = null)
         {
             var lista = new List<Categoria>();
@@ -36,6 +39,9 @@ namespace CapaDatos
             return lista;
         }
 
+        // ════════════════════════════════════════════════════════════
+        //  PRODUCTOS
+        // ════════════════════════════════════════════════════════════
         public List<Producto> ObtenerProductos(int? categoriaID = null)
         {
             var lista = new List<Producto>();
@@ -47,10 +53,10 @@ namespace CapaDatos
                            c.Nombre AS CategoriaNombre,
                            p.Precio, p.StockActual, p.StockMinimo,
                            p.FechaCaducidad, p.Activo, p.FechaRegistro,
-                           p.idproveedor, pr.nombre AS ProveedorNombre
+                           p.id_proveedor, pr.nombre AS ProveedorNombre
                     FROM   Inv_Productos p
-                    JOIN   Inv_Categorias c  ON p.CategoriaID  = c.CategoriaID
-                    LEFT JOIN Proveedores pr ON p.idproveedor  = pr.idproveedor
+                    JOIN   Inv_Categorias c  ON p.CategoriaID   = c.CategoriaID
+                    LEFT JOIN Proveedores pr ON p.id_proveedor  = pr.id_proveedor
                     WHERE  p.Activo = 1"
                     + (categoriaID.HasValue ? " AND p.CategoriaID = @CatID" : "")
                     + " ORDER BY c.Nombre, p.Nombre";
@@ -78,10 +84,10 @@ namespace CapaDatos
                            c.Nombre AS CategoriaNombre,
                            p.Precio, p.StockActual, p.StockMinimo,
                            p.FechaCaducidad, p.Activo, p.FechaRegistro,
-                           p.idproveedor, pr.nombre AS ProveedorNombre
+                           p.id_proveedor, pr.nombre AS ProveedorNombre
                     FROM   Inv_Productos p
-                    JOIN   Inv_Categorias c  ON p.CategoriaID = c.CategoriaID
-                    LEFT JOIN Proveedores pr ON p.idproveedor = pr.idproveedor
+                    JOIN   Inv_Categorias c  ON p.CategoriaID  = c.CategoriaID
+                    LEFT JOIN Proveedores pr ON p.id_proveedor = pr.id_proveedor
                     WHERE  p.Codigo = @Codigo";
 
                 using (var cmd = new SqlCommand(sql, con))
@@ -93,6 +99,7 @@ namespace CapaDatos
             }
             return null;
         }
+
         public int InsertarProducto(Producto p)
         {
             using (var con = Conexion.ObtenerConexion())
@@ -100,10 +107,12 @@ namespace CapaDatos
                 con.Open();
                 string sql = @"
                     INSERT INTO Inv_Productos
-                        (Codigo, Nombre, CategoriaID, Precio, StockActual, StockMinimo, FechaCaducidad)
+                        (Codigo, Nombre, CategoriaID, Precio, StockActual, StockMinimo,
+                         FechaCaducidad, id_proveedor)
                     OUTPUT INSERTED.ProductoID
                     VALUES
-                        (@Codigo, @Nombre, @CatID, @Precio, @Stock, @StockMin, @Caducidad)";
+                        (@Codigo, @Nombre, @CatID, @Precio, @Stock, @StockMin,
+                         @Caducidad, @IdProveedor)";
 
                 using (var cmd = new SqlCommand(sql, con))
                 {
@@ -115,11 +124,14 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("@StockMin", p.StockMinimo);
                     cmd.Parameters.AddWithValue("@Caducidad",
                         p.FechaCaducidad.HasValue ? (object)p.FechaCaducidad.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@IdProveedor",
+                        p.IdProveedor > 0 ? (object)p.IdProveedor : DBNull.Value);
 
                     return (int)cmd.ExecuteScalar();
                 }
             }
         }
+
         public bool ActualizarProducto(Producto p)
         {
             using (var con = Conexion.ObtenerConexion())
@@ -127,12 +139,13 @@ namespace CapaDatos
                 con.Open();
                 string sql = @"
                     UPDATE Inv_Productos SET
-                        Nombre        = @Nombre,
-                        CategoriaID   = @CatID,
-                        Precio        = @Precio,
-                        StockMinimo   = @StockMin,
-                        FechaCaducidad= @Caducidad
-                    WHERE ProductoID  = @ID";
+                        Nombre         = @Nombre,
+                        CategoriaID    = @CatID,
+                        Precio         = @Precio,
+                        StockMinimo    = @StockMin,
+                        FechaCaducidad = @Caducidad,
+                        id_proveedor   = @IdProveedor
+                    WHERE ProductoID   = @ID";
 
                 using (var cmd = new SqlCommand(sql, con))
                 {
@@ -142,12 +155,15 @@ namespace CapaDatos
                     cmd.Parameters.AddWithValue("@StockMin", p.StockMinimo);
                     cmd.Parameters.AddWithValue("@Caducidad",
                         p.FechaCaducidad.HasValue ? (object)p.FechaCaducidad.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@IdProveedor",
+                        p.IdProveedor > 0 ? (object)p.IdProveedor : DBNull.Value);
                     cmd.Parameters.AddWithValue("@ID", p.ProductoID);
 
                     return cmd.ExecuteNonQuery() > 0;
                 }
             }
         }
+
         public bool EliminarProducto(int productoID)
         {
             using (var con = Conexion.ObtenerConexion())
@@ -161,8 +177,10 @@ namespace CapaDatos
                 }
             }
         }
-        //  EQUIPO
 
+        // ════════════════════════════════════════════════════════════
+        //  EQUIPO
+        // ════════════════════════════════════════════════════════════
         public List<Equipo> ObtenerEquipos(string estado = null)
         {
             var lista = new List<Equipo>();
@@ -226,12 +244,12 @@ namespace CapaDatos
                 con.Open();
                 string sql = @"
                     UPDATE Inv_Equipo SET
-                        Nombre          = @Nombre,
-                        CategoriaID     = @CatID,
-                        Estado          = @Estado,
-                        FechaAdquisicion= @Fecha,
-                        Observaciones   = @Obs
-                    WHERE EquipoID      = @ID";
+                        Nombre           = @Nombre,
+                        CategoriaID      = @CatID,
+                        Estado           = @Estado,
+                        FechaAdquisicion = @Fecha,
+                        Observaciones    = @Obs
+                    WHERE EquipoID       = @ID";
 
                 using (var cmd = new SqlCommand(sql, con))
                 {
@@ -262,9 +280,12 @@ namespace CapaDatos
                 }
             }
         }
-        //  MOVIMIENTOS  (Entradas y Salidas)
+
+        // ════════════════════════════════════════════════════════════
+        //  MOVIMIENTOS
+        // ════════════════════════════════════════════════════════════
         public bool RegistrarMovimiento(int productoID, string tipo, int cantidad,
-                                string motivo, int usuarioID, bool esVenta = false)
+                                        string motivo, int usuarioID, bool esVenta = false)
         {
             string sp = tipo == "E" ? "sp_Inv_Entrada" : "sp_Inv_Salida";
 
@@ -273,18 +294,23 @@ namespace CapaDatos
                 con.Open();
                 using (var cmd = new SqlCommand(sp, con))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@ProductoID", productoID);
                     cmd.Parameters.AddWithValue("@Cantidad", cantidad);
                     cmd.Parameters.AddWithValue("@Motivo",
                         motivo != null ? (object)motivo : DBNull.Value);
                     cmd.Parameters.AddWithValue("@UsuarioID", usuarioID);
 
+                    // sp_Inv_Salida acepta @EsVenta para el trigger de precios
+                    if (tipo == "S")
+                        cmd.Parameters.AddWithValue("@EsVenta", esVenta ? 1 : 0);
+
                     cmd.ExecuteNonQuery();
                     return true;
                 }
             }
         }
+
         public List<Movimiento> ObtenerHistorial(int? productoID = null,
                                                   DateTime? desde = null,
                                                   DateTime? hasta = null)
@@ -301,14 +327,14 @@ namespace CapaDatos
                            m.TipoMovimiento, m.Cantidad, m.Motivo,
                            m.FechaMovimiento, m.UsuarioID,
                            u.usuario AS UsuarioNombre
-                    FROM   Inv_Movimientos  m
-                    JOIN   Inv_Productos    p ON m.ProductoID = p.ProductoID
-                    JOIN   Inv_Categorias   c ON p.CategoriaID = c.CategoriaID
-                    JOIN   UsuariosSistema  u ON m.UsuarioID   = u.id_usuario
+                    FROM   Inv_Movimientos m
+                    JOIN   Inv_Productos   p ON m.ProductoID  = p.ProductoID
+                    JOIN   Inv_Categorias  c ON p.CategoriaID = c.CategoriaID
+                    JOIN   UsuariosSistema u ON m.UsuarioID   = u.id_usuario
                     WHERE  1 = 1"
-                    + (productoID.HasValue ? " AND m.ProductoID    = @ProdID" : "")
-                    + (desde.HasValue ? " AND m.FechaMovimiento >= @Desde" : "")
-                    + (hasta.HasValue ? " AND m.FechaMovimiento <= @Hasta" : "")
+                    + (productoID.HasValue ? " AND m.ProductoID        = @ProdID" : "")
+                    + (desde.HasValue ? " AND m.FechaMovimiento  >= @Desde" : "")
+                    + (hasta.HasValue ? " AND m.FechaMovimiento  <= @Hasta" : "")
                     + " ORDER BY m.FechaMovimiento DESC";
 
                 using (var cmd = new SqlCommand(sql, con))
@@ -337,8 +363,10 @@ namespace CapaDatos
             }
             return lista;
         }
-        //  DEFECTOS
 
+        // ════════════════════════════════════════════════════════════
+        //  DEFECTOS
+        // ════════════════════════════════════════════════════════════
         public bool RegistrarDefecto(Defecto d)
         {
             using (var con = Conexion.ObtenerConexion())
@@ -375,7 +403,7 @@ namespace CapaDatos
                            d.FechaRegistro, d.UsuarioID,
                            u.usuario AS UsuarioNombre
                     FROM   Inv_Defectos    d
-                    JOIN   Inv_Productos   p ON d.ProductoID = p.ProductoID
+                    JOIN   Inv_Productos   p ON d.ProductoID  = p.ProductoID
                     JOIN   Inv_Categorias  c ON p.CategoriaID = c.CategoriaID
                     JOIN   UsuariosSistema u ON d.UsuarioID   = u.id_usuario"
                     + (productoID.HasValue ? " WHERE d.ProductoID = @ProdID" : "")
@@ -409,8 +437,6 @@ namespace CapaDatos
         // ════════════════════════════════════════════════════════════
         //  ALERTAS
         // ════════════════════════════════════════════════════════════
-
-        /// <summary>Devuelve las alertas pendientes (no atendidas).</summary>
         public List<AlertaInventario> ObtenerAlertas(bool soloNoAtendidas = true)
         {
             var lista = new List<AlertaInventario>();
@@ -443,7 +469,6 @@ namespace CapaDatos
             return lista;
         }
 
-        /// <summary>Marca una alerta como atendida.</summary>
         public bool AtenderAlerta(int alertaID)
         {
             using (var con = Conexion.ObtenerConexion())
@@ -459,9 +484,8 @@ namespace CapaDatos
         }
 
         // ════════════════════════════════════════════════════════════
-        //  MÉTODOS PRIVADOS — Mapeo de SqlDataReader a modelo
+        //  MAPEO
         // ════════════════════════════════════════════════════════════
-
         private Producto MapearProducto(SqlDataReader dr) => new Producto
         {
             ProductoID = (int)dr["ProductoID"],
@@ -475,7 +499,7 @@ namespace CapaDatos
             FechaCaducidad = dr["FechaCaducidad"] as DateTime?,
             Activo = (bool)dr["Activo"],
             FechaRegistro = (DateTime)dr["FechaRegistro"],
-            IdProveedor = dr["idproveedor"] == DBNull.Value ? 0 : (int)dr["idproveedor"],
+            IdProveedor = dr["id_proveedor"] == DBNull.Value ? 0 : (int)dr["id_proveedor"],
             ProveedorNombre = dr["ProveedorNombre"] as string
         };
 

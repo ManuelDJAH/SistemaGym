@@ -44,9 +44,10 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Bahnschrift", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(159, 44);
+            this.label1.Location = new System.Drawing.Point(119, 36);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(173, 34);
+            this.label1.Size = new System.Drawing.Size(137, 27);
             this.label1.TabIndex = 0;
             this.label1.Text = "SistemaGym";
             // 
@@ -54,9 +55,10 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Bahnschrift SemiBold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(193, 108);
+            this.label2.Location = new System.Drawing.Point(145, 88);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(96, 21);
+            this.label2.Size = new System.Drawing.Size(83, 17);
             this.label2.TabIndex = 1;
             this.label2.Text = "Bienvenido.";
             // 
@@ -68,10 +70,10 @@
             this.btnUsuarios.FlatAppearance.BorderSize = 2;
             this.btnUsuarios.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUsuarios.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnUsuarios.Location = new System.Drawing.Point(111, 281);
-            this.btnUsuarios.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnUsuarios.Location = new System.Drawing.Point(83, 228);
+            this.btnUsuarios.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnUsuarios.Name = "btnUsuarios";
-            this.btnUsuarios.Size = new System.Drawing.Size(252, 41);
+            this.btnUsuarios.Size = new System.Drawing.Size(189, 33);
             this.btnUsuarios.TabIndex = 2;
             this.btnUsuarios.Text = "&Usuarios";
             this.btnUsuarios.UseVisualStyleBackColor = false;
@@ -85,10 +87,10 @@
             this.btnAsistencia.FlatAppearance.BorderSize = 2;
             this.btnAsistencia.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAsistencia.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnAsistencia.Location = new System.Drawing.Point(111, 329);
-            this.btnAsistencia.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnAsistencia.Location = new System.Drawing.Point(83, 267);
+            this.btnAsistencia.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnAsistencia.Name = "btnAsistencia";
-            this.btnAsistencia.Size = new System.Drawing.Size(252, 41);
+            this.btnAsistencia.Size = new System.Drawing.Size(189, 33);
             this.btnAsistencia.TabIndex = 3;
             this.btnAsistencia.Text = "&Registrar asistencia";
             this.btnAsistencia.UseVisualStyleBackColor = false;
@@ -98,10 +100,10 @@
             // 
             this.label3.AutoEllipsis = true;
             this.label3.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(45, 140);
-            this.label3.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.label3.Location = new System.Drawing.Point(34, 114);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 0, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(393, 71);
+            this.label3.Size = new System.Drawing.Size(295, 58);
             this.label3.TabIndex = 5;
             this.label3.Text = "SistemaGym es un programa creado con el propósito de facilitar la gestión y opera" +
     "ción de tu gimnasio.";
@@ -111,18 +113,19 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Bahnschrift SemiBold", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(199, 244);
+            this.label4.Location = new System.Drawing.Point(149, 198);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(82, 21);
+            this.label4.Size = new System.Drawing.Size(70, 17);
             this.label4.TabIndex = 6;
             this.label4.Text = "Opciones:";
             // 
             // btnBitacora
             // 
-            this.btnBitacora.Location = new System.Drawing.Point(12, 532);
-            this.btnBitacora.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnBitacora.Location = new System.Drawing.Point(9, 432);
+            this.btnBitacora.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnBitacora.Name = "btnBitacora";
-            this.btnBitacora.Size = new System.Drawing.Size(165, 23);
+            this.btnBitacora.Size = new System.Drawing.Size(124, 19);
             this.btnBitacora.TabIndex = 7;
             this.btnBitacora.Text = "Cambios Recientes";
             this.btnBitacora.UseVisualStyleBackColor = true;
@@ -136,10 +139,10 @@
             this.btnCerrarSesion.FlatAppearance.BorderSize = 2;
             this.btnCerrarSesion.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCerrarSesion.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnCerrarSesion.Location = new System.Drawing.Point(951, 513);
-            this.btnCerrarSesion.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnCerrarSesion.Location = new System.Drawing.Point(713, 417);
+            this.btnCerrarSesion.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnCerrarSesion.Name = "btnCerrarSesion";
-            this.btnCerrarSesion.Size = new System.Drawing.Size(147, 41);
+            this.btnCerrarSesion.Size = new System.Drawing.Size(110, 33);
             this.btnCerrarSesion.TabIndex = 8;
             this.btnCerrarSesion.Text = "&Cerrar Sesion";
             this.btnCerrarSesion.UseVisualStyleBackColor = false;
@@ -153,10 +156,10 @@
             this.btnInventario.FlatAppearance.BorderSize = 2;
             this.btnInventario.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnInventario.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnInventario.Location = new System.Drawing.Point(111, 380);
-            this.btnInventario.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnInventario.Location = new System.Drawing.Point(83, 309);
+            this.btnInventario.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnInventario.Name = "btnInventario";
-            this.btnInventario.Size = new System.Drawing.Size(252, 41);
+            this.btnInventario.Size = new System.Drawing.Size(189, 33);
             this.btnInventario.TabIndex = 9;
             this.btnInventario.Text = "&Inventario";
             this.btnInventario.UseVisualStyleBackColor = false;
@@ -170,10 +173,10 @@
             this.btnProveedores.FlatAppearance.BorderSize = 2;
             this.btnProveedores.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnProveedores.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnProveedores.Location = new System.Drawing.Point(111, 430);
-            this.btnProveedores.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnProveedores.Location = new System.Drawing.Point(83, 349);
+            this.btnProveedores.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnProveedores.Name = "btnProveedores";
-            this.btnProveedores.Size = new System.Drawing.Size(252, 41);
+            this.btnProveedores.Size = new System.Drawing.Size(189, 33);
             this.btnProveedores.TabIndex = 10;
             this.btnProveedores.Text = "&Proveedores";
             this.btnProveedores.UseVisualStyleBackColor = false;
@@ -181,9 +184,9 @@
             // 
             // FrmMenuPrincipal
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1112, 567);
+            this.ClientSize = new System.Drawing.Size(834, 461);
             this.Controls.Add(this.btnProveedores);
             this.Controls.Add(this.btnInventario);
             this.Controls.Add(this.btnCerrarSesion);
@@ -194,7 +197,7 @@
             this.Controls.Add(this.btnUsuarios);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "FrmMenuPrincipal";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FrmMenuPrincipal";

@@ -86,11 +86,11 @@ namespace CapaPresentacion
             var provs = CNProveedor.Listar();
             // Agregar opcion vacia al inicio
             provs.Rows.InsertAt(provs.NewRow(), 0);
-            provs.Rows[0]["idproveedor"] = DBNull.Value;
+            provs.Rows[0]["id_proveedor"] = DBNull.Value;
             provs.Rows[0]["nombre"]      = "(Sin proveedor)";
             cboProdProveedor.DataSource    = provs;
             cboProdProveedor.DisplayMember = "nombre";
-            cboProdProveedor.ValueMember   = "idproveedor";
+            cboProdProveedor.ValueMember = "id_proveedor";
         }
 
         private void CargarCatsFiltro()
@@ -699,7 +699,7 @@ namespace CapaPresentacion
 
                 if (res == DialogResult.Yes)
                 {
-                    FrmOrdenesRestock frm = new FrmOrdenesRestock();
+                    FrmProveedores frm = new FrmProveedores();
                     frm.Show();
                 }
             }

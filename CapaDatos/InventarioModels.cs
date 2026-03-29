@@ -32,7 +32,7 @@ namespace CapaDatos
         public bool Activo { get; set; }
         public DateTime FechaRegistro { get; set; }
         public int IdProveedor { get; set; }
-        public string ProveedorNombre { get; set; }  // Solo lectura (JOIN)
+        public string ProveedorNombre { get; set; }
 
 
         // Propiedad calculada para mostrar en UI
