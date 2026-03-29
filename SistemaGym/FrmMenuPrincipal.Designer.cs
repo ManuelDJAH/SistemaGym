@@ -71,7 +71,7 @@
             this.btnUsuarios.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnUsuarios.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnUsuarios.Location = new System.Drawing.Point(83, 228);
-            this.btnUsuarios.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnUsuarios.Margin = new System.Windows.Forms.Padding(2);
             this.btnUsuarios.Name = "btnUsuarios";
             this.btnUsuarios.Size = new System.Drawing.Size(189, 33);
             this.btnUsuarios.TabIndex = 2;
@@ -88,7 +88,7 @@
             this.btnAsistencia.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAsistencia.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnAsistencia.Location = new System.Drawing.Point(83, 267);
-            this.btnAsistencia.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnAsistencia.Margin = new System.Windows.Forms.Padding(2);
             this.btnAsistencia.Name = "btnAsistencia";
             this.btnAsistencia.Size = new System.Drawing.Size(189, 33);
             this.btnAsistencia.TabIndex = 3;
@@ -123,11 +123,11 @@
             // btnBitacora
             // 
             this.btnBitacora.Location = new System.Drawing.Point(9, 432);
-            this.btnBitacora.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnBitacora.Margin = new System.Windows.Forms.Padding(2);
             this.btnBitacora.Name = "btnBitacora";
-            this.btnBitacora.Size = new System.Drawing.Size(124, 19);
+            this.btnBitacora.Size = new System.Drawing.Size(56, 19);
             this.btnBitacora.TabIndex = 7;
-            this.btnBitacora.Text = "Cambios Recientes";
+            this.btnBitacora.Text = "Admin";
             this.btnBitacora.UseVisualStyleBackColor = true;
             this.btnBitacora.Click += new System.EventHandler(this.btnBitacora_Click);
             // 
@@ -140,7 +140,7 @@
             this.btnCerrarSesion.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCerrarSesion.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnCerrarSesion.Location = new System.Drawing.Point(713, 417);
-            this.btnCerrarSesion.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnCerrarSesion.Margin = new System.Windows.Forms.Padding(2);
             this.btnCerrarSesion.Name = "btnCerrarSesion";
             this.btnCerrarSesion.Size = new System.Drawing.Size(110, 33);
             this.btnCerrarSesion.TabIndex = 8;
@@ -157,7 +157,7 @@
             this.btnInventario.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnInventario.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnInventario.Location = new System.Drawing.Point(83, 309);
-            this.btnInventario.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnInventario.Margin = new System.Windows.Forms.Padding(2);
             this.btnInventario.Name = "btnInventario";
             this.btnInventario.Size = new System.Drawing.Size(189, 33);
             this.btnInventario.TabIndex = 9;
@@ -174,7 +174,7 @@
             this.btnProveedores.Font = new System.Drawing.Font("Bahnschrift SemiLight", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnProveedores.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnProveedores.Location = new System.Drawing.Point(83, 349);
-            this.btnProveedores.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnProveedores.Margin = new System.Windows.Forms.Padding(2);
             this.btnProveedores.Name = "btnProveedores";
             this.btnProveedores.Size = new System.Drawing.Size(189, 33);
             this.btnProveedores.TabIndex = 10;
@@ -197,10 +197,10 @@
             this.Controls.Add(this.btnUsuarios);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FrmMenuPrincipal";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "FrmMenuPrincipal";
+            this.Text = "Menu Principal";
             this.Load += new System.EventHandler(this.FrmMenuPrincipal_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

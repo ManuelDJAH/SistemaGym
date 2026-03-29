@@ -63,7 +63,7 @@ namespace CapaPresentacion
 
         private void btnBitacora_Click(object sender, EventArgs e)
         {
-            FrmBitacora frm = new FrmBitacora();
+            FrmAdmin frm = new FrmAdmin();
             frm.ShowDialog();
         }
 
