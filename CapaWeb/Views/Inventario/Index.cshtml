@@ -5,15 +5,14 @@
     var categorias = ViewBag.Categorias as List<Categoria> ?? new List<Categoria>();
 }
 
-<!-- Filtros -->
+<!-- Barra superior -->
 <div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
     <div class="card-body py-3">
-        <form method="get" asp-action="Index" class="row align-items-center g-2">
-            <div class="col-auto">
-                <label class="form-label mb-0 fw-semibold">Categoría:</label>
-            </div>
-            <div class="col-auto">
-                <select name="categoriaID" class="form-select form-select-sm" onchange="this.form.submit()">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <!-- Filtro categoría -->
+            <form method="get" asp-action="Index" class="d-flex align-items-center gap-2">
+                <label class="fw-semibold small mb-0">Categoría:</label>
+                <select name="categoriaID" class="form-select form-select-sm" style="width:180px;" onchange="this.form.submit()">
                     <option value="">Todas</option>
                     @foreach (var cat in categorias)
                     {
@@ -23,22 +22,33 @@
                         </option>
                     }
                 </select>
-            </div>
-            <div class="col-auto">
-                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Ver todos</a>
-            </div>
-            <div class="col-auto ms-auto">
-                <a asp-action="Movimientos" class="btn btn-sm btn-primary me-2">
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Todos</a>
+            </form>
+
+            <div class="ms-auto d-flex gap-2 flex-wrap">
+                <button class="btn btn-sm btn-success" onclick="abrirModal('nuevo')">
+                    <i class="bi bi-plus-circle me-1"></i> Nuevo
+                </button>
+                <button class="btn btn-sm btn-primary" id="btnEditar" disabled onclick="abrirModal('editar')">
+                    <i class="bi bi-pencil me-1"></i> Editar
+                </button>
+                <button class="btn btn-sm btn-danger" id="btnBaja" disabled onclick="darBaja()">
+                    <i class="bi bi-trash me-1"></i> Dar de baja
+                </button>
+                <a asp-action="Equipo" class="btn btn-sm btn-outline-dark">
+                    <i class="bi bi-dumbbell me-1"></i> Equipo
+                </a>
+                <a asp-action="Movimientos" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-arrow-left-right me-1"></i> Movimientos
                 </a>
-                <a asp-action="Alertas" class="btn btn-sm btn-warning me-2">
+                <a asp-action="Alertas" class="btn btn-sm btn-outline-warning">
                     <i class="bi bi-bell me-1"></i> Alertas
                 </a>
-                <a asp-action="Defectos" class="btn btn-sm btn-danger">
+                <a asp-action="Defectos" class="btn btn-sm btn-outline-danger">
                     <i class="bi bi-exclamation-triangle me-1"></i> Defectos
                 </a>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -46,7 +56,7 @@
 <div class="card border-0 shadow-sm" style="border-radius:12px;">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table table-hover align-middle mb-0" id="tblProductos">
                 <thead style="background:#f8f9fa;">
                     <tr>
                         <th class="ps-4">Código</th>
@@ -63,18 +73,25 @@
                     @if (!productos.Any())
                     {
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">
-                                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
                                 No hay productos registrados.
                             </td>
                         </tr>
                     }
                     @foreach (var p in productos)
                     {
-                        <tr class="@(p.EstadoAlerta == "STOCK_BAJO" ? "table-danger" : p.EstadoAlerta == "POR_CADUCAR" ? "table-warning" : "")">
-                            <td class="ps-4">
-                                <code>@p.Codigo</code>
-                            </td>
+                        <tr class="producto-row @(p.EstadoAlerta == "STOCK_BAJO" ? "table-danger" : p.EstadoAlerta == "POR_CADUCAR" ? "table-warning" : "")"
+                            style="cursor:pointer;"
+                            data-id="@p.ProductoID"
+                            data-codigo="@p.Codigo"
+                            data-nombre="@p.Nombre"
+                            data-catid="@p.CategoriaID"
+                            data-precio="@p.Precio"
+                            data-stockmin="@p.StockMinimo"
+                            data-caducidad="@(p.FechaCaducidad?.ToString("yyyy-MM-dd") ?? "")"
+                            onclick="seleccionar(this)">
+                            <td class="ps-4"><code>@p.Codigo</code></td>
                             <td class="fw-semibold">@p.Nombre</td>
                             <td>@p.CategoriaNombre</td>
                             <td class="text-center">$@p.Precio.ToString("F2")</td>
@@ -84,22 +101,16 @@
                                 </span>
                             </td>
                             <td class="text-center text-muted">@p.StockMinimo</td>
-                            <td class="text-center text-muted">
+                            <td class="text-center text-muted small">
                                 @(p.FechaCaducidad.HasValue ? p.FechaCaducidad.Value.ToString("dd/MM/yyyy") : "—")
                             </td>
                             <td class="text-center">
                                 @if (p.EstadoAlerta == "STOCK_BAJO")
-                                {
-                                    <span class="badge bg-danger">Stock Bajo</span>
-                                }
+                                { <span class="badge bg-danger">Stock Bajo</span> }
                                 else if (p.EstadoAlerta == "POR_CADUCAR")
-                                {
-                                    <span class="badge bg-warning text-dark">Por Caducar</span>
-                                }
+                                { <span class="badge bg-warning text-dark">Por Caducar</span> }
                                 else
-                                {
-                                    <span class="badge bg-success">OK</span>
-                                }
+                                { <span class="badge bg-success">OK</span> }
                             </td>
                         </tr>
                     }
@@ -107,12 +118,180 @@
             </table>
         </div>
     </div>
+    <div class="card-footer bg-transparent text-muted small d-flex justify-content-between">
+        <span>
+            <span class="badge bg-danger me-1">●</span> Stock Bajo &nbsp;
+            <span class="badge bg-warning text-dark me-1">●</span> Por Caducar &nbsp;
+            <span class="badge bg-success me-1">●</span> OK
+        </span>
+        <span>Total: <strong>@productos.Count</strong> productos</span>
+    </div>
 </div>
 
-<!-- Leyenda -->
-<div class="mt-3 d-flex gap-3 text-muted" style="font-size:.8rem;">
-    <span><span class="badge bg-danger me-1">●</span> Stock Bajo</span>
-    <span><span class="badge bg-warning text-dark me-1">●</span> Por Caducar</span>
-    <span><span class="badge bg-success me-1">●</span> OK</span>
-    <span class="ms-auto">Total: <strong>@productos.Count</strong> productos</span>
+<!-- ══ MODAL Nuevo / Editar ════════════════════════════════════════ -->
+<div class="modal fade" id="modalProducto" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius:12px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="modalTitulo">Nuevo Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="fProductoID" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Código de barras</label>
+                    <input type="text" id="fCodigo" class="form-control" placeholder="EAN-13 o código interno" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Nombre</label>
+                    <input type="text" id="fNombre" class="form-control" placeholder="Nombre del producto" />
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold small">Categoría</label>
+                        <select id="fCategoria" class="form-select">
+                            @foreach (var cat in categorias)
+                            {
+                                <option value="@cat.CategoriaID">@cat.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold small">Precio ($)</label>
+                        <input type="number" id="fPrecio" class="form-control" min="0" step="0.01" value="0" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold small">Stock mín.</label>
+                        <input type="number" id="fStockMin" class="form-control" min="0" value="3" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="chkCaducidad"
+                               onchange="document.getElementById('fCaducidad').disabled = !this.checked" />
+                        <label class="form-check-label small" for="chkCaducidad">Tiene fecha de caducidad</label>
+                    </div>
+                    <input type="date" id="fCaducidad" class="form-control" disabled />
+                </div>
+                <div id="modalError" class="alert alert-danger d-none"></div>
+            </div>
+            <div class="modal-footer border-0">
+                <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" id="btnGuardar" onclick="guardarProducto()">
+                    <i class="bi bi-floppy me-1"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+<form style="display:none">@Html.AntiForgeryToken()</form>
+<script>
+    let productoSeleccionado = null;
+
+    function seleccionar(row) {
+        document.querySelectorAll('.producto-row').forEach(r => r.classList.remove('table-primary'));
+        row.classList.add('table-primary');
+        productoSeleccionado = row.dataset;
+        document.getElementById('btnEditar').disabled = false;
+        document.getElementById('btnBaja').disabled   = false;
+    }
+
+    function abrirModal(modo) {
+        const modal = new bootstrap.Modal(document.getElementById('modalProducto'));
+        document.getElementById('modalError').classList.add('d-none');
+
+        if (modo === 'nuevo') {
+            document.getElementById('modalTitulo').textContent = 'Nuevo Producto';
+            document.getElementById('fProductoID').value = '';
+            document.getElementById('fCodigo').value     = '';
+            document.getElementById('fNombre').value     = '';
+            document.getElementById('fPrecio').value     = '0';
+            document.getElementById('fStockMin').value   = '3';
+            document.getElementById('fCaducidad').value  = '';
+            document.getElementById('fCaducidad').disabled = true;
+            document.getElementById('chkCaducidad').checked = false;
+            document.getElementById('fCodigo').readOnly = false;
+        } else {
+            if (!productoSeleccionado) return;
+            document.getElementById('modalTitulo').textContent = 'Editar Producto';
+            document.getElementById('fProductoID').value = productoSeleccionado.id;
+            document.getElementById('fCodigo').value     = productoSeleccionado.codigo;
+            document.getElementById('fNombre').value     = productoSeleccionado.nombre;
+            document.getElementById('fCategoria').value  = productoSeleccionado.catid;
+            document.getElementById('fPrecio').value     = productoSeleccionado.precio;
+            document.getElementById('fStockMin').value   = productoSeleccionado.stockmin;
+            document.getElementById('fCodigo').readOnly  = true;
+
+            const cad = productoSeleccionado.caducidad;
+            if (cad) {
+                document.getElementById('chkCaducidad').checked   = true;
+                document.getElementById('fCaducidad').disabled    = false;
+                document.getElementById('fCaducidad').value       = cad;
+            } else {
+                document.getElementById('chkCaducidad').checked   = false;
+                document.getElementById('fCaducidad').disabled    = true;
+                document.getElementById('fCaducidad').value       = '';
+            }
+        }
+        modal.show();
+    }
+
+    function guardarProducto() {
+        const productoID = document.getElementById('fProductoID').value;
+        const esNuevo    = !productoID;
+        const caducidad  = document.getElementById('chkCaducidad').checked
+                           ? document.getElementById('fCaducidad').value : '';
+
+        const params = new URLSearchParams({
+            codigo:        document.getElementById('fCodigo').value,
+            nombre:        document.getElementById('fNombre').value,
+            categoriaID:   document.getElementById('fCategoria').value,
+            precio:        document.getElementById('fPrecio').value,
+            stockMinimo:   document.getElementById('fStockMin').value,
+            fechaCaducidad:caducidad,
+            __RequestVerificationToken: getToken()
+        });
+        if (!esNuevo) params.append('productoID', productoID);
+
+        const url = esNuevo
+            ? '@Url.Action("CrearProducto","Inventario")'
+            : '@Url.Action("ActualizarProducto","Inventario")';
+
+        fetch(url, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: params })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('modalProducto')).hide();
+                location.reload();
+            } else {
+                const err = document.getElementById('modalError');
+                err.textContent = data.mensaje;
+                err.classList.remove('d-none');
+            }
+        });
+    }
+
+    function darBaja() {
+        if (!productoSeleccionado) return;
+        if (!confirm(`¿Dar de baja "${productoSeleccionado.nombre}"? (baja lógica)`)) return;
+
+        fetch('@Url.Action("BajaProducto","Inventario")', {
+            method:'POST',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body: `productoID=${productoSeleccionado.id}&__RequestVerificationToken=${getToken()}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) location.reload();
+            else alert(data.mensaje);
+        });
+    }
+
+    function getToken() {
+        return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+    }
+</script>
+}

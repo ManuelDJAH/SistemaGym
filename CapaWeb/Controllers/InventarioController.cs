@@ -12,32 +12,79 @@ namespace CapaWeb.Controllers
         private readonly InventarioBL _bl = new InventarioBL();
 
         // ════════════════════════════════════════════════════════════
-        //  INDEX — Catálogo de Productos
+        //  PRODUCTOS — Catálogo
         // ════════════════════════════════════════════════════════════
         public IActionResult Index(int? categoriaID)
         {
-            var productos = _bl.ObtenerProductos(categoriaID);
-            var categorias = _bl.ObtenerCategoriasProducto();
-
-            ViewBag.Productos = productos;
-            ViewBag.Categorias = categorias;
+            ViewBag.Productos = _bl.ObtenerProductos(categoriaID);
+            ViewBag.Categorias = _bl.ObtenerCategoriasProducto();
             ViewBag.CategoriaActual = categoriaID;
             ViewBag.EsAdmin = SesionWeb.EsAdmin(HttpContext.Session);
             ViewData["Title"] = "Inventario — Productos";
-
             return View();
         }
 
-        // ════════════════════════════════════════════════════════════
-        //  MOVIMIENTOS
-        // ════════════════════════════════════════════════════════════
-        public IActionResult Movimientos()
+        // ── Alta ─────────────────────────────────────────────────────
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CrearProducto(string codigo, string nombre, int categoriaID,
+                                            decimal precio, int stockMinimo,
+                                            string fechaCaducidad)
         {
-            ViewData["Title"] = "Registrar Movimiento";
-            ViewBag.EsAdmin = SesionWeb.EsAdmin(HttpContext.Session);
-            return View();
+            DateTime? caducidad = null;
+            if (!string.IsNullOrEmpty(fechaCaducidad))
+                caducidad = DateTime.Parse(fechaCaducidad);
+
+            var p = new Producto
+            {
+                Codigo = codigo?.Trim(),
+                Nombre = nombre?.Trim(),
+                CategoriaID = categoriaID,
+                Precio = precio,
+                StockMinimo = stockMinimo,
+                FechaCaducidad = caducidad,
+                StockActual = 0
+            };
+
+            var (ok, msg, _) = _bl.AltaProducto(p);
+            return Json(new { ok, mensaje = msg });
         }
 
+        // ── Actualizar ───────────────────────────────────────────────
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ActualizarProducto(int productoID, string nombre, int categoriaID,
+                                                 decimal precio, int stockMinimo,
+                                                 string fechaCaducidad)
+        {
+            DateTime? caducidad = null;
+            if (!string.IsNullOrEmpty(fechaCaducidad))
+                caducidad = DateTime.Parse(fechaCaducidad);
+
+            var p = new Producto
+            {
+                ProductoID = productoID,
+                Nombre = nombre?.Trim(),
+                CategoriaID = categoriaID,
+                Precio = precio,
+                StockMinimo = stockMinimo,
+                FechaCaducidad = caducidad
+            };
+
+            var (ok, msg) = _bl.ActualizarProducto(p);
+            return Json(new { ok, mensaje = msg });
+        }
+
+        // ── Baja lógica ──────────────────────────────────────────────
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult BajaProducto(int productoID)
+        {
+            var (ok, msg) = _bl.BajaProducto(productoID);
+            return Json(new { ok, mensaje = msg });
+        }
+
+        // ── Buscar por código ────────────────────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult BuscarProducto(string codigo)
@@ -62,17 +109,90 @@ namespace CapaWeb.Controllers
             });
         }
 
+        // ════════════════════════════════════════════════════════════
+        //  EQUIPO
+        // ════════════════════════════════════════════════════════════
+        public IActionResult Equipo(string estado)
+        {
+            ViewBag.Equipos = _bl.ObtenerEquipos(string.IsNullOrEmpty(estado) ? null : estado);
+            ViewBag.Categorias = _bl.ObtenerCategoriasEquipo();
+            ViewBag.Estado = estado;
+            ViewData["Title"] = "Inventario — Equipo";
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CrearEquipo(string nombre, int categoriaID, string estadoEquipo,
+                                          string fechaAdquisicion, string observaciones)
+        {
+            DateTime? fecha = null;
+            if (!string.IsNullOrEmpty(fechaAdquisicion))
+                fecha = DateTime.Parse(fechaAdquisicion);
+
+            var e = new Equipo
+            {
+                Nombre = nombre?.Trim(),
+                CategoriaID = categoriaID,
+                Estado = estadoEquipo,
+                FechaAdquisicion = fecha,
+                Observaciones = observaciones?.Trim()
+            };
+
+            var (ok, msg, _) = _bl.AltaEquipo(e);
+            return Json(new { ok, mensaje = msg });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ActualizarEquipo(int equipoID, string nombre, int categoriaID,
+                                               string estadoEquipo, string fechaAdquisicion,
+                                               string observaciones)
+        {
+            DateTime? fecha = null;
+            if (!string.IsNullOrEmpty(fechaAdquisicion))
+                fecha = DateTime.Parse(fechaAdquisicion);
+
+            var e = new Equipo
+            {
+                EquipoID = equipoID,
+                Nombre = nombre?.Trim(),
+                CategoriaID = categoriaID,
+                Estado = estadoEquipo,
+                FechaAdquisicion = fecha,
+                Observaciones = observaciones?.Trim()
+            };
+
+            var (ok, msg) = _bl.ActualizarEquipo(e);
+            return Json(new { ok, mensaje = msg });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult BajaEquipo(int equipoID)
+        {
+            var (ok, msg) = _bl.BajaEquipo(equipoID);
+            return Json(new { ok, mensaje = msg });
+        }
+
+        // ════════════════════════════════════════════════════════════
+        //  MOVIMIENTOS
+        // ════════════════════════════════════════════════════════════
+        public IActionResult Movimientos()
+        {
+            ViewData["Title"] = "Registrar Movimiento";
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult RegistrarMovimiento(int productoID, string tipo,
                                                   int cantidad, string motivo, bool esVenta)
         {
             int usuarioID = SesionWeb.GetIdUsuario(HttpContext.Session);
-
             try
             {
                 bool ok; string msg;
-
                 if (tipo == "E")
                     (ok, msg) = _bl.RegistrarEntrada(productoID, cantidad, motivo, usuarioID);
                 else if (esVenta)
@@ -82,10 +202,7 @@ namespace CapaWeb.Controllers
 
                 return Json(new { ok, mensaje = msg });
             }
-            catch (Exception ex)
-            {
-                return Json(new { ok = false, mensaje = ex.Message });
-            }
+            catch (Exception ex) { return Json(new { ok = false, mensaje = ex.Message }); }
         }
 
         // ════════════════════════════════════════════════════════════
@@ -93,11 +210,8 @@ namespace CapaWeb.Controllers
         // ════════════════════════════════════════════════════════════
         public IActionResult Historial(int? productoID, DateTime? desde, DateTime? hasta)
         {
-            var historial = _bl.ObtenerHistorial(productoID, desde, hasta);
-            var productos = _bl.ObtenerProductos();
-
-            ViewBag.Historial = historial;
-            ViewBag.Productos = productos;
+            ViewBag.Historial = _bl.ObtenerHistorial(productoID, desde, hasta);
+            ViewBag.Productos = _bl.ObtenerProductos();
             ViewBag.ProductoActual = productoID;
             ViewBag.Desde = desde?.ToString("yyyy-MM-dd") ?? DateTime.Today.AddMonths(-1).ToString("yyyy-MM-dd");
             ViewBag.Hasta = hasta?.ToString("yyyy-MM-dd") ?? DateTime.Today.ToString("yyyy-MM-dd");
@@ -110,10 +224,8 @@ namespace CapaWeb.Controllers
         // ════════════════════════════════════════════════════════════
         public IActionResult Alertas()
         {
-            var alertas = _bl.ObtenerAlertasPendientes();
-            ViewBag.Alertas = alertas;
+            ViewBag.Alertas = _bl.ObtenerAlertasPendientes();
             ViewData["Title"] = "Alertas de Inventario";
-            ViewBag.EsAdmin = SesionWeb.EsAdmin(HttpContext.Session);
             return View();
         }
 
@@ -130,11 +242,8 @@ namespace CapaWeb.Controllers
         // ════════════════════════════════════════════════════════════
         public IActionResult Defectos(int? productoID)
         {
-            var defectos = _bl.ObtenerDefectos(productoID);
-            var productos = _bl.ObtenerProductos();
-
-            ViewBag.Defectos = defectos;
-            ViewBag.Productos = productos;
+            ViewBag.Defectos = _bl.ObtenerDefectos(productoID);
+            ViewBag.Productos = _bl.ObtenerProductos();
             ViewBag.ProductoActual = productoID;
             ViewData["Title"] = "Defectos de Productos";
             return View();
@@ -145,16 +254,14 @@ namespace CapaWeb.Controllers
         public IActionResult RegistrarDefecto(int productoID, string descripcion, int cantidadAfectada)
         {
             int usuarioID = SesionWeb.GetIdUsuario(HttpContext.Session);
-
-            var defecto = new Defecto
+            var d = new Defecto
             {
                 ProductoID = productoID,
                 Descripcion = descripcion,
                 CantidadAfectada = cantidadAfectada,
                 UsuarioID = usuarioID
             };
-
-            var (ok, msg) = _bl.RegistrarDefecto(defecto);
+            var (ok, msg) = _bl.RegistrarDefecto(d);
             return Json(new { ok, mensaje = msg });
         }
     }

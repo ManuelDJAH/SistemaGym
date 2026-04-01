@@ -1,0 +1,263 @@
+@using CapaDatos
+@{
+    ViewData["Title"] = "Inventario — Equipo";
+    var equipos    = ViewBag.Equipos    as List<Equipo>    ?? new List<Equipo>();
+    var categorias = ViewBag.Categorias as List<Categoria> ?? new List<Categoria>();
+}
+
+<!-- Barra superior -->
+<div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
+    <div class="card-body py-3">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <!-- Filtro estado -->
+            <form method="get" asp-action="Equipo" class="d-flex align-items-center gap-2">
+                <label class="fw-semibold small mb-0">Estado:</label>
+                <select name="estado" class="form-select form-select-sm" style="width:140px;" onchange="this.form.submit()">
+                    <option value="">Todos</option>
+                    <option value="BUENO"  selected="@(ViewBag.Estado == "BUENO"  ? "selected" : null)">Bueno</option>
+                    <option value="DAÑADO" selected="@(ViewBag.Estado == "DAÑADO" ? "selected" : null)">Dañado</option>
+                    <option value="BAJA"   selected="@(ViewBag.Estado == "BAJA"   ? "selected" : null)">Baja</option>
+                </select>
+                <a asp-action="Equipo" class="btn btn-sm btn-outline-secondary">Todos</a>
+            </form>
+
+            <div class="ms-auto d-flex gap-2">
+                <button class="btn btn-sm btn-success" onclick="abrirModal('nuevo')">
+                    <i class="bi bi-plus-circle me-1"></i> Nuevo
+                </button>
+                <button class="btn btn-sm btn-primary" id="btnEditar" disabled onclick="abrirModal('editar')">
+                    <i class="bi bi-pencil me-1"></i> Editar
+                </button>
+                <button class="btn btn-sm btn-danger" id="btnBaja" disabled onclick="darBaja()">
+                    <i class="bi bi-trash me-1"></i> Dar de baja
+                </button>
+                <a asp-action="Index" class="btn btn-sm btn-outline-dark">
+                    <i class="bi bi-box-seam me-1"></i> Productos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla equipo -->
+<div class="card border-0 shadow-sm" style="border-radius:12px;">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background:#f8f9fa;">
+                    <tr>
+                        <th class="ps-4">Nombre</th>
+                        <th>Categoría</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Adquisición</th>
+                        <th>Observaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!equipos.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                No hay equipo registrado.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var e in equipos)
+                    {
+                        <tr class="equipo-row @(e.Estado == "DAÑADO" ? "table-warning" : e.Estado == "BAJA" ? "table-secondary" : "")"
+                            style="cursor:pointer;"
+                            data-id="@e.EquipoID"
+                            data-nombre="@e.Nombre"
+                            data-catid="@e.CategoriaID"
+                            data-estado="@e.Estado"
+                            data-fecha="@(e.FechaAdquisicion?.ToString("yyyy-MM-dd") ?? "")"
+                            data-obs="@(e.Observaciones ?? "")"
+                            onclick="seleccionar(this)">
+                            <td class="ps-4 fw-semibold">@e.Nombre</td>
+                            <td>@e.CategoriaNombre</td>
+                            <td class="text-center">
+                                @if (e.Estado == "BUENO")
+                                { <span class="badge bg-success">Bueno</span> }
+                                else if (e.Estado == "DAÑADO")
+                                { <span class="badge bg-warning text-dark">Dañado</span> }
+                                else
+                                { <span class="badge bg-secondary">Baja</span> }
+                            </td>
+                            <td class="text-center text-muted small">
+                                @(e.FechaAdquisicion.HasValue ? e.FechaAdquisicion.Value.ToString("dd/MM/yyyy") : "—")
+                            </td>
+                            <td class="text-muted small">@(e.Observaciones ?? "—")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer bg-transparent text-muted small">
+        Total: <strong>@equipos.Count</strong> equipos
+    </div>
+</div>
+
+<!-- ══ MODAL Nuevo / Editar ════════════════════════════════════════ -->
+<div class="modal fade" id="modalEquipo" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius:12px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="modalTitulo">Nuevo Equipo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="fEquipoID" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Nombre</label>
+                    <input type="text" id="fNombre" class="form-control" placeholder="Ej: Mancuerna 5kg #1" />
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold small">Categoría</label>
+                        <select id="fCategoria" class="form-select">
+                            @foreach (var cat in categorias)
+                            {
+                                <option value="@cat.CategoriaID">@cat.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold small">Estado</label>
+                        <select id="fEstado" class="form-select">
+                            <option value="BUENO">Bueno</option>
+                            <option value="DAÑADO">Dañado</option>
+                            <option value="BAJA">Baja</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="chkFecha"
+                               onchange="document.getElementById('fFecha').disabled = !this.checked" />
+                        <label class="form-check-label small" for="chkFecha">Tiene fecha de adquisición</label>
+                    </div>
+                    <input type="date" id="fFecha" class="form-control" disabled />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Observaciones <span class="text-muted fw-normal">(opcional)</span></label>
+                    <textarea id="fObs" class="form-control" rows="2" placeholder="Notas adicionales..."></textarea>
+                </div>
+                <div id="modalError" class="alert alert-danger d-none"></div>
+            </div>
+            <div class="modal-footer border-0">
+                <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarEquipo()">
+                    <i class="bi bi-floppy me-1"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<form style="display:none">@Html.AntiForgeryToken()</form>
+<script>
+    let equipoSeleccionado = null;
+
+    function seleccionar(row) {
+        document.querySelectorAll('.equipo-row').forEach(r => r.classList.remove('table-primary'));
+        row.classList.add('table-primary');
+        equipoSeleccionado = row.dataset;
+        document.getElementById('btnEditar').disabled = false;
+        document.getElementById('btnBaja').disabled   = false;
+    }
+
+    function abrirModal(modo) {
+        const modal = new bootstrap.Modal(document.getElementById('modalEquipo'));
+        document.getElementById('modalError').classList.add('d-none');
+
+        if (modo === 'nuevo') {
+            document.getElementById('modalTitulo').textContent = 'Nuevo Equipo';
+            document.getElementById('fEquipoID').value = '';
+            document.getElementById('fNombre').value   = '';
+            document.getElementById('fEstado').value   = 'BUENO';
+            document.getElementById('fFecha').value    = '';
+            document.getElementById('fFecha').disabled = true;
+            document.getElementById('chkFecha').checked = false;
+            document.getElementById('fObs').value      = '';
+        } else {
+            if (!equipoSeleccionado) return;
+            document.getElementById('modalTitulo').textContent = 'Editar Equipo';
+            document.getElementById('fEquipoID').value  = equipoSeleccionado.id;
+            document.getElementById('fNombre').value    = equipoSeleccionado.nombre;
+            document.getElementById('fCategoria').value = equipoSeleccionado.catid;
+            document.getElementById('fEstado').value    = equipoSeleccionado.estado;
+            document.getElementById('fObs').value       = equipoSeleccionado.obs;
+
+            const fecha = equipoSeleccionado.fecha;
+            if (fecha) {
+                document.getElementById('chkFecha').checked  = true;
+                document.getElementById('fFecha').disabled   = false;
+                document.getElementById('fFecha').value      = fecha;
+            } else {
+                document.getElementById('chkFecha').checked  = false;
+                document.getElementById('fFecha').disabled   = true;
+                document.getElementById('fFecha').value      = '';
+            }
+        }
+        modal.show();
+    }
+
+    function guardarEquipo() {
+        const equipoID = document.getElementById('fEquipoID').value;
+        const esNuevo  = !equipoID;
+        const fecha    = document.getElementById('chkFecha').checked
+                         ? document.getElementById('fFecha').value : '';
+
+        const params = new URLSearchParams({
+            nombre:           document.getElementById('fNombre').value,
+            categoriaID:      document.getElementById('fCategoria').value,
+            estadoEquipo:     document.getElementById('fEstado').value,
+            fechaAdquisicion: fecha,
+            observaciones:    document.getElementById('fObs').value,
+            __RequestVerificationToken: getToken()
+        });
+        if (!esNuevo) params.append('equipoID', equipoID);
+
+        const url = esNuevo
+            ? '@Url.Action("CrearEquipo","Inventario")'
+            : '@Url.Action("ActualizarEquipo","Inventario")';
+
+        fetch(url, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: params })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('modalEquipo')).hide();
+                location.reload();
+            } else {
+                const err = document.getElementById('modalError');
+                err.textContent = data.mensaje;
+                err.classList.remove('d-none');
+            }
+        });
+    }
+
+    function darBaja() {
+        if (!equipoSeleccionado) return;
+        if (!confirm(`¿Dar de baja "${equipoSeleccionado.nombre}"?`)) return;
+
+        fetch('@Url.Action("BajaEquipo","Inventario")', {
+            method:'POST',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body: `equipoID=${equipoSeleccionado.id}&__RequestVerificationToken=${getToken()}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) location.reload();
+            else alert(data.mensaje);
+        });
+    }
+
+    function getToken() {
+        return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+    }
+</script>
+}
