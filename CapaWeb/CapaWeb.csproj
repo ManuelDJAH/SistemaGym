@@ -15,4 +15,8 @@
     <ProjectReference Include="..\ClaseNegocio\ClaseNegocio.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Inventario\" />
+  </ItemGroup>
+
 </Project>

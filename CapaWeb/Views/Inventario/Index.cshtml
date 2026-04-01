@@ -1,0 +1,118 @@
+@using CapaDatos
+@{
+    ViewData["Title"] = "Inventario — Productos";
+    var productos  = ViewBag.Productos  as List<Producto>  ?? new List<Producto>();
+    var categorias = ViewBag.Categorias as List<Categoria> ?? new List<Categoria>();
+}
+
+<!-- Filtros -->
+<div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
+    <div class="card-body py-3">
+        <form method="get" asp-action="Index" class="row align-items-center g-2">
+            <div class="col-auto">
+                <label class="form-label mb-0 fw-semibold">Categoría:</label>
+            </div>
+            <div class="col-auto">
+                <select name="categoriaID" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">Todas</option>
+                    @foreach (var cat in categorias)
+                    {
+                        <option value="@cat.CategoriaID"
+                                selected="@(ViewBag.CategoriaActual?.ToString() == cat.CategoriaID.ToString() ? "selected" : null)">
+                            @cat.Nombre
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-auto">
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Ver todos</a>
+            </div>
+            <div class="col-auto ms-auto">
+                <a asp-action="Movimientos" class="btn btn-sm btn-primary me-2">
+                    <i class="bi bi-arrow-left-right me-1"></i> Movimientos
+                </a>
+                <a asp-action="Alertas" class="btn btn-sm btn-warning me-2">
+                    <i class="bi bi-bell me-1"></i> Alertas
+                </a>
+                <a asp-action="Defectos" class="btn btn-sm btn-danger">
+                    <i class="bi bi-exclamation-triangle me-1"></i> Defectos
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla de productos -->
+<div class="card border-0 shadow-sm" style="border-radius:12px;">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background:#f8f9fa;">
+                    <tr>
+                        <th class="ps-4">Código</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th class="text-center">Precio</th>
+                        <th class="text-center">Stock</th>
+                        <th class="text-center">Mínimo</th>
+                        <th class="text-center">Caduca</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!productos.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                No hay productos registrados.
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var p in productos)
+                    {
+                        <tr class="@(p.EstadoAlerta == "STOCK_BAJO" ? "table-danger" : p.EstadoAlerta == "POR_CADUCAR" ? "table-warning" : "")">
+                            <td class="ps-4">
+                                <code>@p.Codigo</code>
+                            </td>
+                            <td class="fw-semibold">@p.Nombre</td>
+                            <td>@p.CategoriaNombre</td>
+                            <td class="text-center">$@p.Precio.ToString("F2")</td>
+                            <td class="text-center">
+                                <span class="badge @(p.StockActual <= p.StockMinimo ? "bg-danger" : "bg-success")">
+                                    @p.StockActual
+                                </span>
+                            </td>
+                            <td class="text-center text-muted">@p.StockMinimo</td>
+                            <td class="text-center text-muted">
+                                @(p.FechaCaducidad.HasValue ? p.FechaCaducidad.Value.ToString("dd/MM/yyyy") : "—")
+                            </td>
+                            <td class="text-center">
+                                @if (p.EstadoAlerta == "STOCK_BAJO")
+                                {
+                                    <span class="badge bg-danger">Stock Bajo</span>
+                                }
+                                else if (p.EstadoAlerta == "POR_CADUCAR")
+                                {
+                                    <span class="badge bg-warning text-dark">Por Caducar</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">OK</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Leyenda -->
+<div class="mt-3 d-flex gap-3 text-muted" style="font-size:.8rem;">
+    <span><span class="badge bg-danger me-1">●</span> Stock Bajo</span>
+    <span><span class="badge bg-warning text-dark me-1">●</span> Por Caducar</span>
+    <span><span class="badge bg-success me-1">●</span> OK</span>
+    <span class="ms-auto">Total: <strong>@productos.Count</strong> productos</span>
+</div>

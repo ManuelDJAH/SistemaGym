@@ -1,0 +1,212 @@
+@{
+    ViewData["Title"] = "Registrar Movimiento";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm" style="border-radius:12px;">
+            <div class="card-body p-4">
+
+                <!-- Búsqueda por código -->
+                <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem;letter-spacing:1px;">
+                    1. Buscar producto
+                </h6>
+                <div class="input-group mb-2">
+                    <input type="text" id="txtCodigo" class="form-control form-control-lg"
+                           placeholder="Código de barras — escribe o escanea"
+                           autofocus />
+                    <button class="btn btn-primary px-4" onclick="buscarProducto()">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </div>
+                <div id="alertaBusqueda" class="d-none"></div>
+
+                <!-- Info producto encontrado -->
+                <div id="panelProducto" class="d-none mt-3">
+                    <div class="p-3 rounded-3 mb-3" style="background:#f0f7ff;border:1px solid #c8e0ff;">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="fw-bold fs-6" id="lblNombre"></div>
+                                <div class="text-muted small" id="lblCategoria"></div>
+                            </div>
+                            <div class="col-auto text-end">
+                                <div class="small text-muted">Stock actual</div>
+                                <div class="fw-bold fs-4" id="lblStock"></div>
+                            </div>
+                        </div>
+                        <div id="lblAlerta" class="mt-2 d-none"></div>
+                    </div>
+
+                    <!-- Formulario movimiento -->
+                    <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem;letter-spacing:1px;">
+                        2. Registrar movimiento
+                    </h6>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tipo de movimiento</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipo"
+                                       id="rbEntrada" value="E" checked onchange="toggleVenta()" />
+                                <label class="form-check-label" for="rbEntrada">
+                                    <i class="bi bi-arrow-down-circle text-success me-1"></i> Entrada
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="tipo"
+                                       id="rbSalida" value="S" onchange="toggleVenta()" />
+                                <label class="form-check-label" for="rbSalida">
+                                    <i class="bi bi-arrow-up-circle text-danger me-1"></i> Salida
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opción venta (solo en salida) -->
+                    <div id="panelVenta" class="mb-3 d-none">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chkVenta" />
+                            <label class="form-check-label" for="chkVenta">
+                                Es una <strong>venta</strong>
+                                <span class="text-muted small">(ajusta precios: +10% este producto, -10% resto)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Cantidad</label>
+                            <input type="number" id="txtCantidad" class="form-control"
+                                   min="1" value="1" />
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold">Motivo <span class="text-muted fw-normal">(opcional)</span></label>
+                            <input type="text" id="txtMotivo" class="form-control"
+                                   placeholder="Ej: Compra, Venta, Merma..." />
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success px-4" onclick="registrarMovimiento()">
+                            <i class="bi bi-check-circle me-1"></i> Registrar
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="limpiar()">
+                            <i class="bi bi-x-circle me-1"></i> Limpiar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Resultado -->
+        <div id="panelResultado" class="mt-3 d-none"></div>
+
+        <!-- Link a historial -->
+        <div class="mt-3 text-center">
+            <a asp-action="Historial" class="text-muted small">
+                <i class="bi bi-clock-history me-1"></i>Ver historial de movimientos
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let productoID = 0;
+
+    // Enter en el campo de código dispara búsqueda (comportamiento de escáner)
+    document.getElementById('txtCodigo').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); buscarProducto(); }
+    });
+
+    function buscarProducto() {
+        const codigo = document.getElementById('txtCodigo').value.trim();
+        if (!codigo) return;
+
+        fetch('@Url.Action("BuscarProducto", "Inventario")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
+            },
+            body: `codigo=${encodeURIComponent(codigo)}&__RequestVerificationToken=${getToken()}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            const alerta = document.getElementById('alertaBusqueda');
+            if (!data.ok) {
+                alerta.className = 'alert alert-danger mt-2';
+                alerta.textContent = data.mensaje;
+                document.getElementById('panelProducto').classList.add('d-none');
+                return;
+            }
+            alerta.className = 'd-none';
+            productoID = data.productoID;
+
+            document.getElementById('lblNombre').textContent    = data.nombre;
+            document.getElementById('lblCategoria').textContent = data.categoria;
+            document.getElementById('lblStock').textContent     = data.stockActual;
+
+            const lblAlerta = document.getElementById('lblAlerta');
+            if (data.estadoAlerta === 'STOCK_BAJO') {
+                lblAlerta.className = 'mt-2 alert alert-danger py-1 small';
+                lblAlerta.textContent = `⚠ Stock bajo (mínimo: ${data.stockMinimo})`;
+                lblAlerta.classList.remove('d-none');
+            } else {
+                lblAlerta.classList.add('d-none');
+            }
+
+            document.getElementById('panelProducto').classList.remove('d-none');
+        });
+    }
+
+    function toggleVenta() {
+        const esSalida = document.getElementById('rbSalida').checked;
+        document.getElementById('panelVenta').classList.toggle('d-none', !esSalida);
+    }
+
+    function registrarMovimiento() {
+        if (!productoID) return;
+
+        const tipo      = document.querySelector('input[name="tipo"]:checked').value;
+        const cantidad  = parseInt(document.getElementById('txtCantidad').value);
+        const motivo    = document.getElementById('txtMotivo').value;
+        const esVenta   = tipo === 'S' && document.getElementById('chkVenta').checked;
+
+        if (cantidad <= 0) { alert('La cantidad debe ser mayor a cero.'); return; }
+
+        fetch('@Url.Action("RegistrarMovimiento", "Inventario")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `productoID=${productoID}&tipo=${tipo}&cantidad=${cantidad}&motivo=${encodeURIComponent(motivo)}&esVenta=${esVenta}&__RequestVerificationToken=${getToken()}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            const panel = document.getElementById('panelResultado');
+            panel.className = `alert ${data.ok ? 'alert-success' : 'alert-danger'}`;
+            panel.textContent = data.mensaje;
+            panel.classList.remove('d-none');
+            if (data.ok) limpiar();
+        });
+    }
+
+    function limpiar() {
+        productoID = 0;
+        document.getElementById('txtCodigo').value = '';
+        document.getElementById('txtCantidad').value = '1';
+        document.getElementById('txtMotivo').value = '';
+        document.getElementById('panelProducto').classList.add('d-none');
+        document.getElementById('alertaBusqueda').className = 'd-none';
+        document.getElementById('rbEntrada').checked = true;
+        document.getElementById('panelVenta').classList.add('d-none');
+        document.getElementById('chkVenta').checked = false;
+        document.getElementById('txtCodigo').focus();
+    }
+
+    function getToken() {
+        return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+    }
+</script>
+<form style="display:none">@Html.AntiForgeryToken()</form>
+}
