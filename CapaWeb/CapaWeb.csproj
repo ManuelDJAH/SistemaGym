@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="Views\Inventario\" />
+    <Folder Include="Views\Proveedores\" />
   </ItemGroup>
 
 </Project>

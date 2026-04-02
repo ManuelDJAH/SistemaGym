@@ -1,0 +1,210 @@
+@using System.Data
+@{
+    ViewData["Title"] = "Proveedores";
+    var dt         = ViewBag.Proveedores as DataTable ?? new DataTable();
+    var categorias = ViewBag.Categorias  as DataTable ?? new DataTable();
+}
+
+<!-- Barra superior -->
+<div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
+    <div class="card-body py-3">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <form method="get" asp-action="Index" class="d-flex align-items-center gap-2">
+                <div class="input-group input-group-sm" style="width:300px;">
+                    <select name="criterio" class="form-select form-select-sm" style="max-width:110px;">
+                        <option value="nombre"   selected="@(ViewBag.Criterio == "nombre"   ? "selected" : null)">Nombre</option>
+                        <option value="contacto" selected="@(ViewBag.Criterio == "contacto" ? "selected" : null)">Contacto</option>
+                    </select>
+                    <input type="text" name="buscar" class="form-control"
+                           placeholder="Buscar..." value="@ViewBag.Buscar" />
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+                </div>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Ver todos</a>
+            </form>
+
+            <div class="ms-auto d-flex gap-2">
+                <button class="btn btn-sm btn-success" onclick="abrirModal('nuevo')">
+                    <i class="bi bi-plus-circle me-1"></i> Nuevo
+                </button>
+                <button class="btn btn-sm btn-primary" id="btnEditar" disabled onclick="abrirModal('editar')">
+                    <i class="bi bi-pencil me-1"></i> Editar
+                </button>
+                <button class="btn btn-sm btn-danger" id="btnEliminar" disabled onclick="eliminar()">
+                    <i class="bi bi-trash me-1"></i> Eliminar
+                </button>
+                <a asp-action="Restock" class="btn btn-sm btn-outline-warning">
+                    <i class="bi bi-arrow-repeat me-1"></i> Ordenes Restock
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla -->
+<div class="card border-0 shadow-sm" style="border-radius:12px;">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background:#f8f9fa;">
+                    <tr>
+                        <th class="ps-4">Nombre</th>
+                        <th>Contacto</th>
+                        <th>Telefono</th>
+                        <th>Correo</th>
+                        <th>Direccion</th>
+                        <th>Categoria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (dt.Rows.Count == 0)
+                    {
+                        <tr><td colspan="6" class="text-center text-muted py-5">
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>No hay proveedores registrados.
+                        </td></tr>
+                    }
+                    @foreach (DataRow row in dt.Rows)
+                    {
+                        <tr class="prov-row" style="cursor:pointer;"
+                            data-id="@row["id_proveedor"]"
+                            data-nombre="@row["nombre"]"
+                            data-contacto="@(row["contacto"] == DBNull.Value ? "" : row["contacto"])"
+                            data-telefono="@(row["telefono"] == DBNull.Value ? "" : row["telefono"])"
+                            data-correo="@(row["correo"]     == DBNull.Value ? "" : row["correo"])"
+                            data-direccion="@(row["direccion"] == DBNull.Value ? "" : row["direccion"])"
+                            data-catid="@(row["id_categoria"] == DBNull.Value ? "" : row["id_categoria"])"
+                            onclick="seleccionar(this)">
+                            <td class="ps-4 fw-semibold">@row["nombre"]</td>
+                            <td>@(row["contacto"]  == DBNull.Value ? "—" : row["contacto"])</td>
+                            <td>@(row["telefono"]  == DBNull.Value ? "—" : row["telefono"])</td>
+                            <td class="small">@(row["correo"]    == DBNull.Value ? "—" : row["correo"])</td>
+                            <td class="small text-muted">@(row["direccion"] == DBNull.Value ? "—" : row["direccion"])</td>
+                            <td><span class="badge bg-secondary">@(row["categoria"] == DBNull.Value ? "—" : row["categoria"])</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer bg-transparent text-muted small">Total: <strong>@dt.Rows.Count</strong> proveedores</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="modalProveedor" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius:12px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="modalTitulo">Nuevo Proveedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="fId" />
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Nombre</label>
+                    <input type="text" id="fNombre" class="form-control" />
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold small">Contacto</label>
+                        <input type="text" id="fContacto" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold small">Telefono</label>
+                        <input type="text" id="fTelefono" class="form-control" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Correo</label>
+                    <input type="email" id="fCorreo" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Direccion</label>
+                    <input type="text" id="fDireccion" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Categoria</label>
+                    <select id="fCategoria" class="form-select">
+                        @foreach (DataRow cat in categorias.Rows)
+                        {
+                            <option value="@cat["id_categoria"]">@cat["nombre"]</option>
+                        }
+                    </select>
+                </div>
+                <div id="modalError" class="alert alert-danger d-none"></div>
+            </div>
+            <div class="modal-footer border-0">
+                <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardar()">
+                    <i class="bi bi-floppy me-1"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<form style="display:none">@Html.AntiForgeryToken()</form>
+<script>
+    let seleccionado = null;
+
+    function seleccionar(row) {
+        document.querySelectorAll('.prov-row').forEach(r => r.classList.remove('table-primary'));
+        row.classList.add('table-primary');
+        seleccionado = row.dataset;
+        document.getElementById('btnEditar').disabled   = false;
+        document.getElementById('btnEliminar').disabled = false;
+    }
+
+    function abrirModal(modo) {
+        const modal = new bootstrap.Modal(document.getElementById('modalProveedor'));
+        document.getElementById('modalError').classList.add('d-none');
+        if (modo === 'nuevo') {
+            document.getElementById('modalTitulo').textContent = 'Nuevo Proveedor';
+            ['fId','fNombre','fContacto','fTelefono','fCorreo','fDireccion'].forEach(id => document.getElementById(id).value = '');
+        } else {
+            if (!seleccionado) return;
+            document.getElementById('modalTitulo').textContent = 'Editar Proveedor';
+            document.getElementById('fId').value        = seleccionado.id;
+            document.getElementById('fNombre').value    = seleccionado.nombre;
+            document.getElementById('fContacto').value  = seleccionado.contacto;
+            document.getElementById('fTelefono').value  = seleccionado.telefono;
+            document.getElementById('fCorreo').value    = seleccionado.correo;
+            document.getElementById('fDireccion').value = seleccionado.direccion;
+            if (seleccionado.catid) document.getElementById('fCategoria').value = seleccionado.catid;
+        }
+        modal.show();
+    }
+
+    function guardar() {
+        const id      = document.getElementById('fId').value;
+        const esNuevo = !id;
+        const params  = new URLSearchParams({
+            nombre:      document.getElementById('fNombre').value,
+            contacto:    document.getElementById('fContacto').value,
+            telefono:    document.getElementById('fTelefono').value,
+            correo:      document.getElementById('fCorreo').value,
+            direccion:   document.getElementById('fDireccion').value,
+            idCategoria: document.getElementById('fCategoria').value,
+            __RequestVerificationToken: getToken()
+        });
+        if (!esNuevo) params.append('idProveedor', id);
+
+        fetch(esNuevo ? '@Url.Action("Crear","Proveedores")' : '@Url.Action("Actualizar","Proveedores")',
+              { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: params })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) { bootstrap.Modal.getInstance(document.getElementById('modalProveedor')).hide(); location.reload(); }
+            else { const e = document.getElementById('modalError'); e.textContent = data.mensaje; e.classList.remove('d-none'); }
+        });
+    }
+
+    function eliminar() {
+        if (!seleccionado || !confirm(`Eliminar "${seleccionado.nombre}"?`)) return;
+        fetch('@Url.Action("Eliminar","Proveedores")', {
+            method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body: `idProveedor=${seleccionado.id}&__RequestVerificationToken=${getToken()}`
+        }).then(r => r.json()).then(data => { if (data.ok) location.reload(); else alert(data.mensaje); });
+    }
+
+    function getToken() { return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''; }
+</script>
+}
