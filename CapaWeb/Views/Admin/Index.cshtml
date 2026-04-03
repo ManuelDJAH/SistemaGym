@@ -1,0 +1,245 @@
+@using System.Data
+@{
+    ViewData["Title"] = "Panel de Administracion";
+    var cambios  = ViewBag.Cambios  as DataTable ?? new DataTable();
+    var sesiones = ViewBag.Sesiones as DataTable ?? new DataTable();
+}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-4" id="adminTabs">
+    <li class="nav-item">
+        <a class="nav-link active fw-semibold" data-bs-toggle="tab" href="#tabCambios">
+            <i class="bi bi-clock-history me-1"></i> Cambios Recientes
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#tabSesiones">
+            <i class="bi bi-person-check me-1"></i> Inicios de Sesion
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#tabRespaldo">
+            <i class="bi bi-database-down me-1"></i> Respaldo BD
+        </a>
+    </li>
+</ul>
+
+<div class="tab-content">
+
+    <!-- ══ TAB CAMBIOS ══════════════════════════════════════════ -->
+    <div class="tab-pane fade show active" id="tabCambios">
+        <div class="card border-0 shadow-sm" style="border-radius:12px;">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead style="background:#f8f9fa;">
+                            <tr>
+                                <th class="ps-4">ID</th>
+                                <th>Usuario</th>
+                                <th>Accion</th>
+                                <th>Campo</th>
+                                <th>Valor Anterior</th>
+                                <th>Valor Nuevo</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (cambios.Rows.Count == 0)
+                            {
+                                <tr><td colspan="7" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>No hay cambios registrados.
+                                </td></tr>
+                            }
+                            @foreach (DataRow row in cambios.Rows)
+                            {
+                                <tr>
+                                    <td class="ps-4 text-muted small">@row["ID"]</td>
+                                    <td class="fw-semibold">@row["Usuario"]</td>
+                                    <td>
+                                        @{
+                                            string accion = row["Accion"]?.ToString() ?? "";
+                                            string badgeClass = accion == "INSERT" ? "bg-success" :
+                                                                accion == "UPDATE" ? "bg-warning text-dark" :
+                                                                accion == "DELETE" ? "bg-danger" : "bg-secondary";
+                                        }
+                                        <span class="badge @badgeClass">@accion</span>
+                                    </td>
+                                    <td class="small">@row["Campo"]</td>
+                                    <td class="small text-muted">
+                                        @(row["Valor Anterior"] == DBNull.Value ? "—" : row["Valor Anterior"])
+                                    </td>
+                                    <td class="small">
+                                        @(row["Valor Nuevo"] == DBNull.Value ? "—" : row["Valor Nuevo"])
+                                    </td>
+                                    <td class="small text-muted">@row["Fecha"]</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent text-muted small">
+                Total: <strong>@cambios.Rows.Count</strong> registros
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ TAB SESIONES ═════════════════════════════════════════ -->
+    <div class="tab-pane fade" id="tabSesiones">
+        <div class="card border-0 shadow-sm" style="border-radius:12px;">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead style="background:#f8f9fa;">
+                            <tr>
+                                <th class="ps-4">ID</th>
+                                <th>Usuario</th>
+                                <th>Fecha Entrada</th>
+                                <th>Fecha Salida</th>
+                                <th class="text-center">Duracion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (sesiones.Rows.Count == 0)
+                            {
+                                <tr><td colspan="5" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>No hay sesiones registradas.
+                                </td></tr>
+                            }
+                            @foreach (DataRow row in sesiones.Rows)
+                            {
+                                // Calcular duración
+                                string duracion = "—";
+                                if (row["Fecha Entrada"] != DBNull.Value && row["Fecha Salida"] != DBNull.Value)
+                                {
+                                    var entrada = (DateTime)row["Fecha Entrada"];
+                                    var salida  = (DateTime)row["Fecha Salida"];
+                                    var diff    = salida - entrada;
+                                    duracion    = diff.TotalMinutes < 1
+                                        ? $"{diff.Seconds}s"
+                                        : $"{(int)diff.TotalMinutes}m {diff.Seconds}s";
+                                }
+                                <tr>
+                                    <td class="ps-4 text-muted small">@row["ID"]</td>
+                                    <td class="fw-semibold">@row["Usuario"]</td>
+                                    <td class="small">@row["Fecha Entrada"]</td>
+                                    <td class="small text-muted">
+                                        @(row["Fecha Salida"] == DBNull.Value ? "Activa" : row["Fecha Salida"].ToString())
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-secondary">@duracion</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent text-muted small">
+                Total: <strong>@sesiones.Rows.Count</strong> sesiones
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ TAB RESPALDO ═════════════════════════════════════════ -->
+    <div class="tab-pane fade" id="tabRespaldo">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm" style="border-radius:12px;">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-database-down" style="font-size:3rem;color:#0f3460;"></i>
+                            <h5 class="fw-bold mt-2">Respaldo de Base de Datos</h5>
+                            <p class="text-muted small">
+                                Genera un respaldo completo de GymDB en formato <strong>.bak</strong>
+                                compatible con SQL Server. El archivo se descargara directamente.
+                            </p>
+                        </div>
+
+                        <div class="alert alert-info py-2 small">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Se recomienda realizar respaldos periodicamente. El archivo generado puede
+                            restaurarse desde SQL Server Management Studio.
+                        </div>
+
+                        <div id="panelEstado" class="d-none mb-3"></div>
+
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg fw-bold" id="btnRespaldo"
+                                    onclick="generarRespaldo()">
+                                <i class="bi bi-download me-2"></i> Generar y Descargar Respaldo
+                            </button>
+                        </div>
+
+                        <p class="text-center text-muted mt-3 mb-0" style="font-size:.75rem;">
+                            Solo accesible por administradores
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+<form style="display:none">@Html.AntiForgeryToken()</form>
+<script>
+    function generarRespaldo() {
+        const btn   = document.getElementById('btnRespaldo');
+        const panel = document.getElementById('panelEstado');
+
+        btn.disabled   = true;
+        btn.innerHTML  = '<span class="spinner-border spinner-border-sm me-2"></span> Generando respaldo...';
+        panel.className = 'alert alert-warning py-2 small';
+        panel.textContent = 'Generando respaldo, por favor espera...';
+        panel.classList.remove('d-none');
+
+        // Llamada POST que retorna el archivo como descarga
+        fetch('@Url.Action("GenerarRespaldo","Admin")', {
+            method: 'POST',
+            headers: { 'RequestVerificationToken': getToken() },
+            body: new URLSearchParams({ __RequestVerificationToken: getToken() })
+        })
+        .then(async response => {
+            btn.disabled  = false;
+            btn.innerHTML = '<i class="bi bi-download me-2"></i> Generar y Descargar Respaldo';
+
+            // Si es JSON = error
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const data = await response.json();
+                panel.className   = 'alert alert-danger py-2 small';
+                panel.textContent = data.mensaje;
+                return;
+            }
+
+            // Es un archivo — forzar descarga
+            const blob     = await response.blob();
+            const filename = response.headers.get('content-disposition')
+                ?.match(/filename="?([^"]+)"?/)?.[1]
+                ?? `GymDB_${new Date().toISOString().slice(0,10)}.bak`;
+
+            const url  = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href     = url;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(url);
+
+            panel.className   = 'alert alert-success py-2 small';
+            panel.textContent = `Respaldo descargado: ${filename}`;
+        })
+        .catch(err => {
+            btn.disabled  = false;
+            btn.innerHTML = '<i class="bi bi-download me-2"></i> Generar y Descargar Respaldo';
+            panel.className   = 'alert alert-danger py-2 small';
+            panel.textContent = 'Error de red: ' + err.message;
+        });
+    }
+
+    function getToken() {
+        return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+    }
+</script>
+}

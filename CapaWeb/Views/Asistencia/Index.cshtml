@@ -1,0 +1,184 @@
+@{
+    ViewData["Title"] = "Registrar Asistencia";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+
+        <!-- Búsqueda -->
+        <div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem;letter-spacing:1px;">
+                    1. Buscar miembro
+                </h6>
+                <div class="input-group">
+                    <input type="text" id="txtBuscar" class="form-control form-control-lg"
+                           placeholder="Nombre o ID del miembro..." autofocus />
+                    <button class="btn btn-primary px-4" onclick="buscar()">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </div>
+                <div id="alertaBusqueda" class="mt-2 d-none"></div>
+            </div>
+        </div>
+
+        <!-- Resultados búsqueda -->
+        <div id="panelResultados" class="d-none mb-4">
+            <div class="card border-0 shadow-sm" style="border-radius:12px;">
+                <div class="card-header bg-transparent border-0 fw-bold pt-3 pb-0 ps-4">
+                    Selecciona un miembro
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" id="listaUsuarios" style="border-radius:0 0 12px 12px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel confirmación -->
+        <div id="panelConfirmar" class="d-none">
+            <div class="card border-0 shadow-sm" style="border-radius:12px;border-left:4px solid #0f3460!important;">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem;letter-spacing:1px;">
+                        2. Confirmar asistencia
+                    </h6>
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:50px;height:50px;background:#0f3460;color:white;font-size:1.3rem;font-weight:700;"
+                             id="avatarLetra">M</div>
+                        <div>
+                            <div class="fw-bold fs-6" id="lblNombre"></div>
+                            <div class="text-muted small" id="lblInfo"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 mb-4 text-muted small">
+                        <i class="bi bi-clock"></i>
+                        <span id="lblFechaHora"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success px-4 fw-bold" onclick="registrar()">
+                            <i class="bi bi-check-circle me-1"></i> Registrar Asistencia
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="cancelar()">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultado final -->
+        <div id="panelFinal" class="d-none mt-3"></div>
+
+    </div>
+</div>
+
+@section Scripts {
+<form style="display:none">@Html.AntiForgeryToken()</form>
+<script>
+    let usuarioSeleccionado = null;
+
+    // Enter dispara búsqueda
+    document.getElementById('txtBuscar').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); buscar(); }
+    });
+
+    // Actualizar reloj cada segundo
+    function actualizarReloj() {
+        const ahora = new Date();
+        document.getElementById('lblFechaHora').textContent =
+            ahora.toLocaleDateString('es-MX', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) +
+            ' — ' + ahora.toLocaleTimeString('es-MX');
+    }
+    setInterval(actualizarReloj, 1000);
+    actualizarReloj();
+
+    function buscar() {
+        const termino = document.getElementById('txtBuscar').value.trim();
+        if (!termino) return;
+
+        fetch('@Url.Action("BuscarUsuario","Asistencia")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `termino=${encodeURIComponent(termino)}&__RequestVerificationToken=${getToken()}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            const alerta = document.getElementById('alertaBusqueda');
+            if (!data.ok) {
+                alerta.className   = 'alert alert-warning mt-2 py-2 small';
+                alerta.textContent = data.mensaje;
+                alerta.classList.remove('d-none');
+                document.getElementById('panelResultados').classList.add('d-none');
+                return;
+            }
+            alerta.classList.add('d-none');
+
+            const lista = document.getElementById('listaUsuarios');
+            lista.innerHTML = '';
+
+            data.usuarios.forEach(u => {
+                const item = document.createElement('button');
+                item.type      = 'button';
+                item.className = 'list-group-item list-group-item-action px-4 py-3';
+                item.innerHTML = `
+                    <div class="fw-semibold">${u.nombre}</div>
+                    <div class="text-muted small">ID: ${u.idUsuario} &nbsp;|&nbsp; ${u.correo || 'Sin correo'} &nbsp;|&nbsp; ${u.telefono || 'Sin teléfono'}</div>`;
+                item.onclick = () => seleccionarUsuario(u);
+                lista.appendChild(item);
+            });
+
+            document.getElementById('panelResultados').classList.remove('d-none');
+            document.getElementById('panelConfirmar').classList.add('d-none');
+        });
+    }
+
+    function seleccionarUsuario(u) {
+        usuarioSeleccionado = u;
+
+        document.getElementById('avatarLetra').textContent = u.nombre.charAt(0).toUpperCase();
+        document.getElementById('lblNombre').textContent   = u.nombre;
+        document.getElementById('lblInfo').textContent     = `ID: ${u.idUsuario}  |  ${u.correo || ''}  |  ${u.telefono || ''}`;
+
+        document.getElementById('panelResultados').classList.add('d-none');
+        document.getElementById('panelConfirmar').classList.remove('d-none');
+        document.getElementById('panelFinal').classList.add('d-none');
+    }
+
+    function registrar() {
+        if (!usuarioSeleccionado) return;
+
+        fetch('@Url.Action("Registrar","Asistencia")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `idUsuario=${usuarioSeleccionado.idUsuario}&__RequestVerificationToken=${getToken()}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            const panel = document.getElementById('panelFinal');
+            panel.className   = `alert ${data.ok ? 'alert-success' : 'alert-danger'} mt-3`;
+            panel.innerHTML   = data.ok
+                ? `<i class="bi bi-check-circle-fill me-2"></i><strong>${usuarioSeleccionado.nombre}</strong> — Asistencia registrada correctamente.`
+                : `<i class="bi bi-exclamation-circle me-2"></i>${data.mensaje}`;
+            panel.classList.remove('d-none');
+
+            if (data.ok) cancelar();
+        });
+    }
+
+    function cancelar() {
+        usuarioSeleccionado = null;
+        document.getElementById('txtBuscar').value = '';
+        document.getElementById('panelConfirmar').classList.add('d-none');
+        document.getElementById('panelResultados').classList.add('d-none');
+        document.getElementById('alertaBusqueda').classList.add('d-none');
+        document.getElementById('txtBuscar').focus();
+    }
+
+    function getToken() {
+        return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+    }
+</script>
+}

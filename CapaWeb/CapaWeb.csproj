@@ -17,6 +17,9 @@
 
   <ItemGroup>
     <Folder Include="Views\Inventario\" />
+    <Folder Include="Views\Admin\" />
+    <Folder Include="Views\Asistencia\" />
+    <Folder Include="Views\Usuarios\" />
     <Folder Include="Views\Proveedores\" />
   </ItemGroup>
 
