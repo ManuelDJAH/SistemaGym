@@ -152,5 +152,21 @@ public class UsuarioDAO
             }
         }
     }
+    public DataTable BuscarPorNombre(string nombre)
+    {
+        DataTable dt = new DataTable();
+        using (SqlConnection cn = new SqlConnection(Conexion.cadena))
+        {
+            string sql = @"SELECT id_usuario, nombre, edad, correo, telefono,
+                              id_membresia, fecha_registro
+                       FROM   Usuarios
+                       WHERE  nombre LIKE @nombre
+                       ORDER  BY nombre";
 
+            SqlDataAdapter da = new SqlDataAdapter(sql, cn);
+            da.SelectCommand.Parameters.AddWithValue("@nombre", "%" + nombre + "%");
+            da.Fill(dt);
+        }
+        return dt;
+    }
 }

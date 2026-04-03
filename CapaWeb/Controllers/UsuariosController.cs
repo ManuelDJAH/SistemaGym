@@ -2,7 +2,6 @@
 using CapaWeb.Helpers;
 using ClaseNegocio;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace CapaWeb.Controllers
 {
@@ -11,48 +10,45 @@ namespace CapaWeb.Controllers
     {
         private readonly UsuariosBL _bl = new UsuariosBL();
 
-        // ════════════════════════════════════════════════════════════
-        //  INDEX — Listado de usuarios/miembros
-        // ════════════════════════════════════════════════════════════
         public IActionResult Index(string buscar)
         {
-            var usuarios = string.IsNullOrWhiteSpace(buscar)
-                ? _bl.ObtenerUsuarios()
-                : _bl.BuscarUsuarios(buscar);
+            var dt = string.IsNullOrWhiteSpace(buscar)
+                ? _bl.ListarUsuarios()
+                : _bl.BuscarPorNombre(buscar);
 
-            ViewBag.Usuarios = usuarios;
+            ViewBag.Usuarios = dt;
             ViewBag.Buscar = buscar;
-            ViewBag.EsAdmin = SesionWeb.EsAdmin(HttpContext.Session);
             ViewData["Title"] = "Usuarios / Miembros";
             return View();
         }
 
-        // ── Crear ────────────────────────────────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Crear(string nombre, int edad, string correo,
                                     string telefono, int idMembresia)
         {
-            var (ok, msg) = _bl.RegistrarUsuario(nombre, edad, correo, telefono, idMembresia);
+            string msg = _bl.RegistrarUsuario(nombre, edad, correo,
+                                              telefono, DateTime.Today, idMembresia);
+            bool ok = msg.Contains("correctamente");
             return Json(new { ok, mensaje = msg });
         }
 
-        // ── Actualizar ───────────────────────────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Actualizar(int idUsuario, string nombre, int edad,
                                          string correo, string telefono, int idMembresia)
         {
-            var (ok, msg) = _bl.ActualizarUsuario(idUsuario, nombre, edad, correo, telefono, idMembresia);
+            string msg = _bl.ActualizarUsuario(idUsuario, nombre, edad, correo, telefono, idMembresia);
+            bool ok = msg.Contains("correctamente");
             return Json(new { ok, mensaje = msg });
         }
 
-        // ── Eliminar ─────────────────────────────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Eliminar(int idUsuario)
         {
-            var (ok, msg) = _bl.EliminarUsuario(idUsuario);
+            string msg = _bl.EliminarUsuario(idUsuario);
+            bool ok = msg.Contains("correctamente");
             return Json(new { ok, mensaje = msg });
         }
     }

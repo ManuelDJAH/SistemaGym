@@ -62,5 +62,9 @@ namespace ClaseNegocio
             UsuarioDAO dao = new UsuarioDAO();
             return dao.ObtenerIdPorUsuario(usuario);
         }
+        public DataTable BuscarPorNombre(string nombre)
+        {
+            return dao.BuscarPorNombre(nombre);
+        }
     }
 }

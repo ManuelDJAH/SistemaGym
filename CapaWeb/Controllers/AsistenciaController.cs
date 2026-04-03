@@ -1,6 +1,6 @@
 ﻿using CapaNegocio;
 using CapaWeb.Filters;
-using CapaWeb.Helpers;
+using ClaseNegocio;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CapaWeb.Controllers
@@ -16,7 +16,6 @@ namespace CapaWeb.Controllers
             return View();
         }
 
-        // ── Buscar usuario por nombre o ID ───────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult BuscarUsuario(string termino)
@@ -26,21 +25,21 @@ namespace CapaWeb.Controllers
 
             try
             {
-                var bl = new ClaseNegocio.UsuariosBL();
-                var res = bl.BuscarUsuarios(termino);
+                var bl = new UsuariosBL();
+                var dt = bl.BuscarPorNombre(termino);
 
-                if (res == null || res.Rows.Count == 0)
+                if (dt == null || dt.Rows.Count == 0)
                     return Json(new { ok = false, mensaje = "No se encontraron usuarios." });
 
                 var lista = new List<object>();
-                foreach (System.Data.DataRow row in res.Rows)
+                foreach (System.Data.DataRow row in dt.Rows)
                 {
                     lista.Add(new
                     {
                         idUsuario = row["id_usuario"],
                         nombre = row["nombre"],
-                        correo = row["correo"] == System.DBNull.Value ? "" : row["correo"],
-                        telefono = row["telefono"] == System.DBNull.Value ? "" : row["telefono"]
+                        correo = row["correo"] == System.DBNull.Value ? "" : row["correo"].ToString(),
+                        telefono = row["telefono"] == System.DBNull.Value ? "" : row["telefono"].ToString()
                     });
                 }
 
@@ -52,14 +51,10 @@ namespace CapaWeb.Controllers
             }
         }
 
-        // ── Registrar asistencia ─────────────────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Registrar(int idUsuario)
         {
-            if (idUsuario <= 0)
-                return Json(new { ok = false, mensaje = "ID de usuario inválido." });
-
             string msg = _bl.RegistrarAsistencia(idUsuario);
             bool ok = msg.Contains("correctamente");
             return Json(new { ok, mensaje = msg });
