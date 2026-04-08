@@ -59,6 +59,7 @@
     <Compile Include="RespaldoDAO.cs" />
     <Compile Include="RestockDAO.cs" />
     <Compile Include="UsuarioDAO.cs" />
+    <Compile Include="UsuarioSistemaDAO.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

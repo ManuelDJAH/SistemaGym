@@ -460,12 +460,14 @@ namespace CapaPresentacion
             // 
             // btnProdNuevo
             // 
+            this.btnProdNuevo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnProdNuevo.Location = new System.Drawing.Point(4, 291);
             this.btnProdNuevo.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdNuevo.Name = "btnProdNuevo";
-            this.btnProdNuevo.Size = new System.Drawing.Size(52, 21);
+            this.btnProdNuevo.Size = new System.Drawing.Size(57, 21);
             this.btnProdNuevo.TabIndex = 19;
             this.btnProdNuevo.Text = "Nuevo";
+            this.btnProdNuevo.UseVisualStyleBackColor = false;
             this.btnProdNuevo.Click += new System.EventHandler(this.btnProdNuevo_Click);
             // 
             // btnProdEditar
@@ -474,42 +476,48 @@ namespace CapaPresentacion
             this.btnProdEditar.Location = new System.Drawing.Point(62, 291);
             this.btnProdEditar.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdEditar.Name = "btnProdEditar";
-            this.btnProdEditar.Size = new System.Drawing.Size(52, 21);
+            this.btnProdEditar.Size = new System.Drawing.Size(58, 21);
             this.btnProdEditar.TabIndex = 20;
             this.btnProdEditar.Text = "Editar";
             this.btnProdEditar.Click += new System.EventHandler(this.btnProdEditar_Click);
             // 
             // btnProdGuardar
             // 
+            this.btnProdGuardar.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.btnProdGuardar.Enabled = false;
             this.btnProdGuardar.Location = new System.Drawing.Point(4, 318);
             this.btnProdGuardar.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdGuardar.Name = "btnProdGuardar";
-            this.btnProdGuardar.Size = new System.Drawing.Size(52, 21);
+            this.btnProdGuardar.Size = new System.Drawing.Size(57, 21);
             this.btnProdGuardar.TabIndex = 21;
             this.btnProdGuardar.Text = "Guardar";
+            this.btnProdGuardar.UseVisualStyleBackColor = false;
             this.btnProdGuardar.Click += new System.EventHandler(this.btnProdGuardar_Click);
             // 
             // btnProdCancelar
             // 
+            this.btnProdCancelar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.btnProdCancelar.Enabled = false;
             this.btnProdCancelar.Location = new System.Drawing.Point(62, 318);
             this.btnProdCancelar.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdCancelar.Name = "btnProdCancelar";
-            this.btnProdCancelar.Size = new System.Drawing.Size(52, 21);
+            this.btnProdCancelar.Size = new System.Drawing.Size(58, 21);
             this.btnProdCancelar.TabIndex = 22;
             this.btnProdCancelar.Text = "Cancelar";
+            this.btnProdCancelar.UseVisualStyleBackColor = false;
             this.btnProdCancelar.Click += new System.EventHandler(this.btnProdCancelar_Click);
             // 
             // btnProdBaja
             // 
+            this.btnProdBaja.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.btnProdBaja.Enabled = false;
             this.btnProdBaja.Location = new System.Drawing.Point(120, 291);
             this.btnProdBaja.Margin = new System.Windows.Forms.Padding(2);
             this.btnProdBaja.Name = "btnProdBaja";
-            this.btnProdBaja.Size = new System.Drawing.Size(52, 21);
+            this.btnProdBaja.Size = new System.Drawing.Size(72, 21);
             this.btnProdBaja.TabIndex = 23;
             this.btnProdBaja.Text = "Dar Baja";
+            this.btnProdBaja.UseVisualStyleBackColor = false;
             this.btnProdBaja.Click += new System.EventHandler(this.btnProdBaja_Click);
             // 
             // pnlProdFiltro
@@ -764,12 +772,14 @@ namespace CapaPresentacion
             // 
             // btnEqNuevo
             // 
+            this.btnEqNuevo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnEqNuevo.Location = new System.Drawing.Point(4, 211);
             this.btnEqNuevo.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqNuevo.Name = "btnEqNuevo";
-            this.btnEqNuevo.Size = new System.Drawing.Size(52, 21);
+            this.btnEqNuevo.Size = new System.Drawing.Size(57, 21);
             this.btnEqNuevo.TabIndex = 12;
             this.btnEqNuevo.Text = "Nuevo";
+            this.btnEqNuevo.UseVisualStyleBackColor = false;
             this.btnEqNuevo.Click += new System.EventHandler(this.btnEqNuevo_Click);
             // 
             // btnEqEditar
@@ -778,42 +788,48 @@ namespace CapaPresentacion
             this.btnEqEditar.Location = new System.Drawing.Point(62, 211);
             this.btnEqEditar.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqEditar.Name = "btnEqEditar";
-            this.btnEqEditar.Size = new System.Drawing.Size(52, 21);
+            this.btnEqEditar.Size = new System.Drawing.Size(62, 21);
             this.btnEqEditar.TabIndex = 13;
             this.btnEqEditar.Text = "Editar";
             this.btnEqEditar.Click += new System.EventHandler(this.btnEqEditar_Click);
             // 
             // btnEqGuardar
             // 
+            this.btnEqGuardar.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.btnEqGuardar.Enabled = false;
             this.btnEqGuardar.Location = new System.Drawing.Point(4, 238);
             this.btnEqGuardar.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqGuardar.Name = "btnEqGuardar";
-            this.btnEqGuardar.Size = new System.Drawing.Size(52, 21);
+            this.btnEqGuardar.Size = new System.Drawing.Size(57, 21);
             this.btnEqGuardar.TabIndex = 14;
             this.btnEqGuardar.Text = "Guardar";
+            this.btnEqGuardar.UseVisualStyleBackColor = false;
             this.btnEqGuardar.Click += new System.EventHandler(this.btnEqGuardar_Click);
             // 
             // btnEqCancelar
             // 
+            this.btnEqCancelar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
             this.btnEqCancelar.Enabled = false;
             this.btnEqCancelar.Location = new System.Drawing.Point(62, 238);
             this.btnEqCancelar.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqCancelar.Name = "btnEqCancelar";
-            this.btnEqCancelar.Size = new System.Drawing.Size(52, 21);
+            this.btnEqCancelar.Size = new System.Drawing.Size(62, 21);
             this.btnEqCancelar.TabIndex = 15;
             this.btnEqCancelar.Text = "Cancelar";
+            this.btnEqCancelar.UseVisualStyleBackColor = false;
             this.btnEqCancelar.Click += new System.EventHandler(this.btnEqCancelar_Click);
             // 
             // btnEqBaja
             // 
+            this.btnEqBaja.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.btnEqBaja.Enabled = false;
             this.btnEqBaja.Location = new System.Drawing.Point(120, 211);
             this.btnEqBaja.Margin = new System.Windows.Forms.Padding(2);
             this.btnEqBaja.Name = "btnEqBaja";
-            this.btnEqBaja.Size = new System.Drawing.Size(52, 21);
+            this.btnEqBaja.Size = new System.Drawing.Size(73, 21);
             this.btnEqBaja.TabIndex = 16;
             this.btnEqBaja.Text = "Dar Baja";
+            this.btnEqBaja.UseVisualStyleBackColor = false;
             this.btnEqBaja.Click += new System.EventHandler(this.btnEqBaja_Click);
             // 
             // pnlEqFiltro
@@ -1458,7 +1474,7 @@ namespace CapaPresentacion
             this.btnAlertaRefrescar.Location = new System.Drawing.Point(150, 6);
             this.btnAlertaRefrescar.Margin = new System.Windows.Forms.Padding(2);
             this.btnAlertaRefrescar.Name = "btnAlertaRefrescar";
-            this.btnAlertaRefrescar.Size = new System.Drawing.Size(60, 21);
+            this.btnAlertaRefrescar.Size = new System.Drawing.Size(62, 21);
             this.btnAlertaRefrescar.TabIndex = 1;
             this.btnAlertaRefrescar.Text = "Refrescar";
             this.btnAlertaRefrescar.Click += new System.EventHandler(this.btnAlertaRefrescar_Click);

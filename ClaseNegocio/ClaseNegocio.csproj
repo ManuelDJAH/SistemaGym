@@ -52,6 +52,7 @@
     <Compile Include="RespaldoBL.cs" />
     <Compile Include="RestockBL.cs" />
     <Compile Include="UsuariosBL.cs" />
+    <Compile Include="UsuarioSistemaBL.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CapaDatos\CapaDatos.csproj">
