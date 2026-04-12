@@ -8,20 +8,20 @@ namespace CapaWeb.Controllers
     [AuthRequired(soloAdmin: true)]
     public class AdminController : Controller
     {
+        private readonly UsuarioSistemaBL _usBL = new UsuarioSistemaBL();
+
         // ════════════════════════════════════════════════════════════
         //  INDEX — Panel admin con tabs
         // ════════════════════════════════════════════════════════════
         public IActionResult Index()
         {
             CargarBitacora();
-            ViewData["Title"] = "Panel de Administracion";
+            ViewBag.UsuariosSistema = _usBL.Listar();
             ViewBag.EsAdmin = SesionWeb.EsAdmin(HttpContext.Session);
+            ViewData["Title"] = "Panel de Administracion";
             return View();
         }
 
-        // ════════════════════════════════════════════════════════════
-        //  BITÁCORA
-        // ════════════════════════════════════════════════════════════
         private void CargarBitacora()
         {
             try
@@ -38,6 +38,36 @@ namespace CapaWeb.Controllers
         }
 
         // ════════════════════════════════════════════════════════════
+        //  USUARIOS DEL SISTEMA
+        // ════════════════════════════════════════════════════════════
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CrearUsuarioSistema(string usuario, string clave,
+                                                  string nombre, string rol)
+        {
+            var (ok, msg) = _usBL.Crear(usuario, clave, nombre, rol);
+            return Json(new { ok, mensaje = msg });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ActualizarUsuarioSistema(int idUsuario, string nombre,
+                                                       string rol, string nuevaClave)
+        {
+            var (ok, msg) = _usBL.Actualizar(idUsuario, nombre, rol,
+                string.IsNullOrWhiteSpace(nuevaClave) ? null : nuevaClave);
+            return Json(new { ok, mensaje = msg });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EliminarUsuarioSistema(int idUsuario)
+        {
+            var (ok, msg) = _usBL.Eliminar(idUsuario);
+            return Json(new { ok, mensaje = msg });
+        }
+
+        // ════════════════════════════════════════════════════════════
         //  RESPALDO
         // ════════════════════════════════════════════════════════════
         [HttpPost]
@@ -47,24 +77,16 @@ namespace CapaWeb.Controllers
             try
             {
                 var bl = new RespaldoBL();
-
-                // En web, guardamos en la carpeta de backups de SQL Server
-                // y devolvemos el archivo para descarga directa
                 string carpetaTemp = Path.Combine(Path.GetTempPath(), "RespaldosGymWeb");
                 Directory.CreateDirectory(carpetaTemp);
 
                 var (ok, mensaje, rutaFinal) = bl.GenerarRespaldo(carpetaTemp);
+                if (!ok) return Json(new { ok = false, mensaje });
 
-                if (!ok)
-                    return Json(new { ok = false, mensaje });
-
-                // Leer el archivo y enviarlo como descarga
                 byte[] bytes = System.IO.File.ReadAllBytes(rutaFinal);
-
-                // Limpiar temporal
+                string nombreArchivo = Path.GetFileName(rutaFinal);
                 try { System.IO.File.Delete(rutaFinal); } catch { }
 
-                string nombreArchivo = Path.GetFileName(rutaFinal);
                 return File(bytes, "application/octet-stream", nombreArchivo);
             }
             catch (Exception ex)

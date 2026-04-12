@@ -1,8 +1,9 @@
 @using System.Data
 @{
     ViewData["Title"] = "Panel de Administracion";
-    var cambios  = ViewBag.Cambios  as DataTable ?? new DataTable();
-    var sesiones = ViewBag.Sesiones as DataTable ?? new DataTable();
+    var cambios          = ViewBag.Cambios          as DataTable ?? new DataTable();
+    var sesiones         = ViewBag.Sesiones         as DataTable ?? new DataTable();
+    var usuariosSistema  = ViewBag.UsuariosSistema  as DataTable ?? new DataTable();
 }
 
 <!-- Tabs -->
@@ -15,6 +16,11 @@
     <li class="nav-item">
         <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#tabSesiones">
             <i class="bi bi-person-check me-1"></i> Inicios de Sesion
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link fw-semibold" data-bs-toggle="tab" href="#tabUsuarios">
+            <i class="bi bi-shield-person me-1"></i> Usuarios Sistema
         </a>
     </li>
     <li class="nav-item">
@@ -52,25 +58,17 @@
                             }
                             @foreach (DataRow row in cambios.Rows)
                             {
+                                string accion = row["Accion"]?.ToString() ?? "";
+                                string badge  = accion == "INSERT" ? "bg-success" :
+                                                accion == "UPDATE" ? "bg-warning text-dark" :
+                                                accion == "DELETE" ? "bg-danger" : "bg-secondary";
                                 <tr>
                                     <td class="ps-4 text-muted small">@row["ID"]</td>
                                     <td class="fw-semibold">@row["Usuario"]</td>
-                                    <td>
-                                        @{
-                                            string accion = row["Accion"]?.ToString() ?? "";
-                                            string badgeClass = accion == "INSERT" ? "bg-success" :
-                                                                accion == "UPDATE" ? "bg-warning text-dark" :
-                                                                accion == "DELETE" ? "bg-danger" : "bg-secondary";
-                                        }
-                                        <span class="badge @badgeClass">@accion</span>
-                                    </td>
+                                    <td><span class="badge @badge">@accion</span></td>
                                     <td class="small">@row["Campo"]</td>
-                                    <td class="small text-muted">
-                                        @(row["Valor Anterior"] == DBNull.Value ? "—" : row["Valor Anterior"])
-                                    </td>
-                                    <td class="small">
-                                        @(row["Valor Nuevo"] == DBNull.Value ? "—" : row["Valor Nuevo"])
-                                    </td>
+                                    <td class="small text-muted">@(row["Valor Anterior"] == DBNull.Value ? "—" : row["Valor Anterior"])</td>
+                                    <td class="small">@(row["Valor Nuevo"] == DBNull.Value ? "—" : row["Valor Nuevo"])</td>
                                     <td class="small text-muted">@row["Fecha"]</td>
                                 </tr>
                             }
@@ -108,14 +106,11 @@
                             }
                             @foreach (DataRow row in sesiones.Rows)
                             {
-                                // Calcular duración
                                 string duracion = "—";
                                 if (row["Fecha Entrada"] != DBNull.Value && row["Fecha Salida"] != DBNull.Value)
                                 {
-                                    var entrada = (DateTime)row["Fecha Entrada"];
-                                    var salida  = (DateTime)row["Fecha Salida"];
-                                    var diff    = salida - entrada;
-                                    duracion    = diff.TotalMinutes < 1
+                                    var diff = (DateTime)row["Fecha Salida"] - (DateTime)row["Fecha Entrada"];
+                                    duracion = diff.TotalMinutes < 1
                                         ? $"{diff.Seconds}s"
                                         : $"{(int)diff.TotalMinutes}m {diff.Seconds}s";
                                 }
@@ -141,39 +136,90 @@
         </div>
     </div>
 
+    <!-- ══ TAB USUARIOS SISTEMA ═════════════════════════════════ -->
+    <div class="tab-pane fade" id="tabUsuarios">
+        <!-- Botones -->
+        <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-sm btn-success" onclick="abrirModalUS('nuevo')">
+                <i class="bi bi-person-plus me-1"></i> Nuevo Usuario
+            </button>
+            <button class="btn btn-sm btn-primary" id="btnUSEditar" disabled onclick="abrirModalUS('editar')">
+                <i class="bi bi-pencil me-1"></i> Editar
+            </button>
+            <button class="btn btn-sm btn-danger" id="btnUSEliminar" disabled onclick="eliminarUS()">
+                <i class="bi bi-trash me-1"></i> Eliminar
+            </button>
+        </div>
+
+        <!-- Tabla -->
+        <div class="card border-0 shadow-sm" style="border-radius:12px;">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead style="background:#f8f9fa;">
+                            <tr>
+                                <th class="ps-4">ID</th>
+                                <th>Usuario</th>
+                                <th>Nombre Completo</th>
+                                <th class="text-center">Rol</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (usuariosSistema.Rows.Count == 0)
+                            {
+                                <tr><td colspan="4" class="text-center text-muted py-4">
+                                    No hay usuarios registrados.
+                                </td></tr>
+                            }
+                            @foreach (DataRow row in usuariosSistema.Rows)
+                            {
+                                string rol      = row["rol"]?.ToString() ?? "";
+                                string rolBadge = rol == "ADMIN" ? "bg-danger" : "bg-secondary";
+                                <tr class="us-row" style="cursor:pointer;"
+                                    data-id="@row["id_usuario"]"
+                                    data-usuario="@row["usuario"]"
+                                    data-nombre="@(row["nombre"] == DBNull.Value ? "" : row["nombre"])"
+                                    data-rol="@rol"
+                                    onclick="seleccionarUS(this)">
+                                    <td class="ps-4 text-muted small">@row["id_usuario"]</td>
+                                    <td class="fw-semibold">@row["usuario"]</td>
+                                    <td>@(row["nombre"] == DBNull.Value ? "—" : row["nombre"])</td>
+                                    <td class="text-center">
+                                        <span class="badge @rolBadge">@rol</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent text-muted small">
+                Total: <strong>@usuariosSistema.Rows.Count</strong> usuarios del sistema
+            </div>
+        </div>
+    </div>
+
     <!-- ══ TAB RESPALDO ═════════════════════════════════════════ -->
     <div class="tab-pane fade" id="tabRespaldo">
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="card border-0 shadow-sm" style="border-radius:12px;">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-4">
-                            <i class="bi bi-database-down" style="font-size:3rem;color:#0f3460;"></i>
-                            <h5 class="fw-bold mt-2">Respaldo de Base de Datos</h5>
-                            <p class="text-muted small">
-                                Genera un respaldo completo de GymDB en formato <strong>.bak</strong>
-                                compatible con SQL Server. El archivo se descargara directamente.
-                            </p>
-                        </div>
-
-                        <div class="alert alert-info py-2 small">
-                            <i class="bi bi-info-circle me-1"></i>
-                            Se recomienda realizar respaldos periodicamente. El archivo generado puede
-                            restaurarse desde SQL Server Management Studio.
-                        </div>
-
-                        <div id="panelEstado" class="d-none mb-3"></div>
-
-                        <div class="d-grid">
-                            <button class="btn btn-primary btn-lg fw-bold" id="btnRespaldo"
-                                    onclick="generarRespaldo()">
-                                <i class="bi bi-download me-2"></i> Generar y Descargar Respaldo
-                            </button>
-                        </div>
-
-                        <p class="text-center text-muted mt-3 mb-0" style="font-size:.75rem;">
-                            Solo accesible por administradores
+                    <div class="card-body p-4 text-center">
+                        <i class="bi bi-database-down" style="font-size:3rem;color:#0f3460;"></i>
+                        <h5 class="fw-bold mt-2">Respaldo de Base de Datos</h5>
+                        <p class="text-muted small">
+                            Genera un respaldo completo de GymDB en formato <strong>.bak</strong>.
+                            El archivo se descargara directamente al navegador.
                         </p>
+                        <div class="alert alert-info py-2 small text-start">
+                            <i class="bi bi-info-circle me-1"></i>
+                            El respaldo puede restaurarse desde SQL Server Management Studio.
+                        </div>
+                        <div id="panelEstadoRespaldo" class="d-none mb-3"></div>
+                        <button class="btn btn-primary btn-lg fw-bold w-100" id="btnRespaldo"
+                                onclick="generarRespaldo()">
+                            <i class="bi bi-download me-2"></i> Generar y Descargar Respaldo
+                        </button>
                     </div>
                 </div>
             </div>
@@ -182,39 +228,164 @@
 
 </div>
 
+<!-- ══ MODAL USUARIO SISTEMA ════════════════════════════════════ -->
+<div class="modal fade" id="modalUS" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius:12px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="modalUSTitulo">Nuevo Usuario del Sistema</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="usId" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Nombre completo</label>
+                    <input type="text" id="usNombre" class="form-control"
+                           placeholder="Nombre completo del usuario" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Usuario</label>
+                    <input type="text" id="usUsuario" class="form-control"
+                           placeholder="Nombre de usuario para login" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">
+                        Contrasena
+                        <span id="lblClaveNota" class="text-muted fw-normal">(dejar en blanco = no cambiar)</span>
+                    </label>
+                    <input type="password" id="usClave" class="form-control"
+                           placeholder="••••••••" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">Rol</label>
+                    <select id="usRol" class="form-select">
+                        <option value="USUARIO">USUARIO</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                </div>
+                <div id="usError" class="alert alert-danger d-none"></div>
+            </div>
+            <div class="modal-footer border-0">
+                <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarUS()">
+                    <i class="bi bi-floppy me-1"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
 <form style="display:none">@Html.AntiForgeryToken()</form>
 <script>
+    // ── Usuarios Sistema ─────────────────────────────────────────
+    let usSel = null;
+
+    function seleccionarUS(row) {
+        document.querySelectorAll('.us-row').forEach(r => r.classList.remove('table-primary'));
+        row.classList.add('table-primary');
+        usSel = row.dataset;
+        document.getElementById('btnUSEditar').disabled   = false;
+        document.getElementById('btnUSEliminar').disabled = false;
+    }
+
+    function abrirModalUS(modo) {
+        const modal = new bootstrap.Modal(document.getElementById('modalUS'));
+        document.getElementById('usError').classList.add('d-none');
+
+        if (modo === 'nuevo') {
+            document.getElementById('modalUSTitulo').textContent = 'Nuevo Usuario del Sistema';
+            document.getElementById('usId').value      = '';
+            document.getElementById('usNombre').value  = '';
+            document.getElementById('usUsuario').value = '';
+            document.getElementById('usClave').value   = '';
+            document.getElementById('usRol').value     = 'USUARIO';
+            document.getElementById('usUsuario').readOnly    = false;
+            document.getElementById('lblClaveNota').style.display = 'none';
+        } else {
+            if (!usSel) return;
+            document.getElementById('modalUSTitulo').textContent = 'Editar Usuario del Sistema';
+            document.getElementById('usId').value      = usSel.id;
+            document.getElementById('usNombre').value  = usSel.nombre;
+            document.getElementById('usUsuario').value = usSel.usuario;
+            document.getElementById('usClave').value   = '';
+            document.getElementById('usRol').value     = usSel.rol;
+            document.getElementById('usUsuario').readOnly    = true;
+            document.getElementById('lblClaveNota').style.display = '';
+        }
+        modal.show();
+    }
+
+    function guardarUS() {
+        const id      = document.getElementById('usId').value;
+        const esNuevo = !id;
+        const params  = new URLSearchParams({
+            nombre:    document.getElementById('usNombre').value,
+            usuario:   document.getElementById('usUsuario').value,
+            clave:     document.getElementById('usClave').value,
+            nuevaClave:document.getElementById('usClave').value,
+            rol:       document.getElementById('usRol').value,
+            __RequestVerificationToken: getToken()
+        });
+        if (!esNuevo) params.append('idUsuario', id);
+
+        const url = esNuevo
+            ? '@Url.Action("CrearUsuarioSistema","Admin")'
+            : '@Url.Action("ActualizarUsuarioSistema","Admin")';
+
+        fetch(url, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: params })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('modalUS')).hide();
+                location.reload();
+            } else {
+                const e = document.getElementById('usError');
+                e.textContent = data.mensaje;
+                e.classList.remove('d-none');
+            }
+        });
+    }
+
+    function eliminarUS() {
+        if (!usSel || !confirm(`Eliminar al usuario "${usSel.usuario}" del sistema?`)) return;
+        fetch('@Url.Action("EliminarUsuarioSistema","Admin")', {
+            method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body: `idUsuario=${usSel.id}&__RequestVerificationToken=${getToken()}`
+        }).then(r => r.json()).then(data => {
+            if (data.ok) location.reload();
+            else alert(data.mensaje);
+        });
+    }
+
+    // ── Respaldo ─────────────────────────────────────────────────
     function generarRespaldo() {
         const btn   = document.getElementById('btnRespaldo');
-        const panel = document.getElementById('panelEstado');
+        const panel = document.getElementById('panelEstadoRespaldo');
 
-        btn.disabled   = true;
-        btn.innerHTML  = '<span class="spinner-border spinner-border-sm me-2"></span> Generando respaldo...';
-        panel.className = 'alert alert-warning py-2 small';
+        btn.disabled  = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Generando...';
+        panel.className   = 'alert alert-warning py-2 small';
         panel.textContent = 'Generando respaldo, por favor espera...';
         panel.classList.remove('d-none');
 
-        // Llamada POST que retorna el archivo como descarga
         fetch('@Url.Action("GenerarRespaldo","Admin")', {
-            method: 'POST',
-            headers: { 'RequestVerificationToken': getToken() },
+            method:'POST',
             body: new URLSearchParams({ __RequestVerificationToken: getToken() })
         })
         .then(async response => {
             btn.disabled  = false;
             btn.innerHTML = '<i class="bi bi-download me-2"></i> Generar y Descargar Respaldo';
 
-            // Si es JSON = error
             const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
+            if (contentType?.includes('application/json')) {
                 const data = await response.json();
                 panel.className   = 'alert alert-danger py-2 small';
                 panel.textContent = data.mensaje;
                 return;
             }
 
-            // Es un archivo — forzar descarga
             const blob     = await response.blob();
             const filename = response.headers.get('content-disposition')
                 ?.match(/filename="?([^"]+)"?/)?.[1]
@@ -222,9 +393,7 @@
 
             const url  = URL.createObjectURL(blob);
             const link = document.createElement('a');
-            link.href     = url;
-            link.download = filename;
-            link.click();
+            link.href = url; link.download = filename; link.click();
             URL.revokeObjectURL(url);
 
             panel.className   = 'alert alert-success py-2 small';
@@ -234,7 +403,7 @@
             btn.disabled  = false;
             btn.innerHTML = '<i class="bi bi-download me-2"></i> Generar y Descargar Respaldo';
             panel.className   = 'alert alert-danger py-2 small';
-            panel.textContent = 'Error de red: ' + err.message;
+            panel.textContent = 'Error: ' + err.message;
         });
     }
 
