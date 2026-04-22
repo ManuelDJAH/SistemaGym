@@ -5,182 +5,158 @@
     var categorias = ViewBag.Categorias as List<Categoria> ?? new List<Categoria>();
 }
 
-<!-- Barra superior -->
-<div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
-    <div class="card-body py-3">
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <!-- Filtro categoría -->
-            <form method="get" asp-action="Index" class="d-flex align-items-center gap-2">
-                <label class="fw-semibold small mb-0">Categoría:</label>
-                <select name="categoriaID" class="form-select form-select-sm" style="width:180px;" onchange="this.form.submit()">
-                    <option value="">Todas</option>
-                    @foreach (var cat in categorias)
-                    {
-                        <option value="@cat.CategoriaID"
-                                selected="@(ViewBag.CategoriaActual?.ToString() == cat.CategoriaID.ToString() ? "selected" : null)">
-                            @cat.Nombre
-                        </option>
-                    }
-                </select>
-                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Todos</a>
-            </form>
+<!-- Filter bar -->
+<div class="cf-filter-bar">
+    <form method="get" asp-action="Index" class="d-flex align-items-center gap-2 flex-wrap">
+        <label class="cf-label mb-0" style="white-space:nowrap;">Categoria</label>
+        <select name="categoriaID" class="cf-select" onchange="this.form.submit()" style="min-width:160px;">
+            <option value="">Todas</option>
+            @foreach (var cat in categorias)
+            {
+                <option value="@cat.CategoriaID"
+                        selected="@(ViewBag.CategoriaActual?.ToString() == cat.CategoriaID.ToString() ? "selected" : null)">
+                    @cat.Nombre
+                </option>
+            }
+        </select>
+        <a asp-action="Index" class="cf-btn cf-btn-outline cf-btn-sm">Ver todos</a>
+    </form>
 
-            <div class="ms-auto d-flex gap-2 flex-wrap">
-                <button class="btn btn-sm btn-success" onclick="abrirModal('nuevo')">
-                    <i class="bi bi-plus-circle me-1"></i> Nuevo
-                </button>
-                <button class="btn btn-sm btn-primary" id="btnEditar" disabled onclick="abrirModal('editar')">
-                    <i class="bi bi-pencil me-1"></i> Editar
-                </button>
-                <button class="btn btn-sm btn-danger" id="btnBaja" disabled onclick="darBaja()">
-                    <i class="bi bi-trash me-1"></i> Dar de baja
-                </button>
-                <a asp-action="Equipo" class="btn btn-sm btn-outline-dark">
-                    <i class="bi bi-dumbbell me-1"></i> Equipo
-                </a>
-                <a asp-action="Movimientos" class="btn btn-sm btn-outline-primary">
-                    <i class="bi bi-arrow-left-right me-1"></i> Movimientos
-                </a>
-                <a asp-action="Alertas" class="btn btn-sm btn-outline-warning">
-                    <i class="bi bi-bell me-1"></i> Alertas
-                </a>
-                <a asp-action="Defectos" class="btn btn-sm btn-outline-danger">
-                    <i class="bi bi-exclamation-triangle me-1"></i> Defectos
-                </a>
-            </div>
-        </div>
+    <div class="ms-auto d-flex gap-2 flex-wrap">
+        <button class="cf-btn cf-btn-primary cf-btn-sm" onclick="abrirModal('nuevo')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo
+        </button>
+        <button class="cf-btn cf-btn-dark cf-btn-sm" id="btnEditar" disabled onclick="abrirModal('editar')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Editar
+        </button>
+        <button class="cf-btn cf-btn-danger cf-btn-sm" id="btnBaja" disabled onclick="darBaja()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            Dar de baja
+        </button>
+        <a asp-action="Equipo"      class="cf-btn cf-btn-outline cf-btn-sm">Equipo</a>
+        <a asp-action="Movimientos" class="cf-btn cf-btn-outline cf-btn-sm">Movimientos</a>
+        <a asp-action="Alertas"     class="cf-btn cf-btn-outline cf-btn-sm">Alertas</a>
+        <a asp-action="Defectos"    class="cf-btn cf-btn-outline cf-btn-sm">Defectos</a>
     </div>
 </div>
 
-<!-- Tabla de productos -->
-<div class="card border-0 shadow-sm" style="border-radius:12px;">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="tblProductos">
-                <thead style="background:#f8f9fa;">
-                    <tr>
-                        <th class="ps-4">Código</th>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th class="text-center">Precio</th>
-                        <th class="text-center">Stock</th>
-                        <th class="text-center">Mínimo</th>
-                        <th class="text-center">Caduca</th>
-                        <th class="text-center">Estado</th>
+<!-- Table card -->
+<div class="cf-card">
+    <div class="table-responsive">
+        <table class="cf-table">
+            <thead>
+                <tr>
+                    <th style="padding-left:20px;">Codigo</th>
+                    <th>Nombre</th>
+                    <th>Categoria</th>
+                    <th class="text-center">Precio</th>
+                    <th class="text-center">Stock</th>
+                    <th class="text-center">Min</th>
+                    <th class="text-center">Caduca</th>
+                    <th class="text-center">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!productos.Any())
+                {
+                    <tr><td colspan="8" class="text-center py-5 text-muted">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.3;display:block;margin:0 auto 10px;"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+                        No hay productos registrados.
+                    </td></tr>
+                }
+                @foreach (var p in productos)
+                {
+                    <tr class="producto-row"
+                        style="padding-left:0;"
+                        data-id="@p.ProductoID" data-codigo="@p.Codigo" data-nombre="@p.Nombre"
+                        data-catid="@p.CategoriaID" data-precio="@p.Precio" data-stockmin="@p.StockMinimo"
+                        data-caducidad="@(p.FechaCaducidad?.ToString("yyyy-MM-dd") ?? "")"
+                        onclick="seleccionar(this)">
+                        <td style="padding-left:20px;"><code style="font-size:12px;color:var(--cf-gray-600);">@p.Codigo</code></td>
+                        <td><strong>@p.Nombre</strong></td>
+                        <td>@p.CategoriaNombre</td>
+                        <td class="text-center">$@p.Precio.ToString("F2")</td>
+                        <td class="text-center">
+                            <span class="cf-badge @(p.StockActual <= p.StockMinimo ? "cf-badge-red" : "cf-badge-green")">
+                                @p.StockActual
+                            </span>
+                        </td>
+                        <td class="text-center" style="color:var(--cf-gray-400);font-size:13px;">@p.StockMinimo</td>
+                        <td class="text-center" style="font-size:13px;color:var(--cf-gray-400);">
+                            @(p.FechaCaducidad.HasValue ? p.FechaCaducidad.Value.ToString("dd/MM/yy") : "—")
+                        </td>
+                        <td class="text-center">
+                            @if (p.EstadoAlerta == "STOCK_BAJO")
+                            { <span class="cf-badge cf-badge-red">Stock Bajo</span> }
+                            else if (p.EstadoAlerta == "POR_CADUCAR")
+                            { <span class="cf-badge cf-badge-yellow">Por Caducar</span> }
+                            else
+                            { <span class="cf-badge cf-badge-green">OK</span> }
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    @if (!productos.Any())
-                    {
-                        <tr>
-                            <td colspan="8" class="text-center text-muted py-5">
-                                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                                No hay productos registrados.
-                            </td>
-                        </tr>
-                    }
-                    @foreach (var p in productos)
-                    {
-                        <tr class="producto-row @(p.EstadoAlerta == "STOCK_BAJO" ? "table-danger" : p.EstadoAlerta == "POR_CADUCAR" ? "table-warning" : "")"
-                            style="cursor:pointer;"
-                            data-id="@p.ProductoID"
-                            data-codigo="@p.Codigo"
-                            data-nombre="@p.Nombre"
-                            data-catid="@p.CategoriaID"
-                            data-precio="@p.Precio"
-                            data-stockmin="@p.StockMinimo"
-                            data-caducidad="@(p.FechaCaducidad?.ToString("yyyy-MM-dd") ?? "")"
-                            onclick="seleccionar(this)">
-                            <td class="ps-4"><code>@p.Codigo</code></td>
-                            <td class="fw-semibold">@p.Nombre</td>
-                            <td>@p.CategoriaNombre</td>
-                            <td class="text-center">$@p.Precio.ToString("F2")</td>
-                            <td class="text-center">
-                                <span class="badge @(p.StockActual <= p.StockMinimo ? "bg-danger" : "bg-success")">
-                                    @p.StockActual
-                                </span>
-                            </td>
-                            <td class="text-center text-muted">@p.StockMinimo</td>
-                            <td class="text-center text-muted small">
-                                @(p.FechaCaducidad.HasValue ? p.FechaCaducidad.Value.ToString("dd/MM/yyyy") : "—")
-                            </td>
-                            <td class="text-center">
-                                @if (p.EstadoAlerta == "STOCK_BAJO")
-                                { <span class="badge bg-danger">Stock Bajo</span> }
-                                else if (p.EstadoAlerta == "POR_CADUCAR")
-                                { <span class="badge bg-warning text-dark">Por Caducar</span> }
-                                else
-                                { <span class="badge bg-success">OK</span> }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                }
+            </tbody>
+        </table>
     </div>
-    <div class="card-footer bg-transparent text-muted small d-flex justify-content-between">
-        <span>
-            <span class="badge bg-danger me-1">●</span> Stock Bajo &nbsp;
-            <span class="badge bg-warning text-dark me-1">●</span> Por Caducar &nbsp;
-            <span class="badge bg-success me-1">●</span> OK
-        </span>
-        <span>Total: <strong>@productos.Count</strong> productos</span>
+    <div style="padding:12px 20px;border-top:1px solid var(--cf-gray-200);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--cf-gray-400);">
+        <div>
+            <span class="cf-badge cf-badge-red me-1">●</span>Stock Bajo &nbsp;
+            <span class="cf-badge cf-badge-yellow me-1">●</span>Por Caducar &nbsp;
+            <span class="cf-badge cf-badge-green me-1">●</span>OK
+        </div>
+        <span>Total: <strong style="color:var(--cf-dark);">@productos.Count</strong> productos</span>
     </div>
 </div>
 
-<!-- ══ MODAL Nuevo / Editar ════════════════════════════════════════ -->
+<!-- MODAL -->
 <div class="modal fade" id="modalProducto" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content" style="border-radius:12px;">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold" id="modalTitulo">Nuevo Producto</h5>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitulo">Nuevo Producto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="fProductoID" />
-
                 <div class="mb-3">
-                    <label class="form-label fw-semibold small">Código de barras</label>
-                    <input type="text" id="fCodigo" class="form-control" placeholder="EAN-13 o código interno" />
+                    <label class="cf-label">Codigo de barras</label>
+                    <input type="text" id="fCodigo" class="cf-input w-100" placeholder="EAN-13 o codigo interno" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold small">Nombre</label>
-                    <input type="text" id="fNombre" class="form-control" placeholder="Nombre del producto" />
+                    <label class="cf-label">Nombre</label>
+                    <input type="text" id="fNombre" class="cf-input w-100" placeholder="Nombre del producto" />
                 </div>
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold small">Categoría</label>
-                        <select id="fCategoria" class="form-select">
-                            @foreach (var cat in categorias)
-                            {
-                                <option value="@cat.CategoriaID">@cat.Nombre</option>
-                            }
+                        <label class="cf-label">Categoria</label>
+                        <select id="fCategoria" class="cf-select w-100">
+                            @foreach (var cat in categorias) { <option value="@cat.CategoriaID">@cat.Nombre</option> }
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold small">Precio ($)</label>
-                        <input type="number" id="fPrecio" class="form-control" min="0" step="0.01" value="0" />
+                        <label class="cf-label">Precio ($)</label>
+                        <input type="number" id="fPrecio" class="cf-input w-100" min="0" step="0.01" value="0" />
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold small">Stock mín.</label>
-                        <input type="number" id="fStockMin" class="form-control" min="0" value="3" />
+                        <label class="cf-label">Stock min</label>
+                        <input type="number" id="fStockMin" class="cf-input w-100" min="0" value="3" />
                     </div>
                 </div>
                 <div class="mb-3">
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" id="chkCaducidad"
                                onchange="document.getElementById('fCaducidad').disabled = !this.checked" />
-                        <label class="form-check-label small" for="chkCaducidad">Tiene fecha de caducidad</label>
+                        <label class="form-check-label" style="font-size:13px;" for="chkCaducidad">Tiene fecha de caducidad</label>
                     </div>
-                    <input type="date" id="fCaducidad" class="form-control" disabled />
+                    <input type="date" id="fCaducidad" class="cf-input w-100" disabled />
                 </div>
-                <div id="modalError" class="alert alert-danger d-none"></div>
+                <div id="modalError" class="cf-alert cf-alert-danger d-none"></div>
             </div>
-            <div class="modal-footer border-0">
-                <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" id="btnGuardar" onclick="guardarProducto()">
-                    <i class="bi bi-floppy me-1"></i> Guardar
-                </button>
+            <div class="modal-footer">
+                <button class="cf-btn cf-btn-outline" data-bs-dismiss="modal">Cancelar</button>
+                <button class="cf-btn cf-btn-primary" onclick="guardarProducto()">Guardar</button>
             </div>
         </div>
     </div>
@@ -190,19 +166,16 @@
 <form style="display:none">@Html.AntiForgeryToken()</form>
 <script>
     let productoSeleccionado = null;
-
     function seleccionar(row) {
-        document.querySelectorAll('.producto-row').forEach(r => r.classList.remove('table-primary'));
-        row.classList.add('table-primary');
+        document.querySelectorAll('.producto-row').forEach(r => r.classList.remove('selected'));
+        row.classList.add('selected');
         productoSeleccionado = row.dataset;
         document.getElementById('btnEditar').disabled = false;
         document.getElementById('btnBaja').disabled   = false;
     }
-
     function abrirModal(modo) {
         const modal = new bootstrap.Modal(document.getElementById('modalProducto'));
         document.getElementById('modalError').classList.add('d-none');
-
         if (modo === 'nuevo') {
             document.getElementById('modalTitulo').textContent = 'Nuevo Producto';
             document.getElementById('fProductoID').value = '';
@@ -224,74 +197,29 @@
             document.getElementById('fPrecio').value     = productoSeleccionado.precio;
             document.getElementById('fStockMin').value   = productoSeleccionado.stockmin;
             document.getElementById('fCodigo').readOnly  = true;
-
             const cad = productoSeleccionado.caducidad;
-            if (cad) {
-                document.getElementById('chkCaducidad').checked   = true;
-                document.getElementById('fCaducidad').disabled    = false;
-                document.getElementById('fCaducidad').value       = cad;
-            } else {
-                document.getElementById('chkCaducidad').checked   = false;
-                document.getElementById('fCaducidad').disabled    = true;
-                document.getElementById('fCaducidad').value       = '';
-            }
+            if (cad) { document.getElementById('chkCaducidad').checked = true; document.getElementById('fCaducidad').disabled = false; document.getElementById('fCaducidad').value = cad; }
+            else { document.getElementById('chkCaducidad').checked = false; document.getElementById('fCaducidad').disabled = true; }
         }
         modal.show();
     }
-
     function guardarProducto() {
-        const productoID = document.getElementById('fProductoID').value;
-        const esNuevo    = !productoID;
-        const caducidad  = document.getElementById('chkCaducidad').checked
-                           ? document.getElementById('fCaducidad').value : '';
-
-        const params = new URLSearchParams({
-            codigo:        document.getElementById('fCodigo').value,
-            nombre:        document.getElementById('fNombre').value,
-            categoriaID:   document.getElementById('fCategoria').value,
-            precio:        document.getElementById('fPrecio').value,
-            stockMinimo:   document.getElementById('fStockMin').value,
-            fechaCaducidad:caducidad,
-            __RequestVerificationToken: getToken()
-        });
-        if (!esNuevo) params.append('productoID', productoID);
-
-        const url = esNuevo
-            ? '@Url.Action("CrearProducto","Inventario")'
-            : '@Url.Action("ActualizarProducto","Inventario")';
-
-        fetch(url, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: params })
-        .then(r => r.json())
-        .then(data => {
-            if (data.ok) {
-                bootstrap.Modal.getInstance(document.getElementById('modalProducto')).hide();
-                location.reload();
-            } else {
-                const err = document.getElementById('modalError');
-                err.textContent = data.mensaje;
-                err.classList.remove('d-none');
-            }
+        const id = document.getElementById('fProductoID').value;
+        const esNuevo = !id;
+        const caducidad = document.getElementById('chkCaducidad').checked ? document.getElementById('fCaducidad').value : '';
+        const params = new URLSearchParams({ codigo: document.getElementById('fCodigo').value, nombre: document.getElementById('fNombre').value, categoriaID: document.getElementById('fCategoria').value, precio: document.getElementById('fPrecio').value, stockMinimo: document.getElementById('fStockMin').value, fechaCaducidad: caducidad, __RequestVerificationToken: getToken() });
+        if (!esNuevo) params.append('productoID', id);
+        fetch(esNuevo ? '@Url.Action("CrearProducto","Inventario")' : '@Url.Action("ActualizarProducto","Inventario")', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: params })
+        .then(r => r.json()).then(data => {
+            if (data.ok) { bootstrap.Modal.getInstance(document.getElementById('modalProducto')).hide(); location.reload(); }
+            else { const e = document.getElementById('modalError'); e.textContent = data.mensaje; e.classList.remove('d-none'); }
         });
     }
-
     function darBaja() {
-        if (!productoSeleccionado) return;
-        if (!confirm(`¿Dar de baja "${productoSeleccionado.nombre}"? (baja lógica)`)) return;
-
-        fetch('@Url.Action("BajaProducto","Inventario")', {
-            method:'POST',
-            headers:{'Content-Type':'application/x-www-form-urlencoded'},
-            body: `productoID=${productoSeleccionado.id}&__RequestVerificationToken=${getToken()}`
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.ok) location.reload();
-            else alert(data.mensaje);
-        });
+        if (!productoSeleccionado || !confirm(`Dar de baja "${productoSeleccionado.nombre}"?`)) return;
+        fetch('@Url.Action("BajaProducto","Inventario")', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: `productoID=${productoSeleccionado.id}&__RequestVerificationToken=${getToken()}` })
+        .then(r => r.json()).then(data => { if (data.ok) location.reload(); else alert(data.mensaje); });
     }
-
-    function getToken() {
-        return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
-    }
+    function getToken() { return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''; }
 </script>
 }

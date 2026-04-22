@@ -1,68 +1,96 @@
-﻿@{
-    ViewData["Title"] = "Inicio";
+@{
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="row g-4">
-    <!-- Bienvenida -->
-    <div class="col-12">
-        <div class="card border-0 shadow-sm" style="background:linear-gradient(135deg,#0f3460,#16213e);color:white;border-radius:12px;">
-            <div class="card-body p-4">
-                <h4 class="fw-bold mb-1">Bienvenido, @ViewBag.Usuario</h4>
-                <p class="mb-0 opacity-75">
-                    SistemaGym — Panel de gestión del gimnasio
-                </p>
+<!-- Welcome banner -->
+<div class="cf-card mb-4" style="background:var(--cf-dark);border-color:var(--cf-dark);overflow:hidden;position:relative;">
+    <div style="position:absolute;width:280px;height:280px;border:50px solid rgba(141,198,63,.08);border-radius:50%;top:-100px;right:-60px;"></div>
+    <div style="position:absolute;width:160px;height:160px;border:30px solid rgba(141,198,63,.05);border-radius:50%;bottom:-60px;right:140px;"></div>
+    <div class="p-4" style="position:relative;z-index:1;">
+        <div class="d-flex align-items-center gap-3">
+            <div style="width:46px;height:46px;border-radius:12px;background:var(--cf-green);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:var(--cf-dark);">
+                @(ViewBag.Usuario?.ToString()?.Substring(0,1)?.ToUpper() ?? "U")
+            </div>
+            <div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:700;color:#fff;">
+                    Bienvenido, @ViewBag.Usuario
+                </div>
+                <div style="color:rgba(255,255,255,.45);font-size:13px;">
+                    @DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy") — Rol: <span style="color:var(--cf-green);font-weight:600;">@ViewBag.Rol</span>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Módulos -->
-    <div class="col-md-4">
-        <a asp-controller="Inventario" asp-action="Index" class="text-decoration-none">
-            <div class="card border-0 shadow-sm h-100" style="border-radius:12px; transition:.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
-                <div class="card-body p-4 text-center">
-                    <i class="bi bi-box-seam" style="font-size:2.5rem;color:#0f3460;"></i>
-                    <h5 class="mt-3 fw-bold">Inventario</h5>
-                    <p class="text-muted mb-0 small">Productos, movimientos y alertas</p>
-                </div>
+<!-- Modulos -->
+<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;color:var(--cf-gray-400);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;">
+    Modulos del sistema
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-4 col-lg-3">
+        <a asp-controller="Inventario" asp-action="Index" class="cf-module-card">
+            <div class="cf-module-card-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cf-green-dark)" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                </svg>
             </div>
+            <div class="cf-module-card-title">Inventario</div>
+            <div class="cf-module-card-sub">Productos, equipo y movimientos</div>
         </a>
     </div>
-
-    <div class="col-md-4">
-        <a asp-controller="Proveedores" asp-action="Index" class="text-decoration-none">
-            <div class="card border-0 shadow-sm h-100" style="border-radius:12px; transition:.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
-                <div class="card-body p-4 text-center">
-                    <i class="bi bi-truck" style="font-size:2.5rem;color:#0f3460;"></i>
-                    <h5 class="mt-3 fw-bold">Proveedores</h5>
-                    <p class="text-muted mb-0 small">Proveedores y órdenes de restock</p>
-                </div>
+    <div class="col-6 col-md-4 col-lg-3">
+        <a asp-controller="Proveedores" asp-action="Index" class="cf-module-card">
+            <div class="cf-module-card-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cf-green-dark)" stroke-width="2">
+                    <rect x="1" y="3" width="15" height="13"/>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                    <circle cx="5.5" cy="18.5" r="2.5"/>
+                    <circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
             </div>
+            <div class="cf-module-card-title">Proveedores</div>
+            <div class="cf-module-card-sub">Proveedores y restock</div>
         </a>
     </div>
-
-    <div class="col-md-4">
-        <a asp-controller="Asistencia" asp-action="Index" class="text-decoration-none">
-            <div class="card border-0 shadow-sm h-100" style="border-radius:12px; transition:.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
-                <div class="card-body p-4 text-center">
-                    <i class="bi bi-person-check" style="font-size:2.5rem;color:#0f3460;"></i>
-                    <h5 class="mt-3 fw-bold">Asistencias</h5>
-                    <p class="text-muted mb-0 small">Registro de asistencia de miembros</p>
-                </div>
+    <div class="col-6 col-md-4 col-lg-3">
+        <a asp-controller="Asistencia" asp-action="Index" class="cf-module-card">
+            <div class="cf-module-card-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cf-green-dark)" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <polyline points="16 11 18 13 22 9"/>
+                </svg>
             </div>
+            <div class="cf-module-card-title">Asistencias</div>
+            <div class="cf-module-card-sub">Registro de entrada</div>
         </a>
     </div>
-
+    <div class="col-6 col-md-4 col-lg-3">
+        <a asp-controller="Usuarios" asp-action="Index" class="cf-module-card">
+            <div class="cf-module-card-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cf-green-dark)" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+            </div>
+            <div class="cf-module-card-title">Miembros</div>
+            <div class="cf-module-card-sub">Usuarios del gimnasio</div>
+        </a>
+    </div>
     @if (ViewBag.EsAdmin == true)
     {
-        <div class="col-md-4">
-            <a asp-controller="Admin" asp-action="Index" class="text-decoration-none">
-                <div class="card border-0 shadow-sm h-100" style="border-radius:12px; transition:.2s;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
-                    <div class="card-body p-4 text-center">
-                        <i class="bi bi-shield-lock" style="font-size:2.5rem;color:#e94560;"></i>
-                        <h5 class="mt-3 fw-bold">Panel Admin</h5>
-                        <p class="text-muted mb-0 small">Bitácora y respaldo de base de datos</p>
-                    </div>
+        <div class="col-6 col-md-4 col-lg-3">
+            <a asp-controller="Admin" asp-action="Index" class="cf-module-card" style="border-color:rgba(239,68,68,.2);">
+                <div class="cf-module-card-icon" style="background:rgba(239,68,68,.08);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
                 </div>
+                <div class="cf-module-card-title">Panel Admin</div>
+                <div class="cf-module-card-sub">Bitacora, respaldo y usuarios</div>
             </a>
         </div>
     }
