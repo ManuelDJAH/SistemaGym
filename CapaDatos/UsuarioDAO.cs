@@ -1,172 +1,222 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using CapaDatos;
 
-public class UsuarioDAO
+namespace CapaDatos
 {
-    public string RegistrarUsuario(string nombre, int edad, string correo,
-                                   string telefono, DateTime fechaRegistro, int idMembresia)
+    public class UsuarioDAO
     {
-        try
+        // ── LISTAR TODOS ─────────────────────────────────────────────
+        public DataTable ListarUsuarios()
         {
-            using (SqlConnection cn = new SqlConnection(Conexion.cadena))
+            using (var cn = Conexion.ObtenerConexion())
             {
-                SqlCommand cmd = new SqlCommand("RegistrarUsuario", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
+                var cmd = new SqlCommand(@"
+                    SELECT u.id_usuario,
+                           u.nombre,
+                           u.edad,
+                           u.correo,
+                           u.telefono,
+                           u.fecha_registro,
+                           u.fecha_vencimiento,
+                           u.id_membresia,
+                           m.nombre        AS nombre_membresia,
+                           m.duracion_meses,
+                           CASE WHEN u.fecha_vencimiento < CAST(GETDATE() AS DATE)
+                                THEN 'VENCIDA' ELSE 'ACTIVA' END AS estado_membresia
+                    FROM Usuarios u
+                    LEFT JOIN Membresias m ON u.id_membresia = m.id_membresia
+                    ORDER BY u.nombre", cn);
 
-                cmd.Parameters.AddWithValue("@nombre", nombre);
-                cmd.Parameters.AddWithValue("@edad", edad);
-                cmd.Parameters.AddWithValue("@correo", correo);
-                cmd.Parameters.AddWithValue("@telefono", telefono);
-                cmd.Parameters.AddWithValue("@fecha_registro", fechaRegistro);
-                cmd.Parameters.AddWithValue("@id_membresia", idMembresia);
-
+                var da = new SqlDataAdapter(cmd);
+                var dt = new DataTable();
                 cn.Open();
-                cmd.ExecuteNonQuery();
+                da.Fill(dt);
+                return dt;
             }
-            return "Usuario registrado correctamente";
         }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
-    }
 
-    public string ActualizarUsuario(int idUsuario, string nombre, int edad,
-                                    string correo, string telefono, int idMembresia)
-    {
-        try
+        // ── BUSCAR POR NOMBRE ────────────────────────────────────────
+        public DataTable BuscarPorNombre(string texto)
         {
-            using (SqlConnection cn = new SqlConnection(Conexion.cadena))
+            using (var cn = Conexion.ObtenerConexion())
             {
-                SqlCommand cmd = new SqlCommand("ActualizarUsuario", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
+                var cmd = new SqlCommand(@"
+                    SELECT u.id_usuario,
+                           u.nombre,
+                           u.edad,
+                           u.correo,
+                           u.telefono,
+                           u.fecha_registro,
+                           u.fecha_vencimiento,
+                           u.id_membresia,
+                           m.nombre        AS nombre_membresia,
+                           m.duracion_meses,
+                           CASE WHEN u.fecha_vencimiento < CAST(GETDATE() AS DATE)
+                                THEN 'VENCIDA' ELSE 'ACTIVA' END AS estado_membresia
+                    FROM Usuarios u
+                    LEFT JOIN Membresias m ON u.id_membresia = m.id_membresia
+                    WHERE u.nombre LIKE @txt
+                    ORDER BY u.nombre", cn);
 
-                cmd.Parameters.AddWithValue("@id_usuario", idUsuario);
-                cmd.Parameters.AddWithValue("@nombre", nombre);
-                cmd.Parameters.AddWithValue("@edad", edad);
-                cmd.Parameters.AddWithValue("@correo", correo);
-                cmd.Parameters.AddWithValue("@telefono", telefono);
-                cmd.Parameters.AddWithValue("@id_membresia", idMembresia);
-
+                cmd.Parameters.AddWithValue("@txt", $"%{texto}%");
+                var da = new SqlDataAdapter(cmd);
+                var dt = new DataTable();
                 cn.Open();
-                cmd.ExecuteNonQuery();
+                da.Fill(dt);
+                return dt;
             }
-            return "Usuario actualizado correctamente";
         }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
-    }
 
-    public string EliminarUsuario(int idUsuario)
-    {
-        try
+        // ── REGISTRAR (usa SP que calcula vencimiento) ───────────────
+        public string RegistrarUsuario(string nombre, int edad, string correo,
+                                       string telefono, DateTime fechaRegistro, int idMembresia)
         {
-            using (SqlConnection cn = new SqlConnection(Conexion.cadena))
+            try
             {
-                SqlCommand cmd = new SqlCommand("EliminarUsuario", cn);
-                cmd.CommandType = CommandType.StoredProcedure;
+                using (var cn = Conexion.ObtenerConexion())
+                {
+                    var cmd = new SqlCommand("sp_RegistrarUsuario", cn)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.AddWithValue("@nombre", nombre);
+                    cmd.Parameters.AddWithValue("@edad", edad);
+                    cmd.Parameters.AddWithValue("@correo", correo);
+                    cmd.Parameters.AddWithValue("@telefono", telefono);
+                    cmd.Parameters.AddWithValue("@fecha_registro", fechaRegistro.Date);
+                    cmd.Parameters.AddWithValue("@id_membresia", idMembresia);
+                    cn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                return "Usuario registrado correctamente.";
+            }
+            catch (SqlException ex) { return ex.Message; }
+        }
 
-                cmd.Parameters.AddWithValue("@id_usuario", idUsuario);
+        // ── ACTUALIZAR (usa SP que recalcula vencimiento) ────────────
+        public string ActualizarUsuario(int idUsuario, string nombre, int edad,
+                                        string correo, string telefono, int idMembresia)
+        {
+            try
+            {
+                using (var cn = Conexion.ObtenerConexion())
+                {
+                    var cmd = new SqlCommand("sp_ActualizarUsuario", cn)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.AddWithValue("@id_usuario", idUsuario);
+                    cmd.Parameters.AddWithValue("@nombre", nombre);
+                    cmd.Parameters.AddWithValue("@edad", edad);
+                    cmd.Parameters.AddWithValue("@correo", correo);
+                    cmd.Parameters.AddWithValue("@telefono", telefono);
+                    cmd.Parameters.AddWithValue("@id_membresia", idMembresia);
+                    cn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                return "Usuario actualizado correctamente.";
+            }
+            catch (SqlException ex) { return ex.Message; }
+        }
 
+        // ── ELIMINAR ─────────────────────────────────────────────────
+        public string EliminarUsuario(int idUsuario)
+        {
+            try
+            {
+                using (var cn = Conexion.ObtenerConexion())
+                {
+                    var cmd = new SqlCommand(
+                        "DELETE FROM Usuarios WHERE id_usuario = @id", cn);
+                    cmd.Parameters.AddWithValue("@id", idUsuario);
+                    cn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                return "Usuario eliminado correctamente.";
+            }
+            catch (SqlException ex) { return ex.Message; }
+        }
+
+        // ── RENOVAR MEMBRESÍA (desde hoy) ───────────────────────────
+        public string RenovarMembresia(int idUsuario, int idMembresia)
+        {
+            try
+            {
+                using (var cn = Conexion.ObtenerConexion())
+                {
+                    var cmd = new SqlCommand("sp_RenovarMembresia", cn)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    cmd.Parameters.AddWithValue("@id_usuario", idUsuario);
+                    cmd.Parameters.AddWithValue("@id_membresia", idMembresia);
+                    cn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                return "Membresía renovada correctamente.";
+            }
+            catch (SqlException ex) { return ex.Message; }
+        }
+
+        // ── LISTAR MEMBRESIAS (para combo) ───────────────────────────
+        public DataTable ListarMembresias()
+        {
+            using (var cn = Conexion.ObtenerConexion())
+            {
+                var cmd = new SqlCommand(
+                    "SELECT id_membresia, nombre AS nombre_membresia, duracion_meses, costo FROM Membresias ORDER BY duracion_meses", cn);
+                var da = new SqlDataAdapter(cmd);
+                var dt = new DataTable();
                 cn.Open();
-                cmd.ExecuteNonQuery();
+                da.Fill(dt);
+                return dt;
             }
-            return "Usuario eliminado correctamente";
-        }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
-    }
-
-    public DataTable ListarUsuarios()
-    {
-        DataTable dt = new DataTable();
-
-        using (SqlConnection cn = new SqlConnection(Conexion.cadena))
-        {
-            SqlCommand cmd = new SqlCommand("ListarUsuarios", cn);
-            cmd.CommandType = CommandType.StoredProcedure;
-
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            da.Fill(dt);
         }
 
-        return dt;
-    }
-
-    public string ValidarLogin(string usuario, string clave)
-    {
-        string rol = null;
-
-        using (SqlConnection conn = new SqlConnection(Conexion.cadena))
+        // ── LOGIN ────────────────────────────────────────────────────
+        public string ValidarLogin(string usuario, string clave)
         {
-            conn.Open();
-            string query = "SELECT rol FROM UsuariosSistema WHERE usuario = @usuario AND clave = @clave";
-            SqlCommand cmd = new SqlCommand(query, conn);
-
-            cmd.Parameters.AddWithValue("@usuario", usuario);
-            cmd.Parameters.AddWithValue("@clave", clave);
-
-            object result = cmd.ExecuteScalar();
-
-            if (result != null)
+            try
             {
-                rol = result.ToString();
+                using (var cn = Conexion.ObtenerConexion())
+                {
+                    var cmd = new SqlCommand(
+                        "SELECT rol FROM UsuariosSistema WHERE usuario = @u AND clave = @c", cn);
+                    cmd.Parameters.AddWithValue("@u", usuario);
+                    cmd.Parameters.AddWithValue("@c", clave);
+                    cn.Open();
+                    return cmd.ExecuteScalar()?.ToString();
+                }
             }
+            catch { return null; }
         }
 
-        return rol;
-    }
-    public DataTable ObtenerBitacora()
-    {
-        DataTable dt = new DataTable();
-
-        using (SqlConnection conn = new SqlConnection(Conexion.cadena))
+        // ── OBTENER ID POR USUARIO ───────────────────────────────────
+        public int ObtenerIdPorUsuario(string usuario)
         {
-            conn.Open();
-            string query = "SELECT * FROM Cambios ORDER BY fecha DESC";
-
-            SqlDataAdapter da = new SqlDataAdapter(query, conn);
-            da.Fill(dt);
-        }
-
-        return dt;
-    }
-
-    public int ObtenerIdPorUsuario(string usuario)
-    {
-        using (var con = Conexion.ObtenerConexion())
-        {
-            con.Open();
-            string sql = "SELECT id_usuario FROM UsuariosSistema WHERE usuario = @Usuario";
-            using (var cmd = new SqlCommand(sql, con))
+            using (var cn = Conexion.ObtenerConexion())
             {
-                cmd.Parameters.AddWithValue("@Usuario", usuario);
-                object resultado = cmd.ExecuteScalar();
-                return resultado != null ? Convert.ToInt32(resultado) : 0;
+                var cmd = new SqlCommand(
+                    "SELECT id_usuario FROM UsuariosSistema WHERE usuario = @u", cn);
+                cmd.Parameters.AddWithValue("@u", usuario);
+                cn.Open();
+                return (int)(cmd.ExecuteScalar() ?? 0);
             }
         }
-    }
-    public DataTable BuscarPorNombre(string nombre)
-    {
-        DataTable dt = new DataTable();
-        using (SqlConnection cn = new SqlConnection(Conexion.cadena))
-        {
-            string sql = @"SELECT id_usuario, nombre, edad, correo, telefono,
-                              id_membresia, fecha_registro
-                       FROM   Usuarios
-                       WHERE  nombre LIKE @nombre
-                       ORDER  BY nombre";
 
-            SqlDataAdapter da = new SqlDataAdapter(sql, cn);
-            da.SelectCommand.Parameters.AddWithValue("@nombre", "%" + nombre + "%");
-            da.Fill(dt);
+        // ── OBTENER BITÁCORA ─────────────────────────────────────────
+        public DataTable ObtenerBitacora()
+        {
+            using (var cn = Conexion.ObtenerConexion())
+            {
+                var cmd = new SqlCommand("SELECT * FROM BitacoraSesion ORDER BY FechaEntrada DESC", cn);
+                var da = new SqlDataAdapter(cmd);
+                var dt = new DataTable();
+                cn.Open();
+                da.Fill(dt);
+                return dt;
+            }
         }
-        return dt;
     }
 }

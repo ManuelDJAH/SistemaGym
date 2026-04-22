@@ -2,6 +2,7 @@
 using CapaWeb.Helpers;
 using ClaseNegocio;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace CapaWeb.Controllers
 {
@@ -10,46 +11,54 @@ namespace CapaWeb.Controllers
     {
         private readonly UsuariosBL _bl = new UsuariosBL();
 
-        public IActionResult Index(string buscar)
+        public IActionResult Index(string buscar = "")
         {
-            var dt = string.IsNullOrWhiteSpace(buscar)
-                ? _bl.ListarUsuarios()
-                : _bl.BuscarPorNombre(buscar);
+            ViewBag.Usuario = SesionWeb.GetUsuario(HttpContext.Session);
+            ViewBag.Rol = SesionWeb.GetRol(HttpContext.Session);
+            ViewBag.EsAdmin = SesionWeb.EsAdmin(HttpContext.Session);
 
-            ViewBag.Usuarios = dt;
+            ViewBag.Usuarios = string.IsNullOrWhiteSpace(buscar)
+                                    ? _bl.ListarUsuarios()
+                                    : _bl.BuscarPorNombre(buscar);
+            ViewBag.Membresias = _bl.ListarMembresias();
             ViewBag.Buscar = buscar;
-            ViewData["Title"] = "Usuarios / Miembros";
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Crear(string nombre, int edad, string correo,
-                                    string telefono, int idMembresia)
+                                   string telefono, int idMembresia)
         {
-            string msg = _bl.RegistrarUsuario(nombre, edad, correo,
-                                              telefono, DateTime.Today, idMembresia);
-            bool ok = msg.Contains("correctamente");
-            return Json(new { ok, mensaje = msg });
+            var msg = _bl.RegistrarUsuario(nombre, edad, correo ?? "",
+                                           telefono ?? "", System.DateTime.Today, idMembresia);
+            return Json(new { ok = msg.Contains("correctamente"), mensaje = msg });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Actualizar(int idUsuario, string nombre, int edad,
-                                         string correo, string telefono, int idMembresia)
+                                        string correo, string telefono, int idMembresia)
         {
-            string msg = _bl.ActualizarUsuario(idUsuario, nombre, edad, correo, telefono, idMembresia);
-            bool ok = msg.Contains("correctamente");
-            return Json(new { ok, mensaje = msg });
+            var msg = _bl.ActualizarUsuario(idUsuario, nombre, edad,
+                                            correo ?? "", telefono ?? "", idMembresia);
+            return Json(new { ok = msg.Contains("correctamente"), mensaje = msg });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Renovar(int idUsuario, int idMembresia)
+        {
+            var msg = _bl.RenovarMembresia(idUsuario, idMembresia);
+            return Json(new { ok = msg.Contains("correctamente"), mensaje = msg });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Eliminar(int idUsuario)
         {
-            string msg = _bl.EliminarUsuario(idUsuario);
-            bool ok = msg.Contains("correctamente");
-            return Json(new { ok, mensaje = msg });
+            var msg = _bl.EliminarUsuario(idUsuario);
+            return Json(new { ok = msg.Contains("correctamente"), mensaje = msg });
         }
     }
 }
