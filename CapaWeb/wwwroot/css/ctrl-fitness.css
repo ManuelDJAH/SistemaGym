@@ -669,3 +669,61 @@ h1, h2, h3, h4, h5, h6,
   #cf-topbar { padding: 0 16px; }
   .cf-filter-bar { flex-direction: column; align-items: stretch; }
 }
+
+/* ══ AGREGAR AL FINAL DE ctrl-fitness.css ══════════════════════════ */
+
+/* Logo en sidebar */
+.cf-brand-logo {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    border-radius: 8px;
+    flex-shrink: 0;
+    transition: width 0.25s, height 0.25s;
+}
+
+/* Logo más grande cuando sidebar está expandido */
+#cf-sidebar:not(.collapsed) .cf-brand-logo {
+    width: 38px;
+    height: 38px;
+}
+
+/* Cuando colapsado, solo mostrar logo sin texto */
+#cf-sidebar.collapsed .cf-brand-logo {
+    width: 32px;
+    height: 32px;
+}
+
+/* Ocultar texto de marca al colapsar (ya debería estar en tu CSS,
+   pero por si acaso lo reforzamos) */
+#cf-sidebar.collapsed .cf-brand-name {
+    display: none !important;
+}
+
+/* ══ FIX TABS — Bootstrap 5 requiere <button> no <a> para data-bs-toggle="tab" ══ */
+/* Asegura que los cf-tab como <button> tengan el mismo aspecto que como <a> */
+button.cf-tab {
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+    button.cf-tab:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+/* nav ul para las tabs del admin */
+ul.cf-tabs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+    ul.cf-tabs .nav-item {
+        display: flex;
+    }
