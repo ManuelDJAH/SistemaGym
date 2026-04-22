@@ -88,6 +88,15 @@
             <span class="cf-nav-label">Miembros</span>
         </a>
 
+        <a class="cf-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Notificaciones" ? "active" : "")"
+           asp-controller="Notificaciones" asp-action="Index" data-label="Notificaciones">
+            <svg class="cf-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 01-3.46 0"/>
+            </svg>
+            <span class="cf-nav-label">Notificaciones</span>
+        </a>
+
         @* Panel Admin: se lee desde Session directamente para que funcione en TODOS los controllers *@
         @{
             var rolSesion = Context.Session.GetString("sw_rol") ?? "";

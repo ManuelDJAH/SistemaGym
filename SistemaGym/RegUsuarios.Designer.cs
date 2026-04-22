@@ -44,6 +44,7 @@
             this.btnCerrar = new System.Windows.Forms.Button();
             this.btnEditar = new System.Windows.Forms.Button();
             this.btnEliminar = new System.Windows.Forms.Button();
+            this.btnRenovar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).BeginInit();
             this.SuspendLayout();
             // 
@@ -64,9 +65,9 @@
             this.label1.Location = new System.Drawing.Point(9, 19);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(230, 29);
+            this.label1.Size = new System.Drawing.Size(116, 29);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Registrar Usuarios";
+            this.label1.Text = "Usuarios";
             // 
             // txtNombre
             // 
@@ -213,11 +214,24 @@
             this.btnEliminar.UseVisualStyleBackColor = false;
             this.btnEliminar.Click += new System.EventHandler(this.btnEliminar_Click);
             // 
+            // btnRenovar
+            // 
+            this.btnRenovar.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.btnRenovar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRenovar.Location = new System.Drawing.Point(461, 421);
+            this.btnRenovar.Margin = new System.Windows.Forms.Padding(2);
+            this.btnRenovar.Name = "btnRenovar";
+            this.btnRenovar.Size = new System.Drawing.Size(69, 30);
+            this.btnRenovar.TabIndex = 17;
+            this.btnRenovar.Text = "&Renovar";
+            this.btnRenovar.UseVisualStyleBackColor = false;
+            // 
             // RegUsuarios
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(834, 461);
+            this.Controls.Add(this.btnRenovar);
             this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnEditar);
             this.Controls.Add(this.btnCerrar);
@@ -262,5 +276,6 @@
         private System.Windows.Forms.Button btnCerrar;
         private System.Windows.Forms.Button btnEditar;
         private System.Windows.Forms.Button btnEliminar;
+        private System.Windows.Forms.Button btnRenovar;
     }
 }
