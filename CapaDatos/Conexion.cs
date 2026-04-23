@@ -2,24 +2,33 @@
 
 namespace CapaDatos
 {
-
-    public static class Conexion
+    public class Conexion
     {
-        // ── Cadena fija para Windows Forms ───────────────────────────
-        private static string _connectionString =
-            @"Server=localhost\SQLEXPRESS;Database=GymDB;Trusted_Connection=True;";
+        // Cadena local para Windows Forms (sin cambios)
+        private static readonly string _cadenaLocal =
+            "Server=localhost\\SQLEXPRESS;Database=GymDB;Trusted_Connection=True;TrustServerCertificate=True;";
 
-        public static void SetConnectionString(string connectionString)
+        // Cadena inyectada desde ASP.NET Core (appsettings)
+        private static string _cadenaWeb = null;
+
+        /// <summary>
+        /// Llamado desde Program.cs al iniciar la app web.
+        /// </summary>
+        public static void SetCadenaWeb(string cadena)
         {
-            if (!string.IsNullOrWhiteSpace(connectionString))
-                _connectionString = connectionString;
+            _cadenaWeb = cadena;
         }
 
-        public static string cadena => _connectionString;
-
+        /// <summary>
+        /// Devuelve la conexión correcta según el contexto.
+        /// </summary>
         public static SqlConnection ObtenerConexion()
         {
-            return new SqlConnection(_connectionString);
+            string cadena = !string.IsNullOrEmpty(_cadenaWeb)
+                ? _cadenaWeb
+                : _cadenaLocal;
+
+            return new SqlConnection(cadena);
         }
     }
 }

@@ -2,28 +2,33 @@ using CapaDatos;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ── MVC ──────────────────────────────────────────────────────────
+// ── MVC ──────────────────────────────────────────────────────
 builder.Services.AddControllersWithViews();
 
-// ── Sesión ───────────────────────────────────────────────────────
+// ── Sesión ───────────────────────────────────────────────────
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromHours(4);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Cookie.Name = ".SistemaGym.Session";
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
-builder.Services.AddHttpContextAccessor();
-
-// ── Cadena de conexión disponible en CapaDatos ───────────────────
-// Inyectamos la cadena al iniciar para que Conexion.cs la use
-var connStr = builder.Configuration.GetConnectionString("GymDB");
-Conexion.SetConnectionString(connStr);
+// ── Antiforgery ──────────────────────────────────────────────
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 var app = builder.Build();
 
-// ── Pipeline ─────────────────────────────────────────────────────
+// ── Inyectar cadena de conexión en CapaDatos ─────────────────
+var connStr = builder.Configuration.GetConnectionString("GymDB");
+if (!string.IsNullOrEmpty(connStr))
+    Conexion.SetCadenaWeb(connStr);
+
+// ── Pipeline ─────────────────────────────────────────────────
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -33,11 +38,9 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
-app.UseSession();       // ← Antes de Authorization
+app.UseSession();
 app.UseAuthorization();
 
-// ── Ruta por defecto → Login ──────────────────────────────────────
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
