@@ -163,14 +163,17 @@ namespace CapaDatos
             using (var con = Conexion.ObtenerConexion())
             {
                 con.Open();
+
+                // SQL Server no permite OUTPUT en INSERT cuando hay triggers activos
+                // sin usar la cláusula INTO. Usamos SCOPE_IDENTITY() como alternativa.
                 string sql = @"
-                    INSERT INTO Inv_Productos
-                        (Codigo, Nombre, CategoriaID, Precio, StockActual, StockMinimo,
-                         FechaCaducidad, id_proveedor)
-                    OUTPUT INSERTED.ProductoID
-                    VALUES
-                        (@Codigo, @Nombre, @CatID, @Precio, @Stock, @StockMin,
-                         @Caducidad, @IdProveedor)";
+            INSERT INTO Inv_Productos
+                (Codigo, Nombre, CategoriaID, Precio, StockActual, StockMinimo,
+                 FechaCaducidad, id_proveedor)
+            VALUES
+                (@Codigo, @Nombre, @CatID, @Precio, @Stock, @StockMin,
+                 @Caducidad, @IdProveedor);
+            SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 using (var cmd = new SqlCommand(sql, con))
                 {
@@ -275,10 +278,10 @@ namespace CapaDatos
             {
                 con.Open();
                 string sql = @"
-                    INSERT INTO Inv_Equipo
-                        (Nombre, CategoriaID, Estado, FechaAdquisicion, Observaciones)
-                    OUTPUT INSERTED.EquipoID
-                    VALUES (@Nombre, @CatID, @Estado, @Fecha, @Obs)";
+            INSERT INTO Inv_Equipo
+                (Nombre, CategoriaID, Estado, FechaAdquisicion, Observaciones)
+            VALUES (@Nombre, @CatID, @Estado, @Fecha, @Obs);
+            SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 using (var cmd = new SqlCommand(sql, con))
                 {
