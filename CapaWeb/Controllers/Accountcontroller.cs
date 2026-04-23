@@ -10,7 +10,6 @@ namespace CapaWeb.Controllers
         // ── GET /Account/Login ────────────────────────────────────────
         public IActionResult Login()
         {
-            // Si ya está autenticado, redirigir al inicio
             if (SesionWeb.EstaAutenticado(HttpContext.Session))
                 return RedirectToAction("Index", "Home");
 
@@ -39,15 +38,13 @@ namespace CapaWeb.Controllers
                     return View();
                 }
 
-                // Obtener ID del usuario
                 int idUsuario = bl.ObtenerIdPorUsuario(usuario);
-
-                // Iniciar sesión web
                 SesionWeb.Iniciar(HttpContext.Session, usuario, rol, idUsuario);
 
-                // Registrar entrada en bitácora
+                // Registrar entrada en bitácora y guardar ID para el logout
                 var bitacoraBL = new BitacoraBL();
-                bitacoraBL.RegistrarEntrada(usuario);
+                int idBitacora = bitacoraBL.RegistrarEntrada(usuario);
+                HttpContext.Session.SetInt32("sw_idbita", idBitacora);
 
                 return RedirectToAction("Index", "Home");
             }
@@ -62,6 +59,18 @@ namespace CapaWeb.Controllers
         [AuthRequired]
         public IActionResult Logout()
         {
+            // Registrar salida en bitácora antes de cerrar sesión
+            int? idBitacora = HttpContext.Session.GetInt32("sw_idbita");
+            if (idBitacora.HasValue && idBitacora.Value > 0)
+            {
+                try
+                {
+                    var bitacoraBL = new BitacoraBL();
+                    bitacoraBL.RegistrarSalida(idBitacora.Value);
+                }
+                catch { /* no interrumpir el logout si falla */ }
+            }
+
             SesionWeb.Cerrar(HttpContext.Session);
             return RedirectToAction("Login");
         }

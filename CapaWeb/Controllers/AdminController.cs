@@ -77,17 +77,23 @@ namespace CapaWeb.Controllers
             try
             {
                 var bl = new RespaldoBL();
-                string carpetaTemp = Path.Combine(Path.GetTempPath(), "RespaldosGymWeb");
-                Directory.CreateDirectory(carpetaTemp);
+                bool esLinux = System.Runtime.InteropServices.RuntimeInformation
+                                    .IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
+                string carpeta = esLinux ? "/tmp" : Path.GetTempPath();
 
-                var (ok, mensaje, rutaFinal) = bl.GenerarRespaldo(carpetaTemp);
-                if (!ok) return Json(new { ok = false, mensaje });
+                var (ok, mensaje, rutaFinal) = bl.GenerarRespaldo(carpeta);
 
+                if (!ok)
+                    return Json(new { ok = false, mensaje });
+
+                // Leer bytes y devolver como descarga
                 byte[] bytes = System.IO.File.ReadAllBytes(rutaFinal);
-                string nombreArchivo = Path.GetFileName(rutaFinal);
+                string nombre = Path.GetFileName(rutaFinal);
+
+                // Limpiar el temporal
                 try { System.IO.File.Delete(rutaFinal); } catch { }
 
-                return File(bytes, "application/octet-stream", nombreArchivo);
+                return File(bytes, "application/octet-stream", nombre);
             }
             catch (Exception ex)
             {
