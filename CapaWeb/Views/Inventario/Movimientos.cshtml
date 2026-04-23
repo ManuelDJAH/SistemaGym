@@ -2,211 +2,419 @@
     ViewData["Title"] = "Registrar Movimiento";
 }
 
-<div class="row justify-content-center">
-    <div class="col-lg-7">
-        <div class="card border-0 shadow-sm" style="border-radius:12px;">
-            <div class="card-body p-4">
+<style>
+    /* ── Ctrl Fitness palette overrides for this page ── */
+    .mov-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #E8ECF2;
+        box-shadow: 0 2px 12px rgba(30,40,53,.06);
+        overflow: hidden;
+    }
+    .mov-step-label {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--cf-gray-400, #9BA3B0);
+        margin-bottom: 12px;
+    }
+    .mov-search-wrap {
+        display: flex;
+        gap: 8px;
+    }
+    .mov-search-wrap .cf-input {
+        flex: 1;
+        font-size: 15px;
+        padding: 12px 16px;
+    }
+    .mov-tabs {
+        display: flex;
+        gap: 0;
+        background: #F4F6F9;
+        border-radius: 10px;
+        padding: 4px;
+        margin-bottom: 16px;
+    }
+    .mov-tab {
+        flex: 1;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        padding: 10px;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: .5px;
+        cursor: pointer;
+        transition: all .2s;
+        color: var(--cf-gray-400, #9BA3B0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .mov-tab.active-entrada {
+        background: #fff;
+        color: #16a34a;
+        box-shadow: 0 1px 6px rgba(0,0,0,.08);
+    }
+    .mov-tab.active-salida {
+        background: #fff;
+        color: #dc2626;
+        box-shadow: 0 1px 6px rgba(0,0,0,.08);
+    }
+    .mov-product-card {
+        background: linear-gradient(135deg, #1E2835 0%, #263445 100%);
+        border-radius: 12px;
+        padding: 18px 20px;
+        color: #fff;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    .mov-product-card::after {
+        content: '';
+        position: absolute;
+        width: 140px; height: 140px;
+        border-radius: 50%;
+        background: rgba(141,198,63,.08);
+        top: -40px; right: -40px;
+    }
+    .mov-product-name {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+    .mov-product-cat {
+        font-size: 12px;
+        color: rgba(255,255,255,.5);
+        margin-bottom: 12px;
+    }
+    .mov-stock-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(141,198,63,.15);
+        border: 1px solid rgba(141,198,63,.3);
+        color: #8DC63F;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+    }
+    .mov-stock-badge.low {
+        background: rgba(239,68,68,.15);
+        border-color: rgba(239,68,68,.3);
+        color: #ef4444;
+    }
+    /* Search results dropdown */
+    .mov-results {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0; right: 0;
+        background: #fff;
+        border: 1px solid #E8ECF2;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.1);
+        z-index: 100;
+        max-height: 240px;
+        overflow-y: auto;
+    }
+    .mov-result-item {
+        padding: 10px 16px;
+        cursor: pointer;
+        border-bottom: 1px solid #F4F6F9;
+        transition: background .15s;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .mov-result-item:last-child { border-bottom: none; }
+    .mov-result-item:hover { background: #F4F6F9; }
+    .mov-result-name { font-size: 14px; font-weight: 600; color: #1E2835; }
+    .mov-result-code { font-size: 11px; color: #9BA3B0; font-family: monospace; }
+    .mov-result-stock { font-size: 12px; font-weight: 700; color: #8DC63F; }
+    .mov-result-stock.low { color: #ef4444; }
+    /* Venta toggle */
+    .venta-toggle {
+        background: #FFF9E6;
+        border: 1px solid #FCD34D;
+        border-radius: 10px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    .venta-toggle label { cursor: pointer; font-size: 13px; color: #92400E; }
+    .venta-toggle strong { color: #B45309; }
+</style>
 
-                <!-- Búsqueda por código -->
-                <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem;letter-spacing:1px;">
-                    1. Buscar producto
-                </h6>
-                <div class="input-group mb-2">
-                    <input type="text" id="txtCodigo" class="form-control form-control-lg"
-                           placeholder="Código de barras — escribe o escanea"
-                           autofocus />
-                    <button class="btn btn-primary px-4" onclick="buscarProducto()">
-                        <i class="bi bi-search"></i> Buscar
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+
+        <!-- PASO 1: Buscar producto -->
+        <div class="mov-card p-4 mb-3">
+            <div class="mov-step-label">1. Buscar producto</div>
+
+            <div style="position:relative;">
+                <div class="mov-search-wrap">
+                    <input type="text" id="txtBuscar" class="cf-input"
+                           placeholder="Nombre o código de barras..."
+                           autocomplete="off"
+                           oninput="buscarLive(this.value)"
+                           onkeydown="if(event.key==='Enter'){event.preventDefault();buscarPorCodigo();}" />
+                    <button class="cf-btn cf-btn-primary" onclick="buscarPorCodigo()" style="white-space:nowrap;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        Buscar
                     </button>
                 </div>
-                <div id="alertaBusqueda" class="d-none"></div>
+                <div style="font-size:11px;color:var(--cf-gray-400,#9BA3B0);margin-top:5px;">
+                    Escribe el nombre, código de barras o escanea con el lector
+                </div>
 
-                <!-- Info producto encontrado -->
-                <div id="panelProducto" class="d-none mt-3">
-                    <div class="p-3 rounded-3 mb-3" style="background:#f0f7ff;border:1px solid #c8e0ff;">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <div class="fw-bold fs-6" id="lblNombre"></div>
-                                <div class="text-muted small" id="lblCategoria"></div>
-                            </div>
-                            <div class="col-auto text-end">
-                                <div class="small text-muted">Stock actual</div>
-                                <div class="fw-bold fs-4" id="lblStock"></div>
-                            </div>
-                        </div>
-                        <div id="lblAlerta" class="mt-2 d-none"></div>
+                <!-- Dropdown resultados por nombre -->
+                <div id="dropResultados" class="mov-results d-none"></div>
+            </div>
+
+            <div id="alertaBusqueda" class="cf-alert cf-alert-danger d-none mt-3"></div>
+        </div>
+
+        <!-- PASO 2: Producto encontrado + formulario -->
+        <div id="panelMovimiento" class="d-none">
+
+            <!-- Card producto -->
+            <div class="mov-product-card">
+                <div class="mov-product-name" id="lblNombre">—</div>
+                <div class="mov-product-cat" id="lblCategoria">—</div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div class="mov-stock-badge" id="lblStock">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                        </svg>
+                        <span id="lblStockNum">0</span> en stock
                     </div>
+                    <button onclick="limpiar()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;">
+                        Cambiar
+                    </button>
+                </div>
+            </div>
 
-                    <!-- Formulario movimiento -->
-                    <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem;letter-spacing:1px;">
-                        2. Registrar movimiento
-                    </h6>
+            <div class="mov-card p-4">
+                <div class="mov-step-label">2. Registrar movimiento</div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Tipo de movimiento</label>
-                        <div class="d-flex gap-3">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="tipo"
-                                       id="rbEntrada" value="E" checked onchange="toggleVenta()" />
-                                <label class="form-check-label" for="rbEntrada">
-                                    <i class="bi bi-arrow-down-circle text-success me-1"></i> Entrada
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="tipo"
-                                       id="rbSalida" value="S" onchange="toggleVenta()" />
-                                <label class="form-check-label" for="rbSalida">
-                                    <i class="bi bi-arrow-up-circle text-danger me-1"></i> Salida
-                                </label>
-                            </div>
-                        </div>
+                <!-- Tipo: Entrada / Salida -->
+                <div class="mov-tabs mb-3">
+                    <button class="mov-tab active-entrada" id="tabEntrada" onclick="setTipo('E')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
+                        </svg>
+                        Entrada
+                    </button>
+                    <button class="mov-tab" id="tabSalida" onclick="setTipo('S')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+                        </svg>
+                        Salida
+                    </button>
+                </div>
+
+                <!-- Toggle venta (solo salida) -->
+                <div class="venta-toggle d-none" id="panelVenta">
+                    <input type="checkbox" id="chkVenta" style="width:18px;height:18px;accent-color:#B45309;flex-shrink:0;" />
+                    <label for="chkVenta">
+                        Registrar como <strong>venta</strong>
+                        <span style="color:#92400E;"> — ajusta precios: +10% este producto, −10% resto</span>
+                    </label>
+                </div>
+
+                <!-- Cantidad y motivo -->
+                <div class="row g-3 mb-4">
+                    <div class="col-4">
+                        <label class="cf-label">Cantidad</label>
+                        <input type="number" id="txtCantidad" class="cf-input w-100" min="1" value="1" />
                     </div>
-
-                    <!-- Opción venta (solo en salida) -->
-                    <div id="panelVenta" class="mb-3 d-none">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="chkVenta" />
-                            <label class="form-check-label" for="chkVenta">
-                                Es una <strong>venta</strong>
-                                <span class="text-muted small">(ajusta precios: +10% este producto, -10% resto)</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label fw-semibold">Cantidad</label>
-                            <input type="number" id="txtCantidad" class="form-control"
-                                   min="1" value="1" />
-                        </div>
-                        <div class="col-md-8">
-                            <label class="form-label fw-semibold">Motivo <span class="text-muted fw-normal">(opcional)</span></label>
-                            <input type="text" id="txtMotivo" class="form-control"
-                                   placeholder="Ej: Compra, Venta, Merma..." />
-                        </div>
-                    </div>
-
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-success px-4" onclick="registrarMovimiento()">
-                            <i class="bi bi-check-circle me-1"></i> Registrar
-                        </button>
-                        <button class="btn btn-outline-secondary" onclick="limpiar()">
-                            <i class="bi bi-x-circle me-1"></i> Limpiar
-                        </button>
+                    <div class="col-8">
+                        <label class="cf-label">Motivo <span style="font-weight:400;color:var(--cf-gray-400);">(opcional)</span></label>
+                        <input type="text" id="txtMotivo" class="cf-input w-100" placeholder="Ej: Compra, Venta, Merma..." />
                     </div>
                 </div>
 
+                <div class="d-flex gap-2">
+                    <button class="cf-btn cf-btn-primary flex-grow-1" onclick="registrarMovimiento()"
+                            style="justify-content:center;padding:12px;font-size:15px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        Registrar
+                    </button>
+                    <button class="cf-btn cf-btn-outline" onclick="limpiar()">Cancelar</button>
+                </div>
+
+                <div id="panelResultado" class="d-none mt-3"></div>
             </div>
         </div>
 
-        <!-- Resultado -->
-        <div id="panelResultado" class="mt-3 d-none"></div>
-
-        <!-- Link a historial -->
         <div class="mt-3 text-center">
-            <a asp-action="Historial" class="text-muted small">
-                <i class="bi bi-clock-history me-1"></i>Ver historial de movimientos
+            <a asp-action="Historial" style="font-size:13px;color:var(--cf-gray-400);text-decoration:none;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                Ver historial de movimientos
             </a>
         </div>
+
     </div>
 </div>
 
 @section Scripts {
+<form style="display:none">@Html.AntiForgeryToken()</form>
 <script>
-    let productoID = 0;
+    let productoID   = 0;
+    let tipoActual   = 'E';
+    let buscarTimer  = null;
 
-    // Enter en el campo de código dispara búsqueda (comportamiento de escáner)
-    document.getElementById('txtCodigo').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') { e.preventDefault(); buscarProducto(); }
-    });
+    // ── Búsqueda en vivo por nombre ──────────────────────────
+    function buscarLive(valor) {
+        clearTimeout(buscarTimer);
+        const drop = document.getElementById('dropResultados');
+        if (valor.length < 2) { drop.classList.add('d-none'); return; }
 
-    function buscarProducto() {
-        const codigo = document.getElementById('txtCodigo').value.trim();
+        buscarTimer = setTimeout(() => {
+            fetch('@Url.Action("BuscarProductosPorNombre","Inventario")', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body:    `nombre=${encodeURIComponent(valor)}&__RequestVerificationToken=${getToken()}`
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.ok || !data.productos?.length) { drop.classList.add('d-none'); return; }
+                drop.innerHTML = data.productos.map(p => `
+                    <div class="mov-result-item" onclick="seleccionarProducto(${p.productoID},'${escHtml(p.nombre)}','${escHtml(p.categoria)}',${p.stockActual},${p.stockMinimo},'${escHtml(p.estadoAlerta)}')">
+                        <div>
+                            <div class="mov-result-name">${escHtml(p.nombre)}</div>
+                            <div class="mov-result-code">${escHtml(p.codigo)}</div>
+                        </div>
+                        <div class="mov-result-stock ${p.stockActual <= p.stockMinimo ? 'low' : ''}">${p.stockActual} uds.</div>
+                    </div>`).join('');
+                drop.classList.remove('d-none');
+            });
+        }, 300);
+    }
+
+    // ── Búsqueda por código exacto (Enter / botón) ───────────
+    function buscarPorCodigo() {
+        document.getElementById('dropResultados').classList.add('d-none');
+        const codigo = document.getElementById('txtBuscar').value.trim();
         if (!codigo) return;
 
-        fetch('@Url.Action("BuscarProducto", "Inventario")', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
-            },
-            body: `codigo=${encodeURIComponent(codigo)}&__RequestVerificationToken=${getToken()}`
+        fetch('@Url.Action("BuscarProducto","Inventario")', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:    `codigo=${encodeURIComponent(codigo)}&__RequestVerificationToken=${getToken()}`
         })
         .then(r => r.json())
         .then(data => {
-            const alerta = document.getElementById('alertaBusqueda');
             if (!data.ok) {
-                alerta.className = 'alert alert-danger mt-2';
-                alerta.textContent = data.mensaje;
-                document.getElementById('panelProducto').classList.add('d-none');
+                mostrarAlerta(data.mensaje);
                 return;
             }
-            alerta.className = 'd-none';
-            productoID = data.productoID;
-
-            document.getElementById('lblNombre').textContent    = data.nombre;
-            document.getElementById('lblCategoria').textContent = data.categoria;
-            document.getElementById('lblStock').textContent     = data.stockActual;
-
-            const lblAlerta = document.getElementById('lblAlerta');
-            if (data.estadoAlerta === 'STOCK_BAJO') {
-                lblAlerta.className = 'mt-2 alert alert-danger py-1 small';
-                lblAlerta.textContent = `⚠ Stock bajo (mínimo: ${data.stockMinimo})`;
-                lblAlerta.classList.remove('d-none');
-            } else {
-                lblAlerta.classList.add('d-none');
-            }
-
-            document.getElementById('panelProducto').classList.remove('d-none');
+            seleccionarProducto(data.productoID, data.nombre, data.categoria,
+                                data.stockActual, data.stockMinimo, data.estadoAlerta);
         });
     }
 
-    function toggleVenta() {
-        const esSalida = document.getElementById('rbSalida').checked;
-        document.getElementById('panelVenta').classList.toggle('d-none', !esSalida);
+    // ── Seleccionar producto ──────────────────────────────────
+    function seleccionarProducto(id, nombre, categoria, stock, stockMin, alerta) {
+        document.getElementById('dropResultados').classList.add('d-none');
+        document.getElementById('alertaBusqueda').classList.add('d-none');
+
+        productoID = id;
+        document.getElementById('lblNombre').textContent   = nombre;
+        document.getElementById('lblCategoria').textContent = categoria;
+        document.getElementById('lblStockNum').textContent = stock;
+
+        const badge = document.getElementById('lblStock');
+        badge.className = 'mov-stock-badge' + (stock <= stockMin ? ' low' : '');
+
+        document.getElementById('panelMovimiento').classList.remove('d-none');
+        document.getElementById('txtCantidad').focus();
     }
 
+    // ── Tipo: Entrada / Salida ────────────────────────────────
+    function setTipo(tipo) {
+        tipoActual = tipo;
+        document.getElementById('tabEntrada').className = 'mov-tab' + (tipo === 'E' ? ' active-entrada' : '');
+        document.getElementById('tabSalida').className  = 'mov-tab' + (tipo === 'S' ? ' active-salida'  : '');
+        document.getElementById('panelVenta').classList.toggle('d-none', tipo !== 'S');
+        if (tipo !== 'S') document.getElementById('chkVenta').checked = false;
+    }
+
+    // ── Registrar ────────────────────────────────────────────
     function registrarMovimiento() {
         if (!productoID) return;
-
-        const tipo      = document.querySelector('input[name="tipo"]:checked').value;
-        const cantidad  = parseInt(document.getElementById('txtCantidad').value);
-        const motivo    = document.getElementById('txtMotivo').value;
-        const esVenta   = tipo === 'S' && document.getElementById('chkVenta').checked;
-
+        const cantidad = parseInt(document.getElementById('txtCantidad').value);
         if (cantidad <= 0) { alert('La cantidad debe ser mayor a cero.'); return; }
 
-        fetch('@Url.Action("RegistrarMovimiento", "Inventario")', {
-            method: 'POST',
+        const motivo  = document.getElementById('txtMotivo').value;
+        const esVenta = tipoActual === 'S' && document.getElementById('chkVenta').checked;
+
+        fetch('@Url.Action("RegistrarMovimiento","Inventario")', {
+            method:  'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `productoID=${productoID}&tipo=${tipo}&cantidad=${cantidad}&motivo=${encodeURIComponent(motivo)}&esVenta=${esVenta}&__RequestVerificationToken=${getToken()}`
+            body:    `productoID=${productoID}&tipo=${tipoActual}&cantidad=${cantidad}&motivo=${encodeURIComponent(motivo)}&esVenta=${esVenta}&__RequestVerificationToken=${getToken()}`
         })
         .then(r => r.json())
         .then(data => {
             const panel = document.getElementById('panelResultado');
-            panel.className = `alert ${data.ok ? 'alert-success' : 'alert-danger'}`;
+            panel.className = `cf-alert ${data.ok ? 'cf-alert-success' : 'cf-alert-danger'}`;
             panel.textContent = data.mensaje;
             panel.classList.remove('d-none');
-            if (data.ok) limpiar();
+            if (data.ok) setTimeout(() => limpiar(), 1500);
         });
     }
 
+    // ── Limpiar ──────────────────────────────────────────────
     function limpiar() {
         productoID = 0;
-        document.getElementById('txtCodigo').value = '';
-        document.getElementById('txtCantidad').value = '1';
-        document.getElementById('txtMotivo').value = '';
-        document.getElementById('panelProducto').classList.add('d-none');
-        document.getElementById('alertaBusqueda').className = 'd-none';
-        document.getElementById('rbEntrada').checked = true;
-        document.getElementById('panelVenta').classList.add('d-none');
-        document.getElementById('chkVenta').checked = false;
-        document.getElementById('txtCodigo').focus();
+        document.getElementById('txtBuscar').value       = '';
+        document.getElementById('txtCantidad').value     = '1';
+        document.getElementById('txtMotivo').value       = '';
+        document.getElementById('panelMovimiento').classList.add('d-none');
+        document.getElementById('alertaBusqueda').classList.add('d-none');
+        document.getElementById('panelResultado').classList.add('d-none');
+        document.getElementById('dropResultados').classList.add('d-none');
+        setTipo('E');
+        document.getElementById('txtBuscar').focus();
+    }
+
+    function mostrarAlerta(msg) {
+        const a = document.getElementById('alertaBusqueda');
+        a.textContent = msg;
+        a.classList.remove('d-none');
+        document.getElementById('panelMovimiento').classList.add('d-none');
+    }
+
+    function escHtml(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
 
     function getToken() {
         return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
     }
+
+    // Cerrar dropdown al hacer click fuera
+    document.addEventListener('click', e => {
+        if (!e.target.closest('#dropResultados') && !e.target.closest('#txtBuscar'))
+            document.getElementById('dropResultados').classList.add('d-none');
+    });
+
+    document.getElementById('txtBuscar').focus();
 </script>
-<form style="display:none">@Html.AntiForgeryToken()</form>
 }

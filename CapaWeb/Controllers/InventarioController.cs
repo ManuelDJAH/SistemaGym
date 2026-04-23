@@ -111,6 +111,30 @@ namespace CapaWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public IActionResult BuscarProductosPorNombre(string nombre)
+        {
+            if (string.IsNullOrWhiteSpace(nombre) || nombre.Length < 2)
+                return Json(new { ok = false, productos = new object[0] });
+
+            var productos = _bl.ObtenerProductos()
+                .Where(p => p.Nombre.Contains(nombre, StringComparison.OrdinalIgnoreCase)
+                         || p.Codigo.Contains(nombre, StringComparison.OrdinalIgnoreCase))
+                .Take(8)
+                .Select(p => new {
+                    p.ProductoID,
+                    p.Codigo,
+                    p.Nombre,
+                    Categoria = p.CategoriaNombre,
+                    p.StockActual,
+                    p.StockMinimo,
+                    p.EstadoAlerta
+                });
+
+            return Json(new { ok = true, productos });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult GenerarCodigo()
         {
             try
