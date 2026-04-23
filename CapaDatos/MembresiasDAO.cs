@@ -1,23 +1,21 @@
-﻿using CapaDatos;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 
-public class MembresiaDAO
+namespace CapaDatos
 {
-    public DataTable ListarMembresias()
+    public class MembresiaDAO
     {
-        DataTable dt = new DataTable();
-
-        using (SqlConnection cn = new SqlConnection(Conexion.cadena))
+        public DataTable ListarMembresias()
         {
-            SqlCommand cmd = new SqlCommand("ListarMembresias", cn);
-            cmd.CommandType = CommandType.StoredProcedure;
-
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            da.Fill(dt);
+            var dt = new DataTable();
+            using (var cn = Conexion.ObtenerConexion())
+            {
+                var cmd = new SqlCommand("SELECT id_membresia, nombre AS nombre_membresia, duracion_meses, costo FROM Membresias ORDER BY duracion_meses", cn);
+                var da = new SqlDataAdapter(cmd);
+                cn.Open();
+                da.Fill(dt);
+            }
+            return dt;
         }
-
-        return dt;
     }
 }
-

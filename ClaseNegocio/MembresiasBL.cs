@@ -1,11 +1,15 @@
 ﻿using System.Data;
+using CapaDatos;
 
-public class MembresiaBL
+namespace ClaseNegocio
 {
-    MembresiaDAO dao = new MembresiaDAO();
-
-    public DataTable ListarMembresias()
+    public class MembresiaBL
     {
-        return dao.ListarMembresias();
+        private readonly MembresiaDAO dao = new MembresiaDAO();
+
+        public DataTable ListarMembresias()
+        {
+            return dao.ListarMembresias();
+        }
     }
 }
