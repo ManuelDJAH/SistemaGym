@@ -1,160 +1,140 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.IO;
-using System.Text.RegularExpressions;
+using System.Text;
+using System.Collections.Generic;
 
 namespace CapaDatos
 {
     public class RespaldoDAO
     {
-        /// <summary>
-        /// Extrae el nombre de la BD desde la cadena de conexión activa.
-        /// </summary>
-        private string ObtenerNombreBD()
-        {
-            try
-            {
-                using (var con = Conexion.ObtenerConexion())
-                {
-                    con.Open();
-                    // El nombre real de la BD conectada
-                    return con.Database;
-                }
-            }
-            catch { return "GymDB"; }
-        }
-
-        /// <summary>
-        /// Detecta si estamos en Linux (producción Railway).
-        /// </summary>
-        private bool EsLinux() =>
-            System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
-                System.Runtime.InteropServices.OSPlatform.Linux);
+        // Tablas en orden para respetar FKs
+        private static readonly string[] Tablas = {
+            "Membresias", "Usuarios", "UsuariosSistema",
+            "CategoriasProveedor", "Proveedores",
+            "Inv_Categorias", "Inv_Productos", "Inv_Equipo",
+            "Inv_Movimientos", "Inv_Alertas", "Inv_Defectos",
+            "OrdenesRestock", "Asistencias",
+            "BitacoraSesion", "Cambios"
+        };
 
         public (bool ok, string mensaje, string rutaFinal) GenerarRespaldo(string carpetaDestino)
         {
             string nombreBD = ObtenerNombreBD();
-            string nombreArch = $"{nombreBD}_{DateTime.Now:yyyyMMdd_HHmmss}.bak";
+            string nombreArch = $"{nombreBD}_{DateTime.Now:yyyyMMdd_HHmmss}.sql";
+            string rutaFinal = Path.Combine(carpetaDestino, nombreArch);
 
-            if (EsLinux())
+            try
             {
-                // En producción (Railway/Linux): guardar en /tmp
-                string rutaTmp = Path.Combine("/tmp", nombreArch);
-                try
-                {
-                    bool ok = EjecutarBackup(nombreBD, rutaTmp);
-                    if (!ok) return (false, "El backup no generó el archivo esperado.", null);
-                    return (true, "Respaldo generado.", rutaTmp);
-                }
-                catch (SqlException ex)
-                {
-                    return (false, $"Error SQL: {ex.Message}", null);
-                }
-                catch (Exception ex)
-                {
-                    return (false, $"Error: {ex.Message}", null);
-                }
-            }
-            else
-            {
-                // En local (Windows): usar carpeta de SQL Server
-                string carpetaTemp = ObtenerCarpetaBackupSQLServer();
-                string rutaTemp = Path.Combine(carpetaTemp, nombreArch);
-                string rutaFinal = Path.Combine(carpetaDestino, nombreArch);
+                var sb = new StringBuilder();
+                sb.AppendLine("-- ══════════════════════════════════════════════════");
+                sb.AppendLine($"-- Respaldo: {nombreBD}");
+                sb.AppendLine($"-- Fecha: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
+                sb.AppendLine($"-- Sistema: SistemaGym — Ctrl Fitness");
+                sb.AppendLine("-- ══════════════════════════════════════════════════");
+                sb.AppendLine("SET NOCOUNT ON;");
+                sb.AppendLine();
 
-                try
+                using (var cn = Conexion.ObtenerConexion())
                 {
-                    if (!Directory.Exists(carpetaTemp))
-                        Directory.CreateDirectory(carpetaTemp);
-
-                    bool ok = EjecutarBackup(nombreBD, rutaTemp);
-                    if (!ok) return (false, "El backup no generó el archivo esperado.", null);
-
-                    File.Copy(rutaTemp, rutaFinal, overwrite: true);
-                    try { File.Delete(rutaTemp); } catch { }
-
-                    return (true, "Respaldo generado exitosamente.", rutaFinal);
-                }
-                catch (SqlException ex)
-                {
-                    LimpiarTemp(rutaTemp);
-                    return (false, $"Error SQL: {ex.Message}", null);
-                }
-                catch (Exception ex)
-                {
-                    LimpiarTemp(rutaTemp);
-                    return (false, $"Error: {ex.Message}", null);
-                }
-            }
-        }
-
-        private bool EjecutarBackup(string nombreBD, string rutaDestino)
-        {
-            string[] scripts = {
-                $@"BACKUP DATABASE [{nombreBD}] TO DISK = @ruta
-                   WITH FORMAT, INIT, NAME = N'{nombreBD} Respaldo',
-                        COMPRESSION, STATS = 10;",
-                $@"BACKUP DATABASE [{nombreBD}] TO DISK = @ruta
-                   WITH FORMAT, INIT, NAME = N'{nombreBD} Respaldo',
-                        STATS = 10;"
-            };
-
-            foreach (string sql in scripts)
-            {
-                try
-                {
-                    using (var con = Conexion.ObtenerConexion())
+                    cn.Open();
+                    foreach (var tabla in Tablas)
                     {
-                        con.Open();
-                        using (var cmd = new SqlCommand(sql, con))
+                        if (!TablaExiste(cn, tabla)) continue;
+                        var cols = ObtenerColumnas(cn, tabla);
+                        if (cols.Count == 0) continue;
+
+                        bool tieneIdentity = TieneIdentity(cn, tabla);
+                        string colsList = string.Join(", ", cols.ConvertAll(c => $"[{c}]"));
+
+                        sb.AppendLine($"-- {tabla}");
+                        sb.AppendLine($"DELETE FROM [{tabla}];");
+                        if (tieneIdentity)
+                            sb.AppendLine($"SET IDENTITY_INSERT [{tabla}] ON;");
+
+                        using (var cmd = new SqlCommand($"SELECT {colsList} FROM [{tabla}]", cn))
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            cmd.CommandTimeout = 300;
-                            cmd.Parameters.AddWithValue("@ruta", rutaDestino);
-                            cmd.ExecuteNonQuery();
+                            while (reader.Read())
+                            {
+                                var vals = new List<string>();
+                                for (int i = 0; i < reader.FieldCount; i++)
+                                {
+                                    if (reader.IsDBNull(i)) { vals.Add("NULL"); continue; }
+                                    var tipo = reader.GetFieldType(i);
+                                    var val = reader.GetValue(i);
+                                    if (tipo == typeof(string))
+                                        vals.Add($"N'{val.ToString().Replace("'", "''")}'");
+                                    else if (tipo == typeof(DateTime))
+                                        vals.Add($"'{((DateTime)val):yyyy-MM-dd HH:mm:ss}'");
+                                    else if (tipo == typeof(bool))
+                                        vals.Add((bool)val ? "1" : "0");
+                                    else if (tipo == typeof(byte[]))
+                                        vals.Add("NULL");
+                                    else
+                                        vals.Add(val.ToString().Replace("'", "''"));
+                                }
+                                sb.AppendLine($"INSERT INTO [{tabla}] ({colsList}) VALUES ({string.Join(", ", vals)});");
+                            }
                         }
+
+                        if (tieneIdentity)
+                            sb.AppendLine($"SET IDENTITY_INSERT [{tabla}] OFF;");
+                        sb.AppendLine();
                     }
-                    return File.Exists(rutaDestino);
                 }
-                catch (SqlException ex) when (ex.Message.Contains("COMPRESSION"))
-                {
-                    continue;
-                }
+
+                sb.AppendLine("-- Fin del respaldo");
+                File.WriteAllText(rutaFinal, sb.ToString(), Encoding.UTF8);
+                return (true, "Respaldo generado correctamente.", rutaFinal);
             }
-            return false;
+            catch (Exception ex)
+            {
+                return (false, $"Error: {ex.Message}", null);
+            }
         }
 
-        private string ObtenerCarpetaBackupSQLServer()
+        private string ObtenerNombreBD()
         {
             try
             {
-                using (var con = Conexion.ObtenerConexion())
-                {
-                    con.Open();
-                    using (var cmd = new SqlCommand(
-                        "SELECT SERVERPROPERTY('InstanceDefaultBackupPath')", con))
-                    {
-                        var res = cmd.ExecuteScalar()?.ToString().TrimEnd('\\');
-                        if (!string.IsNullOrEmpty(res) && Directory.Exists(res)) return res;
-                    }
-                }
+                using (var cn = Conexion.ObtenerConexion())
+                { cn.Open(); return cn.Database; }
             }
-            catch { }
-
-            string[] rutas = {
-                @"C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\Backup",
-                @"C:\Program Files\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQL\Backup",
-                @"C:\Program Files\Microsoft SQL Server\MSSQL14.SQLEXPRESS\MSSQL\Backup",
-            };
-
-            foreach (var r in rutas)
-                if (Directory.Exists(r)) return r;
-
-            return @"C:\RespaldosGymDB";
+            catch { return "GymDB"; }
         }
 
-        private void LimpiarTemp(string ruta)
+        private bool TablaExiste(SqlConnection cn, string tabla)
         {
-            try { if (File.Exists(ruta)) File.Delete(ruta); } catch { }
+            using (var cmd = new SqlCommand(
+                "SELECT COUNT(1) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME=@t", cn))
+            {
+                cmd.Parameters.AddWithValue("@t", tabla);
+                return (int)cmd.ExecuteScalar() > 0;
+            }
+        }
+
+        private List<string> ObtenerColumnas(SqlConnection cn, string tabla)
+        {
+            var cols = new List<string>();
+            using (var cmd = new SqlCommand(
+                "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=@t ORDER BY ORDINAL_POSITION", cn))
+            {
+                cmd.Parameters.AddWithValue("@t", tabla);
+                using (var r = cmd.ExecuteReader())
+                    while (r.Read()) cols.Add(r.GetString(0));
+            }
+            return cols;
+        }
+
+        private bool TieneIdentity(SqlConnection cn, string tabla)
+        {
+            using (var cmd = new SqlCommand(
+                "SELECT COUNT(1) FROM sys.identity_columns WHERE OBJECT_NAME(object_id)=@t", cn))
+            {
+                cmd.Parameters.AddWithValue("@t", tabla);
+                return (int)cmd.ExecuteScalar() > 0;
+            }
         }
     }
 }

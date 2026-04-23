@@ -191,34 +191,18 @@
                     </div>
                     <h5 style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;">Respaldo de Base de Datos</h5>
                     <p style="font-size:13px;color:var(--cf-gray-400);margin-bottom:20px;">
-                        El respaldo se genera desde el panel de administración de <strong>Somee</strong>,
-                        que es donde está alojada la base de datos en producción.
+                        Genera un respaldo completo en formato <strong>.sql</strong> con todos los datos del sistema.
+                        El archivo se descargará directamente al navegador.
                     </p>
-
-                    <div class="cf-alert cf-alert-info text-start mb-3" style="font-size:12.5px;">
-                        <strong>Pasos para generar el respaldo:</strong><br>
-                        1. Inicia sesión en <strong>somee.com</strong><br>
-                        2. Ve a <strong>Control Panel → Databases → CtrlFitness</strong><br>
-                        3. Haz clic en la pestaña <strong>Backup</strong><br>
-                        4. Descarga el archivo <strong>.bak</strong>
+                    <div class="cf-alert cf-alert-info text-start mb-4" style="font-size:12.5px;">
+                        El archivo <strong>.sql</strong> puede restaurarse ejecutándolo en SQL Server Management Studio
+                        sobre cualquier base de datos compatible.
                     </div>
-
-                    <div class="cf-alert cf-alert-warning text-start mb-4" style="font-size:12px;">
-                        El archivo puede restaurarse desde SQL Server Management Studio
-                        en caso de pérdida de datos.
-                    </div>
-
-                    <a href="https://somee.com/SITEMANAGER/databases/databasesList.aspx"
-                       target="_blank"
-                       class="cf-btn cf-btn-primary w-100"
-                       style="justify-content:center;font-size:15px;padding:12px;text-decoration:none;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;">
-                            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-                            <polyline points="15 3 21 3 21 9"/>
-                            <line x1="10" y1="14" x2="21" y2="3"/>
-                        </svg>
-                        Ir al Panel de Somee
-                    </a>
+                    <div id="panelEstadoRespaldo" class="d-none mb-3"></div>
+                    <button class="cf-btn cf-btn-primary w-100" style="justify-content:center;font-size:15px;padding:12px;" id="btnRespaldo" onclick="generarRespaldo()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Generar y Descargar Respaldo
+                    </button>
                 </div>
             </div>
         </div>

@@ -77,28 +77,26 @@ namespace CapaWeb.Controllers
             try
             {
                 var bl = new RespaldoBL();
-                bool esLinux = System.Runtime.InteropServices.RuntimeInformation
-                                    .IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
-                string carpeta = esLinux ? "/tmp" : Path.GetTempPath();
+                bool linux = System.Runtime.InteropServices.RuntimeInformation
+                                .IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
+                string carpeta = linux ? "/tmp" : System.IO.Path.GetTempPath();
 
                 var (ok, mensaje, rutaFinal) = bl.GenerarRespaldo(carpeta);
 
                 if (!ok)
                     return Json(new { ok = false, mensaje });
 
-                // Leer bytes y devolver como descarga
                 byte[] bytes = System.IO.File.ReadAllBytes(rutaFinal);
-                string nombre = Path.GetFileName(rutaFinal);
-
-                // Limpiar el temporal
+                string nombre = System.IO.Path.GetFileName(rutaFinal);
                 try { System.IO.File.Delete(rutaFinal); } catch { }
 
-                return File(bytes, "application/octet-stream", nombre);
+                return File(bytes, "application/sql", nombre);
             }
             catch (Exception ex)
             {
                 return Json(new { ok = false, mensaje = ex.Message });
             }
         }
+
     }
 }
