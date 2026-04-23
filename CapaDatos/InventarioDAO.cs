@@ -100,6 +100,64 @@ namespace CapaDatos
             return null;
         }
 
+
+        /// <summary>Busca un producto ACTIVO por código.</summary>
+        public Producto ObtenerProductoPorCodigoActivo(string codigo)
+        {
+            using (var con = Conexion.ObtenerConexion())
+            {
+                con.Open();
+                string sql = @"
+            SELECT p.ProductoID, p.Codigo, p.Nombre, p.CategoriaID,
+                   c.Nombre AS CategoriaNombre,
+                   p.Precio, p.StockActual, p.StockMinimo,
+                   p.FechaCaducidad, p.Activo, p.FechaRegistro,
+                   p.id_proveedor, pr.nombre AS ProveedorNombre
+            FROM   Inv_Productos p
+            JOIN   Inv_Categorias c  ON p.CategoriaID  = c.CategoriaID
+            LEFT JOIN Proveedores pr ON p.id_proveedor = pr.id_proveedor
+            WHERE  p.Codigo = @Codigo AND p.Activo = 1";
+
+                using (var cmd = new SqlCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@Codigo", codigo);
+                    using (var dr = cmd.ExecuteReader())
+                        if (dr.Read()) return MapearProducto(dr);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>Verifica si el código existe entre productos ACTIVOS solamente.</summary>
+        public bool CodigoExisteActivo(string codigo)
+        {
+            using (var con = Conexion.ObtenerConexion())
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(
+                    "SELECT COUNT(1) FROM Inv_Productos WHERE Codigo = @c AND Activo = 1", con))
+                {
+                    cmd.Parameters.AddWithValue("@c", codigo);
+                    return (int)cmd.ExecuteScalar() > 0;
+                }
+            }
+        }
+
+        /// <summary>Verifica si el código existe en CUALQUIER producto (activo o no) — para EAN-13 único.</summary>
+        public bool CodigoExisteCualquier(string codigo)
+        {
+            using (var con = Conexion.ObtenerConexion())
+            {
+                con.Open();
+                using (var cmd = new SqlCommand(
+                    "SELECT COUNT(1) FROM Inv_Productos WHERE Codigo = @c", con))
+                {
+                    cmd.Parameters.AddWithValue("@c", codigo);
+                    return (int)cmd.ExecuteScalar() > 0;
+                }
+            }
+        }
+
         public int InsertarProducto(Producto p)
         {
             using (var con = Conexion.ObtenerConexion())

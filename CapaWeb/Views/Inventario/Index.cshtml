@@ -69,7 +69,6 @@
                 @foreach (var p in productos)
                 {
                     <tr class="producto-row"
-                        style="padding-left:0;"
                         data-id="@p.ProductoID" data-codigo="@p.Codigo" data-nombre="@p.Nombre"
                         data-catid="@p.CategoriaID" data-precio="@p.Precio" data-stockmin="@p.StockMinimo"
                         data-caducidad="@(p.FechaCaducidad?.ToString("yyyy-MM-dd") ?? "")"
@@ -120,10 +119,31 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="fProductoID" />
+
+                <!-- Código con botón generar EAN-13 -->
                 <div class="mb-3">
                     <label class="cf-label">Codigo de barras</label>
-                    <input type="text" id="fCodigo" class="cf-input w-100" placeholder="EAN-13 o codigo interno" />
+                    <div class="d-flex gap-2">
+                        <input type="text" id="fCodigo" class="cf-input flex-grow-1"
+                               placeholder="EAN-13 o codigo interno" />
+                        <button type="button" id="btnGenerarEAN"
+                                onclick="generarEAN()"
+                                class="cf-btn cf-btn-dark cf-btn-sm"
+                                style="white-space:nowrap;"
+                                title="Generar código EAN-13 único automáticamente">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2.5" style="margin-right:4px;">
+                                <polyline points="23 4 23 10 17 10"/>
+                                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                            </svg>
+                            Generar
+                        </button>
+                    </div>
+                    <div style="font-size:11px;color:var(--cf-gray-400);margin-top:4px;">
+                        Puedes escribir el código manualmente o generarlo automáticamente (EAN-13 con prefijo México 750).
+                    </div>
                 </div>
+
                 <div class="mb-3">
                     <label class="cf-label">Nombre</label>
                     <input type="text" id="fNombre" class="cf-input w-100" placeholder="Nombre del producto" />
@@ -148,7 +168,9 @@
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="checkbox" id="chkCaducidad"
                                onchange="document.getElementById('fCaducidad').disabled = !this.checked" />
-                        <label class="form-check-label" style="font-size:13px;" for="chkCaducidad">Tiene fecha de caducidad</label>
+                        <label class="form-check-label" style="font-size:13px;" for="chkCaducidad">
+                            Tiene fecha de caducidad
+                        </label>
                     </div>
                     <input type="date" id="fCaducidad" class="cf-input w-100" disabled />
                 </div>
@@ -166,6 +188,7 @@
 <form style="display:none">@Html.AntiForgeryToken()</form>
 <script>
     let productoSeleccionado = null;
+
     function seleccionar(row) {
         document.querySelectorAll('.producto-row').forEach(r => r.classList.remove('selected'));
         row.classList.add('selected');
@@ -173,53 +196,117 @@
         document.getElementById('btnEditar').disabled = false;
         document.getElementById('btnBaja').disabled   = false;
     }
+
     function abrirModal(modo) {
         const modal = new bootstrap.Modal(document.getElementById('modalProducto'));
         document.getElementById('modalError').classList.add('d-none');
         if (modo === 'nuevo') {
-            document.getElementById('modalTitulo').textContent = 'Nuevo Producto';
-            document.getElementById('fProductoID').value = '';
-            document.getElementById('fCodigo').value     = '';
-            document.getElementById('fNombre').value     = '';
-            document.getElementById('fPrecio').value     = '0';
-            document.getElementById('fStockMin').value   = '3';
-            document.getElementById('fCaducidad').value  = '';
-            document.getElementById('fCaducidad').disabled = true;
-            document.getElementById('chkCaducidad').checked = false;
-            document.getElementById('fCodigo').readOnly = false;
+            document.getElementById('modalTitulo').textContent  = 'Nuevo Producto';
+            document.getElementById('fProductoID').value        = '';
+            document.getElementById('fCodigo').value            = '';
+            document.getElementById('fNombre').value            = '';
+            document.getElementById('fPrecio').value            = '0';
+            document.getElementById('fStockMin').value          = '3';
+            document.getElementById('fCaducidad').value         = '';
+            document.getElementById('fCaducidad').disabled      = true;
+            document.getElementById('chkCaducidad').checked     = false;
+            document.getElementById('fCodigo').readOnly         = false;
+            document.getElementById('btnGenerarEAN').style.display = '';
         } else {
             if (!productoSeleccionado) return;
-            document.getElementById('modalTitulo').textContent = 'Editar Producto';
-            document.getElementById('fProductoID').value = productoSeleccionado.id;
-            document.getElementById('fCodigo').value     = productoSeleccionado.codigo;
-            document.getElementById('fNombre').value     = productoSeleccionado.nombre;
-            document.getElementById('fCategoria').value  = productoSeleccionado.catid;
-            document.getElementById('fPrecio').value     = productoSeleccionado.precio;
-            document.getElementById('fStockMin').value   = productoSeleccionado.stockmin;
-            document.getElementById('fCodigo').readOnly  = true;
+            document.getElementById('modalTitulo').textContent  = 'Editar Producto';
+            document.getElementById('fProductoID').value        = productoSeleccionado.id;
+            document.getElementById('fCodigo').value            = productoSeleccionado.codigo;
+            document.getElementById('fNombre').value            = productoSeleccionado.nombre;
+            document.getElementById('fCategoria').value         = productoSeleccionado.catid;
+            document.getElementById('fPrecio').value            = productoSeleccionado.precio;
+            document.getElementById('fStockMin').value          = productoSeleccionado.stockmin;
+            document.getElementById('fCodigo').readOnly         = true;
+            document.getElementById('btnGenerarEAN').style.display = 'none'; // ocultar al editar
             const cad = productoSeleccionado.caducidad;
-            if (cad) { document.getElementById('chkCaducidad').checked = true; document.getElementById('fCaducidad').disabled = false; document.getElementById('fCaducidad').value = cad; }
-            else { document.getElementById('chkCaducidad').checked = false; document.getElementById('fCaducidad').disabled = true; }
+            if (cad) {
+                document.getElementById('chkCaducidad').checked  = true;
+                document.getElementById('fCaducidad').disabled   = false;
+                document.getElementById('fCaducidad').value      = cad;
+            } else {
+                document.getElementById('chkCaducidad').checked  = false;
+                document.getElementById('fCaducidad').disabled   = true;
+            }
         }
         modal.show();
     }
-    function guardarProducto() {
-        const id = document.getElementById('fProductoID').value;
-        const esNuevo = !id;
-        const caducidad = document.getElementById('chkCaducidad').checked ? document.getElementById('fCaducidad').value : '';
-        const params = new URLSearchParams({ codigo: document.getElementById('fCodigo').value, nombre: document.getElementById('fNombre').value, categoriaID: document.getElementById('fCategoria').value, precio: document.getElementById('fPrecio').value, stockMinimo: document.getElementById('fStockMin').value, fechaCaducidad: caducidad, __RequestVerificationToken: getToken() });
-        if (!esNuevo) params.append('productoID', id);
-        fetch(esNuevo ? '@Url.Action("CrearProducto","Inventario")' : '@Url.Action("ActualizarProducto","Inventario")', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: params })
-        .then(r => r.json()).then(data => {
-            if (data.ok) { bootstrap.Modal.getInstance(document.getElementById('modalProducto')).hide(); location.reload(); }
-            else { const e = document.getElementById('modalError'); e.textContent = data.mensaje; e.classList.remove('d-none'); }
+
+    // Genera un código EAN-13 único desde el servidor
+    function generarEAN() {
+        const btn = document.getElementById('btnGenerarEAN');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+        fetch('@Url.Action("GenerarCodigo","Inventario")', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:    `__RequestVerificationToken=${getToken()}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                document.getElementById('fCodigo').value = data.codigo;
+            } else {
+                alert('No se pudo generar el código: ' + data.mensaje);
+            }
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Generar';
         });
     }
+
+    function guardarProducto() {
+        const id      = document.getElementById('fProductoID').value;
+        const esNuevo = !id;
+        const caducidad = document.getElementById('chkCaducidad').checked
+                            ? document.getElementById('fCaducidad').value : '';
+        const params = new URLSearchParams({
+            codigo:        document.getElementById('fCodigo').value,
+            nombre:        document.getElementById('fNombre').value,
+            categoriaID:   document.getElementById('fCategoria').value,
+            precio:        document.getElementById('fPrecio').value,
+            stockMinimo:   document.getElementById('fStockMin').value,
+            fechaCaducidad: caducidad,
+            __RequestVerificationToken: getToken()
+        });
+        if (!esNuevo) params.append('productoID', id);
+
+        fetch(esNuevo
+                ? '@Url.Action("CrearProducto","Inventario")'
+                : '@Url.Action("ActualizarProducto","Inventario")',
+            { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: params })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('modalProducto')).hide();
+                location.reload();
+            } else {
+                const e = document.getElementById('modalError');
+                e.textContent = data.mensaje;
+                e.classList.remove('d-none');
+            }
+        });
+    }
+
     function darBaja() {
         if (!productoSeleccionado || !confirm(`Dar de baja "${productoSeleccionado.nombre}"?`)) return;
-        fetch('@Url.Action("BajaProducto","Inventario")', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: `productoID=${productoSeleccionado.id}&__RequestVerificationToken=${getToken()}` })
-        .then(r => r.json()).then(data => { if (data.ok) location.reload(); else alert(data.mensaje); });
+        fetch('@Url.Action("BajaProducto","Inventario")', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:    `productoID=${productoSeleccionado.id}&__RequestVerificationToken=${getToken()}`
+        })
+        .then(r => r.json())
+        .then(data => { if (data.ok) location.reload(); else alert(data.mensaje); });
     }
-    function getToken() { return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''; }
+
+    function getToken() {
+        return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+    }
 </script>
 }

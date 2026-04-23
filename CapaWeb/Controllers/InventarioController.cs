@@ -109,6 +109,22 @@ namespace CapaWeb.Controllers
             });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult GenerarCodigo()
+        {
+            try
+            {
+                string codigo = _bl.GenerarCodigoEAN13Unico();
+                return Json(new { ok = true, codigo });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { ok = false, mensaje = ex.Message });
+            }
+        }
+
+
         // ════════════════════════════════════════════════════════════
         //  EQUIPO
         // ════════════════════════════════════════════════════════════

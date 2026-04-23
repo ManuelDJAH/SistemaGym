@@ -12,18 +12,19 @@ using AlertaInventario = CapaDatos.AlertaInventario;
 
 namespace ClaseNegocio
 {
-
     public class InventarioBL
     {
         private readonly InventarioDAO _dao = new InventarioDAO();
 
+        // ════════════════════════════════════════════════════════════
+        //  CATEGORÍAS
+        // ════════════════════════════════════════════════════════════
+        public List<Categoria> ObtenerCategoriasProducto() => _dao.ObtenerCategorias("PRODUCTO");
+        public List<Categoria> ObtenerCategoriasEquipo() => _dao.ObtenerCategorias("EQUIPO");
 
-        public List<Categoria> ObtenerCategoriasProducto() =>
-            _dao.ObtenerCategorias("PRODUCTO");
-
-        public List<Categoria> ObtenerCategoriasEquipo() =>
-            _dao.ObtenerCategorias("EQUIPO");
-
+        // ════════════════════════════════════════════════════════════
+        //  PRODUCTOS
+        // ════════════════════════════════════════════════════════════
         public List<Producto> ObtenerProductos(int? categoriaID = null) =>
             _dao.ObtenerProductos(categoriaID);
 
@@ -31,7 +32,9 @@ namespace ClaseNegocio
         {
             if (string.IsNullOrWhiteSpace(codigo))
                 throw new ArgumentException("El código de barras no puede estar vacío.");
-            return _dao.ObtenerProductoPorCodigo(codigo.Trim());
+
+            // Solo buscar entre productos ACTIVOS
+            return _dao.ObtenerProductoPorCodigoActivo(codigo.Trim());
         }
 
         public (bool ok, string mensaje, int id) AltaProducto(Producto p)
@@ -39,8 +42,10 @@ namespace ClaseNegocio
             try
             {
                 Validar(p);
-                if (_dao.ObtenerProductoPorCodigo(p.Codigo) != null)
-                    return (false, $"Ya existe un producto con el código '{p.Codigo}'.", 0);
+
+                // Verificar duplicado SOLO entre productos activos
+                if (_dao.CodigoExisteActivo(p.Codigo))
+                    return (false, $"Ya existe un producto activo con el código '{p.Codigo}'.", 0);
 
                 int id = _dao.InsertarProducto(p);
                 return (true, "Producto registrado correctamente.", id);
@@ -75,8 +80,49 @@ namespace ClaseNegocio
             catch (SqlException ex) { return (false, $"Error de base de datos: {ex.Message}"); }
         }
 
-        public List<Equipo> ObtenerEquipos(string estado = null) =>
-            _dao.ObtenerEquipos(estado);
+        // ════════════════════════════════════════════════════════════
+        //  GENERACIÓN DE CÓDIGO EAN-13
+        // ════════════════════════════════════════════════════════════
+        /// <summary>
+        /// Genera un código EAN-13 único que no colisione con ningún producto
+        /// (activo o inactivo) en la BD.
+        /// Prefijo 750 (México) + 9 dígitos aleatorios + dígito verificador.
+        /// </summary>
+        public string GenerarCodigoEAN13Unico()
+        {
+            var rnd = new Random();
+            string codigo;
+            int intentos = 0;
+
+            do
+            {
+                // 750 (prefijo México) + 9 dígitos
+                string base12 = "750" + rnd.Next(100000000, 999999999).ToString();
+                codigo = base12 + CalcularDigitoEAN13(base12);
+                intentos++;
+
+                if (intentos > 100)
+                    throw new Exception("No se pudo generar un código único tras 100 intentos.");
+
+            } while (_dao.CodigoExisteCualquier(codigo)); // evitar colisión con activos E inactivos
+
+            return codigo;
+        }
+
+        /// <summary>Calcula el dígito verificador EAN-13.</summary>
+        private string CalcularDigitoEAN13(string base12)
+        {
+            int suma = 0;
+            for (int i = 0; i < 12; i++)
+                suma += (base12[i] - '0') * (i % 2 == 0 ? 1 : 3);
+            int digito = (10 - (suma % 10)) % 10;
+            return digito.ToString();
+        }
+
+        // ════════════════════════════════════════════════════════════
+        //  EQUIPO
+        // ════════════════════════════════════════════════════════════
+        public List<Equipo> ObtenerEquipos(string estado = null) => _dao.ObtenerEquipos(estado);
 
         public (bool ok, string mensaje, int id) AltaEquipo(Equipo e)
         {
@@ -84,7 +130,6 @@ namespace ClaseNegocio
             {
                 if (string.IsNullOrWhiteSpace(e.Nombre))
                     throw new ArgumentException("El nombre del equipo es obligatorio.");
-
                 int id = _dao.InsertarEquipo(e);
                 return (true, "Equipo registrado correctamente.", id);
             }
@@ -98,7 +143,6 @@ namespace ClaseNegocio
             {
                 if (string.IsNullOrWhiteSpace(e.Nombre))
                     throw new ArgumentException("El nombre del equipo es obligatorio.");
-
                 bool ok = _dao.ActualizarEquipo(e);
                 return ok
                     ? (true, "Equipo actualizado correctamente.")
@@ -120,14 +164,15 @@ namespace ClaseNegocio
             catch (SqlException ex) { return (false, $"Error de base de datos: {ex.Message}"); }
         }
 
+        // ════════════════════════════════════════════════════════════
+        //  MOVIMIENTOS
+        // ════════════════════════════════════════════════════════════
         public (bool ok, string mensaje) RegistrarEntrada(int productoID, int cantidad,
                                                            string motivo, int usuarioID)
         {
             try
             {
-                if (cantidad <= 0)
-                    return (false, "La cantidad debe ser mayor a cero.");
-
+                if (cantidad <= 0) return (false, "La cantidad debe ser mayor a cero.");
                 _dao.RegistrarMovimiento(productoID, "E", cantidad, motivo, usuarioID);
                 return (true, $"Entrada de {cantidad} unidad(es) registrada correctamente.");
             }
@@ -139,17 +184,30 @@ namespace ClaseNegocio
         {
             try
             {
-                if (cantidad <= 0)
-                    return (false, "La cantidad debe ser mayor a cero.");
-
+                if (cantidad <= 0) return (false, "La cantidad debe ser mayor a cero.");
                 _dao.RegistrarMovimiento(productoID, "S", cantidad, motivo, usuarioID);
                 return (true, $"Salida de {cantidad} unidad(es) registrada correctamente.");
             }
             catch (SqlException ex)
             {
                 return (false, ex.Message.Contains("Stock insuficiente")
-                    ? ex.Message
-                    : $"Error: {ex.Message}");
+                    ? ex.Message : $"Error: {ex.Message}");
+            }
+        }
+
+        public (bool ok, string mensaje) RegistrarVenta(int productoID, int cantidad,
+                                                         string motivo, int usuarioID)
+        {
+            try
+            {
+                if (cantidad <= 0) return (false, "La cantidad debe ser mayor a cero.");
+                _dao.RegistrarMovimiento(productoID, "S", cantidad, motivo, usuarioID, esVenta: true);
+                return (true, $"Venta de {cantidad} unidad(es) registrada. Precios ajustados.");
+            }
+            catch (SqlException ex)
+            {
+                return (false, ex.Message.Contains("Stock insuficiente")
+                    ? ex.Message : $"Error: {ex.Message}");
             }
         }
 
@@ -158,21 +216,20 @@ namespace ClaseNegocio
                                                   DateTime? hasta = null) =>
             _dao.ObtenerHistorial(productoID, desde, hasta);
 
+        // ════════════════════════════════════════════════════════════
+        //  DEFECTOS
+        // ════════════════════════════════════════════════════════════
         public (bool ok, string mensaje) RegistrarDefecto(Defecto d)
         {
             try
             {
-                if (d.ProductoID <= 0)
-                    return (false, "Selecciona un producto.");
+                if (d.ProductoID <= 0) return (false, "Selecciona un producto.");
                 if (string.IsNullOrWhiteSpace(d.Descripcion))
-                    return (false, "La descripción del defecto es obligatoria.");
-                if (d.CantidadAfectada <= 0)
-                    return (false, "La cantidad afectada debe ser mayor a cero.");
+                    return (false, "La descripción es obligatoria.");
+                if (d.CantidadAfectada <= 0) return (false, "La cantidad debe ser mayor a cero.");
 
                 bool ok = _dao.RegistrarDefecto(d);
-                return ok
-                    ? (true, "Defecto registrado correctamente.")
-                    : (false, "No se pudo registrar el defecto.");
+                return ok ? (true, "Defecto registrado.") : (false, "No se pudo registrar.");
             }
             catch (SqlException ex) { return (false, $"Error: {ex.Message}"); }
         }
@@ -180,7 +237,9 @@ namespace ClaseNegocio
         public List<Defecto> ObtenerDefectos(int? productoID = null) =>
             _dao.ObtenerDefectos(productoID);
 
-
+        // ════════════════════════════════════════════════════════════
+        //  ALERTAS
+        // ════════════════════════════════════════════════════════════
         public List<AlertaInventario> ObtenerAlertasPendientes() =>
             _dao.ObtenerAlertas(soloNoAtendidas: true);
 
@@ -196,6 +255,9 @@ namespace ClaseNegocio
             catch (SqlException ex) { return (false, $"Error: {ex.Message}"); }
         }
 
+        // ════════════════════════════════════════════════════════════
+        //  VALIDACIÓN INTERNA
+        // ════════════════════════════════════════════════════════════
         private void Validar(Producto p)
         {
             if (string.IsNullOrWhiteSpace(p.Codigo))
@@ -208,24 +270,6 @@ namespace ClaseNegocio
                 throw new ArgumentException("El precio no puede ser negativo.");
             if (p.StockMinimo < 0)
                 throw new ArgumentException("El stock mínimo no puede ser negativo.");
-        }
-
-        public (bool ok, string mensaje) RegistrarVenta(int productoID, int cantidad,
-                                                  string motivo, int usuarioID)
-        {
-            try
-            {
-                if (cantidad <= 0)
-                    return (false, "La cantidad debe ser mayor a cero.");
-                _dao.RegistrarMovimiento(productoID, "S", cantidad, motivo, usuarioID, esVenta: true);
-                return (true, $"Venta de {cantidad} unidad(es) registrada. Precios ajustados automáticamente.");
-            }
-            catch (System.Data.SqlClient.SqlException ex)
-            {
-                return (false, ex.Message.Contains("Stock insuficiente")
-                    ? ex.Message
-                    : $"Error: {ex.Message}");
-            }
         }
     }
 }
