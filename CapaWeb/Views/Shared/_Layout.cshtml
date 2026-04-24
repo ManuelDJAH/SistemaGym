@@ -182,7 +182,7 @@
         }
     })();
 
-    // ── Móvil: abrir/cerrar sidebar como drawer ──────────────
+    // ── Móvil: drawer ────────────────────────────────────────
     function abrirSidebarMobile() {
         document.getElementById('cf-sidebar').classList.add('mobile-open');
         document.getElementById('cf-overlay').classList.add('visible');
@@ -192,22 +192,36 @@
         document.getElementById('cf-overlay').classList.remove('visible');
     }
 
-    // Sidebar toggle con persistencia
+    // ── Desktop: colapsar/expandir ───────────────────────────
     function toggleSidebar() {
+        if (window.innerWidth <= 768) {
+            // En móvil el toggle verde no debe hacer nada (usamos hamburguesa)
+            return;
+        }
         const s = document.getElementById('cf-sidebar');
         s.classList.toggle('collapsed');
         localStorage.setItem('cf-sidebar-collapsed', s.classList.contains('collapsed'));
     }
 
-    // Restaurar estado
+    // ── Inicializar ──────────────────────────────────────────
     (function() {
-        if (localStorage.getItem('cf-sidebar-collapsed') === 'true') {
-            document.getElementById('cf-sidebar').classList.add('collapsed');
-        }
         if (window.innerWidth <= 768) {
-            document.getElementById('cf-sidebar').classList.add('collapsed');
+            // Móvil: sidebar completamente oculto, sin clase collapsed
+            document.getElementById('cf-sidebar').classList.remove('collapsed');
+        } else {
+            // Desktop: restaurar estado guardado
+            if (localStorage.getItem('cf-sidebar-collapsed') === 'true') {
+                document.getElementById('cf-sidebar').classList.add('collapsed');
+            }
         }
     })();
+
+    // Cerrar sidebar móvil al navegar (click en link)
+    document.querySelectorAll('#cf-sidebar .cf-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) cerrarSidebarMobile();
+        });
+    });
 </script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>

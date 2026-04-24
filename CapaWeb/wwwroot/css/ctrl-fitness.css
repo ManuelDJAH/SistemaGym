@@ -696,6 +696,11 @@ h1, h2, h3, h4, h5, h6,
         display: flex !important;
     }
 
+    /* Ocultar botón toggle verde en móvil */
+    .cf-toggle {
+        display: none !important;
+    }
+
     #cf-content {
         padding: 16px;
     }
