@@ -782,3 +782,18 @@ ul.cf-tabs {
     ul.cf-tabs .nav-item {
         display: flex;
     }
+
+/* Toggle pegado al borde derecho del sidebar, no fuera de él */
+.cf-toggle {
+    right: 0;
+    border-radius: 6px 0 0 6px;
+    width: 24px;
+    height: 32px;
+    box-shadow: none;
+}
+
+/* Cuando está colapsado, el toggle va al extremo derecho del sidebar colapsado */
+#cf-sidebar.collapsed .cf-toggle {
+    right: 0;
+    border-radius: 0 6px 6px 0;
+}
