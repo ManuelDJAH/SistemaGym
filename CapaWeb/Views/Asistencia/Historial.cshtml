@@ -1,0 +1,127 @@
+@using System.Data
+@{
+    ViewData["Title"] = "Historial de Asistencias";
+    var asistencias = ViewBag.Asistencias as DataTable ?? new DataTable();
+    var total       = ViewBag.Total as int? ?? 0;
+    var fecha       = ViewBag.Fecha as string ?? DateTime.Today.ToString("yyyy-MM-dd");
+}
+
+<!-- Filtro de fecha -->
+<div class="cf-filter-bar mb-4">
+    <form method="get" class="d-flex align-items-center gap-3 flex-wrap">
+        <label class="cf-label mb-0">Fecha</label>
+        <input type="date" name="fecha" value="@fecha" class="cf-input" style="width:180px;"
+               onchange="this.form.submit()" />
+        <a href="@Url.Action("Historial")" class="cf-btn cf-btn-outline cf-btn-sm">Hoy</a>
+    </form>
+    <div class="ms-auto">
+        <a asp-action="Index" class="cf-btn cf-btn-primary cf-btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Registrar Asistencia
+        </a>
+    </div>
+</div>
+
+<!-- Resumen del día -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-4">
+        <div class="cf-card p-4 text-center">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:800;color:var(--cf-green,#8DC63F);line-height:1;">
+                @total
+            </div>
+            <div style="font-size:13px;color:var(--cf-gray-400);">
+                Asistencia@(total != 1 ? "s" : "") el
+                @DateTime.Parse(fecha).ToString("dd/MM/yyyy")
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="cf-card p-4" style="height:100%;display:flex;align-items:center;">
+            @if (total == 0)
+            {
+                <div style="color:var(--cf-gray-400);font-size:14px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-right:8px;vertical-align:middle;opacity:.4;">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    No hay asistencias registradas para este día.
+                </div>
+            }
+            else
+            {
+                <div style="width:100%;">
+                    <div style="font-size:12px;color:var(--cf-gray-400);margin-bottom:8px;">Primera entrada del día</div>
+                    @{
+                        var primera = asistencias.Rows[asistencias.Rows.Count - 1];
+                        var ultima  = asistencias.Rows[0];
+                    }
+                    <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;">
+                        @primera["NombreMiembro"] —
+                        <span style="color:var(--cf-green,#8DC63F);">
+                            @(primera["hora_entrada"] == DBNull.Value ? "—" :
+                              TimeSpan.Parse(primera["hora_entrada"].ToString()).ToString(@"hh\:mm"))
+                        </span>
+                    </div>
+                    @if (total > 1)
+                    {
+                        <div style="font-size:12px;color:var(--cf-gray-400);margin-top:6px;">
+                            Última: @ultima["NombreMiembro"] —
+                            @(ultima["hora_entrada"] == DBNull.Value ? "—" :
+                              TimeSpan.Parse(ultima["hora_entrada"].ToString()).ToString(@"hh\:mm"))
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Tabla -->
+<div class="cf-card">
+    <div class="table-responsive">
+        <table class="cf-table">
+            <thead>
+                <tr>
+                    <th style="padding-left:20px;width:60px;">#</th>
+                    <th>Miembro</th>
+                    <th style="width:140px;">Membresía</th>
+                    <th style="width:100px;text-align:center;">Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (asistencias.Rows.Count == 0)
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-5" style="color:var(--cf-gray-400);">
+                            Sin registros para esta fecha.
+                        </td>
+                    </tr>
+                }
+                @{int i = 1;}
+                @foreach (DataRow row in asistencias.Rows)
+                {
+                    var hora = row["hora_entrada"] == DBNull.Value ? "—"
+                               : TimeSpan.Parse(row["hora_entrada"].ToString()).ToString(@"hh\:mm");
+                    <tr>
+                        <td style="padding-left:20px;color:var(--cf-gray-400);font-size:12px;">@i</td>
+                        <td><strong>@row["NombreMiembro"]</strong></td>
+                        <td style="font-size:13px;color:var(--cf-gray-400);">
+                            @(row["Membresia"] == DBNull.Value ? "—" : row["Membresia"])
+                        </td>
+                        <td style="text-align:center;">
+                            <span style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:var(--cf-green,#8DC63F);">
+                                @hora
+                            </span>
+                        </td>
+                    </tr>
+                    i++;
+                }
+            </tbody>
+        </table>
+    </div>
+    <div style="padding:10px 20px;border-top:1px solid var(--cf-gray-200);font-size:12px;color:var(--cf-gray-400);">
+        @total registro@(total != 1 ? "s" : "") —
+        @DateTime.Parse(fecha).ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-MX"))
+    </div>
+</div>

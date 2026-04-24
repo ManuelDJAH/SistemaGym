@@ -2,75 +2,187 @@
     ViewData["Title"] = "Registrar Asistencia";
 }
 
+<style>
+    .asis-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #E8ECF2;
+        box-shadow: 0 2px 12px rgba(30,40,53,.06);
+    }
+    .asis-step {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--cf-gray-400, #9BA3B0);
+        margin-bottom: 12px;
+    }
+    .asis-member-card {
+        background: linear-gradient(135deg, #1E2835 0%, #263445 100%);
+        border-radius: 12px;
+        padding: 20px 22px;
+        color: #fff;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform .15s, box-shadow .15s;
+        border: 2px solid transparent;
+    }
+    .asis-member-card:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(30,40,53,.15); }
+    .asis-member-card.selected { border-color: #8DC63F; }
+    .asis-member-card::after {
+        content: '';
+        position: absolute;
+        width: 120px; height: 120px;
+        border-radius: 50%;
+        background: rgba(141,198,63,.08);
+        top: -30px; right: -30px;
+    }
+    .asis-member-name {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+    .asis-member-mem {
+        font-size: 12px;
+        color: rgba(255,255,255,.5);
+    }
+    .asis-badge-activa  { background:rgba(141,198,63,.2);color:#8DC63F;border:1px solid rgba(141,198,63,.3); }
+    .asis-badge-vencida { background:rgba(239,68,68,.2); color:#ef4444;border:1px solid rgba(239,68,68,.3); }
+    .asis-badge {
+        display: inline-block;
+        border-radius: 6px;
+        padding: 2px 10px;
+        font-size: 11px;
+        font-weight: 700;
+        font-family: 'Barlow Condensed', sans-serif;
+        letter-spacing: .5px;
+        margin-top: 8px;
+    }
+    .asis-checkmark {
+        position: absolute;
+        top: 16px; right: 16px;
+        width: 24px; height: 24px;
+        border-radius: 50%;
+        background: #8DC63F;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+    }
+    .asis-member-card.selected .asis-checkmark { display: flex; }
+    .asis-results {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0; right: 0;
+        background: #fff;
+        border: 1px solid #E8ECF2;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.1);
+        z-index: 100;
+        max-height: 260px;
+        overflow-y: auto;
+    }
+    .asis-result-item {
+        padding: 12px 16px;
+        cursor: pointer;
+        border-bottom: 1px solid #F4F6F9;
+        transition: background .15s;
+    }
+    .asis-result-item:last-child { border-bottom: none; }
+    .asis-result-item:hover { background: #F4F6F9; }
+    .asis-result-name { font-size: 14px; font-weight: 600; color: #1E2835; }
+    .asis-result-mem  { font-size: 12px; color: #9BA3B0; }
+    .asis-clock {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 42px;
+        font-weight: 800;
+        color: #1E2835;
+        letter-spacing: 2px;
+        line-height: 1;
+    }
+    .asis-date {
+        font-size: 13px;
+        color: var(--cf-gray-400, #9BA3B0);
+        margin-top: 4px;
+    }
+</style>
+
 <div class="row justify-content-center">
     <div class="col-lg-6">
 
-        <!-- Búsqueda -->
-        <div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
-            <div class="card-body p-4">
-                <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem;letter-spacing:1px;">
-                    1. Buscar miembro
-                </h6>
-                <div class="input-group">
-                    <input type="text" id="txtBuscar" class="form-control form-control-lg"
-                           placeholder="Nombre o ID del miembro..." autofocus />
-                    <button class="btn btn-primary px-4" onclick="buscar()">
-                        <i class="bi bi-search"></i> Buscar
+        <!-- Reloj -->
+        <div class="asis-card p-4 mb-3 text-center">
+            <div class="asis-clock" id="reloj">--:--:--</div>
+            <div class="asis-date"  id="fecha-hoy">--</div>
+        </div>
+
+        <!-- PASO 1: Buscar -->
+        <div class="asis-card p-4 mb-3" style="overflow:visible;">
+            <div class="asis-step">1. Buscar miembro</div>
+            <div style="position:relative;">
+                <div class="d-flex gap-2">
+                    <input type="text" id="txtBuscar" class="cf-input flex-grow-1"
+                           placeholder="Nombre o ID del miembro..."
+                           autocomplete="off"
+                           oninput="buscarLive(this.value)"
+                           onkeydown="if(event.key==='Enter'){event.preventDefault();}" />
+                    <button class="cf-btn cf-btn-primary" onclick="buscarLive(document.getElementById('txtBuscar').value)"
+                            style="white-space:nowrap;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        Buscar
                     </button>
                 </div>
-                <div id="alertaBusqueda" class="mt-2 d-none"></div>
+                <div id="dropResultados" class="asis-results d-none"></div>
             </div>
+            <div id="alertaBusqueda" class="cf-alert cf-alert-danger d-none mt-3"></div>
         </div>
 
-        <!-- Resultados búsqueda -->
-        <div id="panelResultados" class="d-none mb-4">
-            <div class="card border-0 shadow-sm" style="border-radius:12px;">
-                <div class="card-header bg-transparent border-0 fw-bold pt-3 pb-0 ps-4">
-                    Selecciona un miembro
-                </div>
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush" id="listaUsuarios" style="border-radius:0 0 12px 12px;">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Panel confirmación -->
+        <!-- PASO 2: Confirmar -->
         <div id="panelConfirmar" class="d-none">
-            <div class="card border-0 shadow-sm" style="border-radius:12px;border-left:4px solid #0f3460!important;">
-                <div class="card-body p-4">
-                    <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem;letter-spacing:1px;">
-                        2. Confirmar asistencia
-                    </h6>
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center"
-                             style="width:50px;height:50px;background:#0f3460;color:white;font-size:1.3rem;font-weight:700;"
-                             id="avatarLetra">M</div>
-                        <div>
-                            <div class="fw-bold fs-6" id="lblNombre"></div>
-                            <div class="text-muted small" id="lblInfo"></div>
-                        </div>
-                    </div>
+            <div class="asis-card p-4 mb-3">
+                <div class="asis-step">2. Confirmar asistencia</div>
 
-                    <div class="d-flex align-items-center gap-2 mb-4 text-muted small">
-                        <i class="bi bi-clock"></i>
-                        <span id="lblFechaHora"></span>
+                <div class="asis-member-card selected" id="cardMiembro">
+                    <div class="asis-checkmark">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1E2835" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
                     </div>
-
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-success px-4 fw-bold" onclick="registrar()">
-                            <i class="bi bi-check-circle me-1"></i> Registrar Asistencia
-                        </button>
-                        <button class="btn btn-outline-secondary" onclick="cancelar()">
-                            Cancelar
-                        </button>
-                    </div>
+                    <div class="asis-member-name" id="lblNombre">—</div>
+                    <div class="asis-member-mem"  id="lblMembresia">—</div>
+                    <span class="asis-badge" id="lblEstado"></span>
                 </div>
+
+                <div class="d-flex gap-2">
+                    <button class="cf-btn cf-btn-primary flex-grow-1" onclick="registrar()"
+                            style="justify-content:center;padding:12px;font-size:15px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                        Registrar Entrada
+                    </button>
+                    <button class="cf-btn cf-btn-outline" onclick="limpiar()">Cancelar</button>
+                </div>
+
+                <div id="panelResultado" class="d-none mt-3"></div>
             </div>
         </div>
 
-        <!-- Resultado final -->
-        <div id="panelFinal" class="d-none mt-3"></div>
+        <!-- Link a historial -->
+        <div class="text-center mt-2">
+            <a asp-action="Historial" style="font-size:13px;color:var(--cf-gray-400);text-decoration:none;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;">
+                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                Ver historial de asistencias
+            </a>
+        </div>
 
     </div>
 </div>
@@ -78,107 +190,104 @@
 @section Scripts {
 <form style="display:none">@Html.AntiForgeryToken()</form>
 <script>
-    let usuarioSeleccionado = null;
+    let idUsuarioSel = 0;
+    let buscarTimer  = null;
 
-    // Enter dispara búsqueda
-    document.getElementById('txtBuscar').addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); buscar(); }
-    });
-
-    // Actualizar reloj cada segundo
+    // ── Reloj ────────────────────────────────────────────────
     function actualizarReloj() {
         const ahora = new Date();
-        document.getElementById('lblFechaHora').textContent =
-            ahora.toLocaleDateString('es-MX', { weekday:'long', year:'numeric', month:'long', day:'numeric' }) +
-            ' — ' + ahora.toLocaleTimeString('es-MX');
+        document.getElementById('reloj').textContent =
+            ahora.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        document.getElementById('fecha-hoy').textContent =
+            ahora.toLocaleDateString('es-MX', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
     }
-    setInterval(actualizarReloj, 1000);
     actualizarReloj();
+    setInterval(actualizarReloj, 1000);
 
-    function buscar() {
-        const termino = document.getElementById('txtBuscar').value.trim();
-        if (!termino) return;
+    // ── Búsqueda en vivo ─────────────────────────────────────
+    function buscarLive(valor) {
+        clearTimeout(buscarTimer);
+        const drop = document.getElementById('dropResultados');
+        if (!valor || valor.length < 2) { drop.classList.add('d-none'); return; }
 
-        fetch('@Url.Action("BuscarUsuario","Asistencia")', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `termino=${encodeURIComponent(termino)}&__RequestVerificationToken=${getToken()}`
-        })
-        .then(r => r.json())
-        .then(data => {
-            const alerta = document.getElementById('alertaBusqueda');
-            if (!data.ok) {
-                alerta.className   = 'alert alert-warning mt-2 py-2 small';
-                alerta.textContent = data.mensaje;
-                alerta.classList.remove('d-none');
-                document.getElementById('panelResultados').classList.add('d-none');
-                return;
-            }
-            alerta.classList.add('d-none');
-
-            const lista = document.getElementById('listaUsuarios');
-            lista.innerHTML = '';
-
-            data.usuarios.forEach(u => {
-                const item = document.createElement('button');
-                item.type      = 'button';
-                item.className = 'list-group-item list-group-item-action px-4 py-3';
-                item.innerHTML = `
-                    <div class="fw-semibold">${u.nombre}</div>
-                    <div class="text-muted small">ID: ${u.idUsuario} &nbsp;|&nbsp; ${u.correo || 'Sin correo'} &nbsp;|&nbsp; ${u.telefono || 'Sin teléfono'}</div>`;
-                item.onclick = () => seleccionarUsuario(u);
-                lista.appendChild(item);
+        buscarTimer = setTimeout(() => {
+            fetch('@Url.Action("BuscarUsuario","Asistencia")', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body:    `termino=${encodeURIComponent(valor)}&__RequestVerificationToken=${getToken()}`
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.ok || !data.usuarios?.length) {
+                    drop.innerHTML = `<div class="asis-result-item" style="color:#9BA3B0;">${data.mensaje ?? 'Sin resultados'}</div>`;
+                    drop.classList.remove('d-none');
+                    return;
+                }
+                drop.innerHTML = data.usuarios.map(u => `
+                    <div class="asis-result-item"
+                         onclick="seleccionar(${u.idUsuario},'${esc(u.nombre)}','${esc(u.membresia)}','${esc(u.estadoMembresia)}')">
+                        <div class="asis-result-name">${esc(u.nombre)}</div>
+                        <div class="asis-result-mem">${esc(u.membresia)} — <span style="color:${u.estadoMembresia==='ACTIVA'?'#8DC63F':'#ef4444'}">${esc(u.estadoMembresia)}</span></div>
+                    </div>`).join('');
+                drop.classList.remove('d-none');
             });
-
-            document.getElementById('panelResultados').classList.remove('d-none');
-            document.getElementById('panelConfirmar').classList.add('d-none');
-        });
+        }, 300);
     }
 
-    function seleccionarUsuario(u) {
-        usuarioSeleccionado = u;
-
-        document.getElementById('avatarLetra').textContent = u.nombre.charAt(0).toUpperCase();
-        document.getElementById('lblNombre').textContent   = u.nombre;
-        document.getElementById('lblInfo').textContent     = `ID: ${u.idUsuario}  |  ${u.correo || ''}  |  ${u.telefono || ''}`;
-
-        document.getElementById('panelResultados').classList.add('d-none');
+    // ── Seleccionar miembro ──────────────────────────────────
+    function seleccionar(id, nombre, membresia, estado) {
+        idUsuarioSel = id;
+        document.getElementById('dropResultados').classList.add('d-none');
+        document.getElementById('alertaBusqueda').classList.add('d-none');
+        document.getElementById('lblNombre').textContent   = nombre;
+        document.getElementById('lblMembresia').textContent = membresia;
+        const badge = document.getElementById('lblEstado');
+        badge.textContent  = estado;
+        badge.className    = 'asis-badge ' + (estado === 'ACTIVA' ? 'asis-badge-activa' : 'asis-badge-vencida');
         document.getElementById('panelConfirmar').classList.remove('d-none');
-        document.getElementById('panelFinal').classList.add('d-none');
+        document.getElementById('panelResultado').classList.add('d-none');
     }
 
+    // ── Registrar ────────────────────────────────────────────
     function registrar() {
-        if (!usuarioSeleccionado) return;
-
+        if (!idUsuarioSel) return;
         fetch('@Url.Action("Registrar","Asistencia")', {
-            method: 'POST',
+            method:  'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `idUsuario=${usuarioSeleccionado.idUsuario}&__RequestVerificationToken=${getToken()}`
+            body:    `idUsuario=${idUsuarioSel}&__RequestVerificationToken=${getToken()}`
         })
         .then(r => r.json())
         .then(data => {
-            const panel = document.getElementById('panelFinal');
-            panel.className   = `alert ${data.ok ? 'alert-success' : 'alert-danger'} mt-3`;
-            panel.innerHTML   = data.ok
-                ? `<i class="bi bi-check-circle-fill me-2"></i><strong>${usuarioSeleccionado.nombre}</strong> — Asistencia registrada correctamente.`
-                : `<i class="bi bi-exclamation-circle me-2"></i>${data.mensaje}`;
-            panel.classList.remove('d-none');
-
-            if (data.ok) cancelar();
+            const p = document.getElementById('panelResultado');
+            p.className   = `cf-alert ${data.ok ? 'cf-alert-success' : 'cf-alert-danger'}`;
+            p.textContent = data.mensaje;
+            p.classList.remove('d-none');
+            if (data.ok) setTimeout(() => limpiar(), 2000);
         });
     }
 
-    function cancelar() {
-        usuarioSeleccionado = null;
+    // ── Limpiar ──────────────────────────────────────────────
+    function limpiar() {
+        idUsuarioSel = 0;
         document.getElementById('txtBuscar').value = '';
         document.getElementById('panelConfirmar').classList.add('d-none');
-        document.getElementById('panelResultados').classList.add('d-none');
         document.getElementById('alertaBusqueda').classList.add('d-none');
+        document.getElementById('dropResultados').classList.add('d-none');
         document.getElementById('txtBuscar').focus();
     }
 
+    function esc(s) {
+        return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
     function getToken() {
         return document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
     }
+
+    document.addEventListener('click', e => {
+        if (!e.target.closest('#dropResultados') && !e.target.closest('#txtBuscar'))
+            document.getElementById('dropResultados').classList.add('d-none');
+    });
+
+    document.getElementById('txtBuscar').focus();
 </script>
 }
