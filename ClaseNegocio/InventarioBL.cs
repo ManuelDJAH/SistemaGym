@@ -260,7 +260,8 @@ namespace ClaseNegocio
         // ════════════════════════════════════════════════════════════
         private void Validar(Producto p)
         {
-            if (string.IsNullOrWhiteSpace(p.Codigo))
+            // Solo validar código al crear (ProductoID == 0)
+            if (p.ProductoID == 0 && string.IsNullOrWhiteSpace(p.Codigo))
                 throw new ArgumentException("El código de barras es obligatorio.");
             if (string.IsNullOrWhiteSpace(p.Nombre))
                 throw new ArgumentException("El nombre del producto es obligatorio.");
