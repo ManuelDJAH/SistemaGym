@@ -12,7 +12,7 @@
         <label class="cf-label mb-0">Fecha</label>
         <input type="date" name="fecha" value="@fecha" class="cf-input" style="width:180px;"
                onchange="this.form.submit()" />
-        <a href="@Url.Action("Historial")" class="cf-btn cf-btn-outline cf-btn-sm">Hoy</a>
+        <button type="button" class="cf-btn cf-btn-outline cf-btn-sm" onclick="irAHoy()">Hoy</button>
     </form>
     <div class="ms-auto">
         <a asp-action="Index" class="cf-btn cf-btn-primary cf-btn-sm">
@@ -125,3 +125,19 @@
         @DateTime.Parse(fecha).ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-MX"))
     </div>
 </div>
+
+@section Scripts {
+<script>
+    function irAHoy() {
+        const hoy  = new Date();
+        const yyyy = hoy.getFullYear();
+        const mm   = String(hoy.getMonth() + 1).padStart(2, '0');
+        const dd   = String(hoy.getDate()).padStart(2, '0');
+        window.location.href = '@Url.Action("Historial","Asistencia")' + '?fecha=' + yyyy + '-' + mm + '-' + dd;
+    }
+    // Si no hay parámetro fecha, redirigir a la fecha local del cliente
+    (function() {
+        if (!new URLSearchParams(window.location.search).has('fecha')) irAHoy();
+    })();
+</script>
+}
