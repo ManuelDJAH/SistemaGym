@@ -139,19 +139,7 @@
     .mov-result-code { font-size: 11px; color: #9BA3B0; font-family: monospace; }
     .mov-result-stock { font-size: 12px; font-weight: 700; color: #8DC63F; }
     .mov-result-stock.low { color: #ef4444; }
-    /* Venta toggle */
-    .venta-toggle {
-        background: #FFF9E6;
-        border: 1px solid #FCD34D;
-        border-radius: 10px;
-        padding: 12px 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-    .venta-toggle label { cursor: pointer; font-size: 13px; color: #92400E; }
-    .venta-toggle strong { color: #B45309; }
+    /* Venta toggle — eliminado */
 </style>
 
 <div class="row justify-content-center">
@@ -341,10 +329,10 @@
     // ── Tipo: Entrada / Salida ────────────────────────────────
     function setTipo(tipo) {
         tipoActual = tipo;
-        document.getElementById('tabEntrada').className = 'mov-tab' + (tipo === 'E' ? ' active-entrada' : '');
-        document.getElementById('tabSalida').className  = 'mov-tab' + (tipo === 'S' ? ' active-salida'  : '');
-        document.getElementById('panelVenta').classList.toggle('d-none', tipo !== 'S');
-        if (tipo !== 'S') document.getElementById('chkVenta').checked = false;
+        const te = document.getElementById('tabEntrada');
+        const ts = document.getElementById('tabSalida');
+        if (te) te.className = 'mov-tab' + (tipo === 'E' ? ' active-entrada' : '');
+        if (ts) ts.className = 'mov-tab' + (tipo === 'S' ? ' active-salida'  : '');
     }
 
     // ── Registrar ────────────────────────────────────────────
@@ -353,13 +341,12 @@
         const cantidad = parseInt(document.getElementById('txtCantidad').value);
         if (cantidad <= 0) { alert('La cantidad debe ser mayor a cero.'); return; }
 
-        const motivo  = document.getElementById('txtMotivo').value;
-        const esVenta = tipoActual === 'S' && document.getElementById('chkVenta').checked;
+        const motivo = document.getElementById('txtMotivo').value;
 
         fetch('@Url.Action("RegistrarMovimiento","Inventario")', {
             method:  'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body:    `productoID=${productoID}&tipo=${tipoActual}&cantidad=${cantidad}&motivo=${encodeURIComponent(motivo)}&esVenta=${esVenta}&__RequestVerificationToken=${getToken()}`
+            body:    `productoID=${productoID}&tipo=${tipoActual}&cantidad=${cantidad}&motivo=${encodeURIComponent(motivo)}&esVenta=false&__RequestVerificationToken=${getToken()}`
         })
         .then(r => r.json())
         .then(data => {
