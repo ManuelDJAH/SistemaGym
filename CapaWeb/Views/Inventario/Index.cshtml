@@ -1,8 +1,9 @@
 @using CapaDatos
 @{
     ViewData["Title"] = "Inventario — Productos";
-    var productos  = ViewBag.Productos  as List<Producto>  ?? new List<Producto>();
-    var categorias = ViewBag.Categorias as List<Categoria> ?? new List<Categoria>();
+    var productos   = ViewBag.Productos   as List<Producto>  ?? new List<Producto>();
+    var categorias  = ViewBag.Categorias  as List<Categoria> ?? new List<Categoria>();
+    var proveedores = ViewBag.Proveedores as System.Data.DataTable ?? new System.Data.DataTable();
 }
 
 <!-- Filter bar -->
@@ -72,6 +73,7 @@
                         data-id="@p.ProductoID" data-codigo="@p.Codigo" data-nombre="@p.Nombre"
                         data-catid="@p.CategoriaID" data-precio="@p.Precio" data-stockmin="@p.StockMinimo"
                         data-caducidad="@(p.FechaCaducidad?.ToString("yyyy-MM-dd") ?? "")"
+                        data-idproveedor="@p.IdProveedor"
                         onclick="seleccionar(this)">
                         <td style="padding-left:20px;"><code style="font-size:12px;color:var(--cf-gray-600);">@p.Codigo</code></td>
                         <td><strong>@p.Nombre</strong></td>
@@ -174,6 +176,19 @@
                     </div>
                     <input type="date" id="fCaducidad" class="cf-input w-100" disabled />
                 </div>
+                <div class="mb-3">
+                    <label class="cf-label">Proveedor <span style="font-weight:400;color:var(--cf-gray-400);">(opcional)</span></label>
+                    <select id="fProveedor" class="cf-select w-100">
+                        <option value="0">— Sin proveedor asignado —</option>
+                        @if (proveedores.Rows.Count > 0)
+                        {
+                            @foreach (System.Data.DataRow prov in proveedores.Rows)
+                            {
+                                <option value="@prov["id_proveedor"]">@prov["nombre"]</option>
+                            }
+                        }
+                    </select>
+                </div>
                 <div id="modalError" class="cf-alert cf-alert-danger d-none"></div>
             </div>
             <div class="modal-footer">
@@ -212,6 +227,7 @@
             document.getElementById('chkCaducidad').checked     = false;
             document.getElementById('fCodigo').readOnly         = false;
             document.getElementById('btnGenerarEAN').style.display = '';
+            document.getElementById('fProveedor').value         = '0';
         } else {
             if (!productoSeleccionado) return;
             document.getElementById('modalTitulo').textContent  = 'Editar Producto';
@@ -221,8 +237,9 @@
             document.getElementById('fCategoria').value         = productoSeleccionado.catid;
             document.getElementById('fPrecio').value            = productoSeleccionado.precio;
             document.getElementById('fStockMin').value          = productoSeleccionado.stockmin;
+            document.getElementById('fProveedor').value         = productoSeleccionado.idproveedor || '0';
             document.getElementById('fCodigo').readOnly         = true;
-            document.getElementById('btnGenerarEAN').style.display = 'none'; // ocultar al editar
+            document.getElementById('btnGenerarEAN').style.display = 'none';
             const cad = productoSeleccionado.caducidad;
             if (cad) {
                 document.getElementById('chkCaducidad').checked  = true;
@@ -273,6 +290,7 @@
             precio:        document.getElementById('fPrecio').value,
             stockMinimo:   document.getElementById('fStockMin').value,
             fechaCaducidad: caducidad,
+            idProveedor:   document.getElementById('fProveedor').value,
             __RequestVerificationToken: getToken()
         });
         if (!esNuevo) params.append('productoID', id);
