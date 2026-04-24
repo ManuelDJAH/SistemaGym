@@ -90,7 +90,21 @@
                 <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
                 <path d="M13.73 21a2 2 0 01-3.46 0"/>
             </svg>
-            <span class="cf-nav-label">Notificaciones</span>
+            <span class="cf-nav-label">
+                Notificaciones
+                <span id="notif-badge" style="
+                    display:none;
+                    background:#ef4444;
+                    color:#fff;
+                    font-size:10px;
+                    font-weight:700;
+                    border-radius:10px;
+                    padding:1px 6px;
+                    margin-left:6px;
+                    font-family:'DM Sans',sans-serif;
+                    line-height:1.4;
+                "></span>
+            </span>
         </a>
 
         @* Panel Admin: se lee desde Session directamente para que funcione en TODOS los controllers *@
@@ -217,6 +231,22 @@
             if (window.innerWidth <= 768) cerrarSidebarMobile();
         });
     });
+
+    // ── Conteo de notificaciones pendientes ──────────────────
+    (function() {
+        fetch('/Notificaciones/Conteo')
+            .then(r => r.json())
+            .then(data => {
+                if (data.total > 0) {
+                    const badge = document.getElementById('notif-badge');
+                    if (badge) {
+                        badge.textContent = data.total > 99 ? '99+' : data.total;
+                        badge.style.display = 'inline';
+                    }
+                }
+            })
+            .catch(() => {}); // silencioso si falla
+    })();
 </script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
