@@ -887,8 +887,9 @@ ul.cf-tabs {
 }
 
 @media (min-width: 769px) {
+    /* En desktop el botón hamburguesa también es visible para colapsar */
     #btn-menu-mobile {
-        display: none !important;
+        display: flex !important;
     }
 
     #cf-overlay {

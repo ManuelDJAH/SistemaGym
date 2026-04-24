@@ -18,13 +18,6 @@
 <!-- ══ SIDEBAR ══════════════════════════════════════════════════ -->
 <nav id="cf-sidebar">
 
-    <!-- Toggle -->
-    <button class="cf-toggle" onclick="toggleSidebar()" title="Colapsar">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 18l-6-6 6-6"/>
-        </svg>
-    </button>
-
     <!-- Brand: logo imagen con fallback a texto -->
     <a href="/" class="cf-brand">
         <img src="@Url.Content("~/images/logo.png")"
@@ -136,9 +129,9 @@
 
     <!-- Topbar -->
     <header id="cf-topbar">
-        <!-- Botón hamburguesa solo en móvil -->
-        <button id="btn-menu-mobile" onclick="abrirSidebarMobile()"
-                style="display:none;background:none;border:none;cursor:pointer;padding:4px;margin-right:12px;align-items:center;">
+        <!-- Botón menú: colapsa en desktop, abre drawer en móvil -->
+        <button id="btn-menu-mobile" onclick="toggleMenu()"
+                style="display:none;background:none;border:none;cursor:pointer;padding:4px;margin-right:12px;align-items:center;flex-shrink:0;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--cf-dark)" stroke-width="2.5">
                 <line x1="3" y1="6"  x2="21" y2="6"/>
                 <line x1="3" y1="12" x2="21" y2="12"/>
@@ -182,25 +175,27 @@
         }
     })();
 
-    // ── Móvil: drawer ────────────────────────────────────────
-    function abrirSidebarMobile() {
-        document.getElementById('cf-sidebar').classList.add('mobile-open');
-        document.getElementById('cf-overlay').classList.add('visible');
+    // ── Toggle menú (desktop: colapsa / móvil: drawer) ───────
+    function toggleMenu() {
+        if (window.innerWidth <= 768) {
+            const abierto = document.getElementById('cf-sidebar').classList.contains('mobile-open');
+            if (abierto) {
+                document.getElementById('cf-sidebar').classList.remove('mobile-open');
+                document.getElementById('cf-overlay').classList.remove('visible');
+            } else {
+                document.getElementById('cf-sidebar').classList.add('mobile-open');
+                document.getElementById('cf-overlay').classList.add('visible');
+            }
+        } else {
+            const s = document.getElementById('cf-sidebar');
+            s.classList.toggle('collapsed');
+            localStorage.setItem('cf-sidebar-collapsed', s.classList.contains('collapsed'));
+        }
     }
+    function abrirSidebarMobile() { toggleMenu(); }
     function cerrarSidebarMobile() {
         document.getElementById('cf-sidebar').classList.remove('mobile-open');
         document.getElementById('cf-overlay').classList.remove('visible');
-    }
-
-    // ── Desktop: colapsar/expandir ───────────────────────────
-    function toggleSidebar() {
-        if (window.innerWidth <= 768) {
-            // En móvil el toggle verde no debe hacer nada (usamos hamburguesa)
-            return;
-        }
-        const s = document.getElementById('cf-sidebar');
-        s.classList.toggle('collapsed');
-        localStorage.setItem('cf-sidebar-collapsed', s.classList.contains('collapsed'));
     }
 
     // ── Inicializar ──────────────────────────────────────────
