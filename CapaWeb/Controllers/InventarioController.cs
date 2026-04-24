@@ -20,6 +20,19 @@ namespace CapaWeb.Controllers
             ViewBag.Categorias = _bl.ObtenerCategoriasProducto();
             ViewBag.CategoriaActual = categoriaID;
             ViewBag.EsAdmin = SesionWeb.EsAdmin(HttpContext.Session);
+
+            // Cargar proveedores para el selector del modal
+            using (var cn = CapaDatos.Conexion.ObtenerConexion())
+            {
+                cn.Open();
+                var cmd = new System.Data.SqlClient.SqlCommand(
+                    "SELECT id_proveedor, nombre FROM Proveedores ORDER BY nombre", cn);
+                var da = new System.Data.SqlClient.SqlDataAdapter(cmd);
+                var dt = new System.Data.DataTable();
+                da.Fill(dt);
+                ViewBag.Proveedores = dt;
+            }
+
             ViewData["Title"] = "Inventario — Productos";
             return View();
         }
@@ -28,22 +41,23 @@ namespace CapaWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CrearProducto(string codigo, string nombre, int categoriaID,
-                                            decimal precio, int stockMinimo,
-                                            string fechaCaducidad)
+                                    decimal precio, int stockMinimo,
+                                    string fechaCaducidad, int idProveedor = 0)
         {
             DateTime? caducidad = null;
             if (!string.IsNullOrEmpty(fechaCaducidad))
                 caducidad = DateTime.Parse(fechaCaducidad);
 
-            var p = new Producto
+            var p = new CapaDatos.Producto
             {
                 Codigo = codigo?.Trim(),
                 Nombre = nombre?.Trim(),
                 CategoriaID = categoriaID,
                 Precio = precio,
                 StockMinimo = stockMinimo,
+                StockActual = 0,
                 FechaCaducidad = caducidad,
-                StockActual = 0
+                IdProveedor = idProveedor
             };
 
             var (ok, msg, _) = _bl.AltaProducto(p);
@@ -54,21 +68,22 @@ namespace CapaWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ActualizarProducto(int productoID, string nombre, int categoriaID,
-                                                 decimal precio, int stockMinimo,
-                                                 string fechaCaducidad)
+                                         decimal precio, int stockMinimo,
+                                         string fechaCaducidad, int idProveedor = 0)
         {
             DateTime? caducidad = null;
             if (!string.IsNullOrEmpty(fechaCaducidad))
                 caducidad = DateTime.Parse(fechaCaducidad);
 
-            var p = new Producto
+            var p = new CapaDatos.Producto
             {
                 ProductoID = productoID,
                 Nombre = nombre?.Trim(),
                 CategoriaID = categoriaID,
                 Precio = precio,
                 StockMinimo = stockMinimo,
-                FechaCaducidad = caducidad
+                FechaCaducidad = caducidad,
+                IdProveedor = idProveedor
             };
 
             var (ok, msg) = _bl.ActualizarProducto(p);
