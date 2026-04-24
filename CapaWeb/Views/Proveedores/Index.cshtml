@@ -6,136 +6,159 @@
 }
 
 <!-- Barra superior -->
-<div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
-    <div class="card-body py-3">
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <form method="get" asp-action="Index" class="d-flex align-items-center gap-2">
-                <div class="input-group input-group-sm" style="width:300px;">
-                    <select name="criterio" class="form-select form-select-sm" style="max-width:110px;">
-                        <option value="nombre"   selected="@(ViewBag.Criterio == "nombre"   ? "selected" : null)">Nombre</option>
-                        <option value="contacto" selected="@(ViewBag.Criterio == "contacto" ? "selected" : null)">Contacto</option>
-                    </select>
-                    <input type="text" name="buscar" class="form-control"
-                           placeholder="Buscar..." value="@ViewBag.Buscar" />
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
-                </div>
-                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Ver todos</a>
-            </form>
-
-            <div class="ms-auto d-flex gap-2">
-                <button class="btn btn-sm btn-success" onclick="abrirModal('nuevo')">
-                    <i class="bi bi-plus-circle me-1"></i> Nuevo
-                </button>
-                <button class="btn btn-sm btn-primary" id="btnEditar" disabled onclick="abrirModal('editar')">
-                    <i class="bi bi-pencil me-1"></i> Editar
-                </button>
-                <button class="btn btn-sm btn-danger" id="btnEliminar" disabled onclick="eliminar()">
-                    <i class="bi bi-trash me-1"></i> Eliminar
-                </button>
-                <a asp-action="Restock" class="btn btn-sm btn-outline-warning">
-                    <i class="bi bi-arrow-repeat me-1"></i> Ordenes Restock
-                </a>
-            </div>
-        </div>
+<div class="cf-filter-bar mb-3">
+    <form method="get" asp-action="Index" class="d-flex align-items-center gap-2 flex-wrap">
+        <select name="criterio" class="cf-select" style="width:120px;">
+            <option value="nombre"   selected="@(ViewBag.Criterio == "nombre"   ? "selected" : null)">Nombre</option>
+            <option value="contacto" selected="@(ViewBag.Criterio == "contacto" ? "selected" : null)">Contacto</option>
+        </select>
+        <input type="text" name="buscar" class="cf-input" style="width:220px;"
+               placeholder="Buscar..." value="@ViewBag.Buscar" />
+        <button type="submit" class="cf-btn cf-btn-primary cf-btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+        </button>
+        @if (!string.IsNullOrWhiteSpace(ViewBag.Buscar as string))
+        {
+            <a asp-action="Index" class="cf-btn cf-btn-outline cf-btn-sm">Ver todos</a>
+        }
+    </form>
+    <div class="ms-auto d-flex gap-2">
+        <button class="cf-btn cf-btn-primary cf-btn-sm" onclick="abrirModal('nuevo')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo
+        </button>
+        <button class="cf-btn cf-btn-dark cf-btn-sm" id="btnEditar" disabled onclick="abrirModal('editar')">Editar</button>
+        <button class="cf-btn cf-btn-danger cf-btn-sm" id="btnEliminar" disabled onclick="eliminar()">Eliminar</button>
+        <a asp-action="Restock" class="cf-btn cf-btn-outline cf-btn-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"/>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+            Ordenes Restock
+        </a>
     </div>
 </div>
 
-<!-- Tabla -->
-<div class="card border-0 shadow-sm" style="border-radius:12px;">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead style="background:#f8f9fa;">
-                    <tr>
-                        <th class="ps-4">Nombre</th>
-                        <th>Contacto</th>
-                        <th>Telefono</th>
-                        <th>Correo</th>
-                        <th>Direccion</th>
-                        <th>Categoria</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (dt.Rows.Count == 0)
-                    {
-                        <tr><td colspan="6" class="text-center text-muted py-5">
-                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>No hay proveedores registrados.
-                        </td></tr>
-                    }
-                    @foreach (DataRow row in dt.Rows)
-                    {
-                        <tr class="prov-row" style="cursor:pointer;"
-                            data-id="@row["id_proveedor"]"
-                            data-nombre="@row["nombre"]"
-                            data-contacto="@(row["contacto"] == DBNull.Value ? "" : row["contacto"])"
-                            data-telefono="@(row["telefono"] == DBNull.Value ? "" : row["telefono"])"
-                            data-correo="@(row["correo"]     == DBNull.Value ? "" : row["correo"])"
-                            data-direccion="@(row["direccion"] == DBNull.Value ? "" : row["direccion"])"
-                            data-catid="@(row["id_categoria"] == DBNull.Value ? "" : row["id_categoria"])"
-                            onclick="seleccionar(this)">
-                            <td class="ps-4 fw-semibold">@row["nombre"]</td>
-                            <td>@(row["contacto"]  == DBNull.Value ? "—" : row["contacto"])</td>
-                            <td>@(row["telefono"]  == DBNull.Value ? "—" : row["telefono"])</td>
-                            <td class="small">@(row["correo"]    == DBNull.Value ? "—" : row["correo"])</td>
-                            <td class="small text-muted">@(row["direccion"] == DBNull.Value ? "—" : row["direccion"])</td>
-                            <td><span class="badge bg-secondary">@(row["categoria"] == DBNull.Value ? "—" : row["categoria"])</span></td>
+<div class="row g-3">
+    <!-- Tabla proveedores -->
+    <div class="col-lg-8">
+        <div class="cf-card">
+            <div class="table-responsive">
+                <table class="cf-table">
+                    <thead>
+                        <tr>
+                            <th style="padding-left:20px;">Nombre</th>
+                            <th>Contacto</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Dirección</th>
+                            <th>Categoría</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @if (dt.Rows.Count == 0)
+                        {
+                            <tr><td colspan="6" class="text-center py-5" style="color:var(--cf-gray-400);">
+                                No hay proveedores registrados.
+                            </td></tr>
+                        }
+                        @foreach (DataRow row in dt.Rows)
+                        {
+                            <tr class="prov-row"
+                                data-id="@row["id_proveedor"]"
+                                data-nombre="@row["nombre"]"
+                                data-contacto="@(row["contacto"]  == DBNull.Value ? "" : row["contacto"])"
+                                data-telefono="@(row["telefono"]  == DBNull.Value ? "" : row["telefono"])"
+                                data-correo="@(row["correo"]      == DBNull.Value ? "" : row["correo"])"
+                                data-direccion="@(row["direccion"] == DBNull.Value ? "" : row["direccion"])"
+                                data-catid="@(row["id_categoria"] == DBNull.Value ? "" : row["id_categoria"])"
+                                onclick="seleccionar(this)">
+                                <td style="padding-left:20px;"><strong>@row["nombre"]</strong></td>
+                                <td style="font-size:13px;">@(row["contacto"]  == DBNull.Value ? "—" : row["contacto"])</td>
+                                <td style="font-size:13px;">@(row["telefono"]  == DBNull.Value ? "—" : row["telefono"])</td>
+                                <td style="font-size:12px;color:var(--cf-gray-400);">@(row["correo"]    == DBNull.Value ? "—" : row["correo"])</td>
+                                <td style="font-size:12px;color:var(--cf-gray-400);">@(row["direccion"] == DBNull.Value ? "—" : row["direccion"])</td>
+                                <td><span class="cf-badge cf-badge-gray">@(row["categoria"] == DBNull.Value ? "—" : row["categoria"])</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div style="padding:10px 20px;border-top:1px solid var(--cf-gray-200);font-size:12px;color:var(--cf-gray-400);">
+                Total: @dt.Rows.Count proveedores
+            </div>
         </div>
     </div>
-    <div class="card-footer bg-transparent text-muted small">Total: <strong>@dt.Rows.Count</strong> proveedores</div>
+
+    <!-- Panel productos del proveedor -->
+    <div class="col-lg-4">
+        <div class="cf-card" style="height:100%;">
+            <div style="padding:16px 20px;border-bottom:1px solid var(--cf-gray-200);display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                    <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;" id="lblProvNombre">Selecciona un proveedor</div>
+                    <div style="font-size:12px;color:var(--cf-gray-400);" id="lblProvSub">para ver sus productos asignados</div>
+                </div>
+            </div>
+            <div id="panelProductos" style="padding:16px;">
+                <div style="text-align:center;padding:40px 0;color:var(--cf-gray-400);">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.3;display:block;margin:0 auto 8px;">
+                        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                    </svg>
+                    <div style="font-size:13px;">Sin productos asignados</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- MODAL -->
 <div class="modal fade" id="modalProveedor" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content" style="border-radius:12px;">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold" id="modalTitulo">Nuevo Proveedor</h5>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitulo">Nuevo Proveedor</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="fId" />
                 <div class="mb-3">
-                    <label class="form-label fw-semibold small">Nombre</label>
-                    <input type="text" id="fNombre" class="form-control" />
+                    <label class="cf-label">Nombre</label>
+                    <input type="text" id="fNombre" class="cf-input w-100" />
                 </div>
                 <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold small">Contacto</label>
-                        <input type="text" id="fContacto" class="form-control" />
+                    <div class="col-6">
+                        <label class="cf-label">Contacto</label>
+                        <input type="text" id="fContacto" class="cf-input w-100" />
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold small">Telefono</label>
-                        <input type="text" id="fTelefono" class="form-control" />
+                    <div class="col-6">
+                        <label class="cf-label">Teléfono</label>
+                        <input type="text" id="fTelefono" class="cf-input w-100" />
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold small">Correo</label>
-                    <input type="email" id="fCorreo" class="form-control" />
+                    <label class="cf-label">Correo</label>
+                    <input type="email" id="fCorreo" class="cf-input w-100" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold small">Direccion</label>
-                    <input type="text" id="fDireccion" class="form-control" />
+                    <label class="cf-label">Dirección</label>
+                    <input type="text" id="fDireccion" class="cf-input w-100" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold small">Categoria</label>
-                    <select id="fCategoria" class="form-select">
+                    <label class="cf-label">Categoría</label>
+                    <select id="fCategoria" class="cf-select w-100">
                         @foreach (DataRow cat in categorias.Rows)
                         {
                             <option value="@cat["id_categoria"]">@cat["nombre"]</option>
                         }
                     </select>
                 </div>
-                <div id="modalError" class="alert alert-danger d-none"></div>
+                <div id="modalError" class="cf-alert cf-alert-danger d-none"></div>
             </div>
-            <div class="modal-footer border-0">
-                <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" onclick="guardar()">
-                    <i class="bi bi-floppy me-1"></i> Guardar
-                </button>
+            <div class="modal-footer">
+                <button class="cf-btn cf-btn-outline" data-bs-dismiss="modal">Cancelar</button>
+                <button class="cf-btn cf-btn-primary" onclick="guardar()">Guardar</button>
             </div>
         </div>
     </div>
@@ -147,11 +170,54 @@
     let seleccionado = null;
 
     function seleccionar(row) {
-        document.querySelectorAll('.prov-row').forEach(r => r.classList.remove('table-primary'));
-        row.classList.add('table-primary');
+        document.querySelectorAll('.prov-row').forEach(r => r.classList.remove('selected'));
+        row.classList.add('selected');
         seleccionado = row.dataset;
         document.getElementById('btnEditar').disabled   = false;
         document.getElementById('btnEliminar').disabled = false;
+
+        // Mostrar info del proveedor
+        document.getElementById('lblProvNombre').textContent = seleccionado.nombre;
+        document.getElementById('lblProvSub').textContent    = seleccionado.telefono || seleccionado.correo || '';
+
+        // Cargar productos del proveedor
+        cargarProductos(seleccionado.id);
+    }
+
+    function cargarProductos(idProveedor) {
+        const panel = document.getElementById('panelProductos');
+        panel.innerHTML = '<div style="text-align:center;padding:20px;color:var(--cf-gray-400);font-size:13px;">Cargando...</div>';
+
+        fetch('@Url.Action("ProductosDeProveedor","Proveedores")', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body:    `idProveedor=${idProveedor}&__RequestVerificationToken=${getToken()}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (!data.productos || data.productos.length === 0) {
+                panel.innerHTML = `
+                    <div style="text-align:center;padding:30px 0;color:var(--cf-gray-400);">
+                        <div style="font-size:13px;margin-bottom:12px;">Sin productos asignados</div>
+                        <a href="/Inventario" style="font-size:12px;color:var(--cf-green);">
+                            Ir a Inventario para asignar →
+                        </a>
+                    </div>`;
+                return;
+            }
+            panel.innerHTML = data.productos.map(p => `
+                <div style="display:flex;justify-content:space-between;align-items:center;
+                            padding:10px 0;border-bottom:1px solid var(--cf-gray-100,#F4F6F9);">
+                    <div>
+                        <div style="font-size:13px;font-weight:600;">${p.nombre}</div>
+                        <div style="font-size:11px;color:var(--cf-gray-400);">${p.categoria} · $${p.precio}</div>
+                    </div>
+                    <span class="cf-badge ${p.stockActual <= p.stockMinimo ? 'cf-badge-red' : 'cf-badge-green'}"
+                          style="font-size:11px;">
+                        ${p.stockActual} uds.
+                    </span>
+                </div>`).join('');
+        });
     }
 
     function abrirModal(modo) {
@@ -175,9 +241,8 @@
     }
 
     function guardar() {
-        const id      = document.getElementById('fId').value;
-        const esNuevo = !id;
-        const params  = new URLSearchParams({
+        const id = document.getElementById('fId').value;
+        const params = new URLSearchParams({
             nombre:      document.getElementById('fNombre').value,
             contacto:    document.getElementById('fContacto').value,
             telefono:    document.getElementById('fTelefono').value,
@@ -186,9 +251,9 @@
             idCategoria: document.getElementById('fCategoria').value,
             __RequestVerificationToken: getToken()
         });
-        if (!esNuevo) params.append('idProveedor', id);
+        if (id) params.append('idProveedor', id);
 
-        fetch(esNuevo ? '@Url.Action("Crear","Proveedores")' : '@Url.Action("Actualizar","Proveedores")',
+        fetch(id ? '@Url.Action("Actualizar","Proveedores")' : '@Url.Action("Crear","Proveedores")',
               { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: params })
         .then(r => r.json())
         .then(data => {

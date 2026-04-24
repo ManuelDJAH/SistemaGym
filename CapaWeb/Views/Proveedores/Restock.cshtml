@@ -5,127 +5,124 @@
 }
 
 <!-- Filtro y botones -->
-<div class="card border-0 shadow-sm mb-4" style="border-radius:12px;">
-    <div class="card-body py-3">
-        <div class="d-flex flex-wrap align-items-center gap-2">
-            <form method="get" asp-action="Restock" class="d-flex align-items-center gap-2">
-                <label class="fw-semibold small mb-0">Estado:</label>
-                <select name="estado" class="form-select form-select-sm" style="width:150px;" onchange="this.form.submit()">
-                    <option value="">Todas</option>
-                    <option value="PENDIENTE" selected="@(ViewBag.Estado == "PENDIENTE" ? "selected" : null)">Pendiente</option>
-                    <option value="ENVIADA"   selected="@(ViewBag.Estado == "ENVIADA"   ? "selected" : null)">Enviada</option>
-                    <option value="RECIBIDA"  selected="@(ViewBag.Estado == "RECIBIDA"  ? "selected" : null)">Recibida</option>
-                    <option value="CANCELADA" selected="@(ViewBag.Estado == "CANCELADA" ? "selected" : null)">Cancelada</option>
-                </select>
-                <a asp-action="Restock" class="btn btn-sm btn-outline-secondary">Todas</a>
-            </form>
-
-            <div class="ms-auto d-flex gap-2">
-                <button class="btn btn-sm btn-primary"   id="btnEnviada"  disabled onclick="abrirEnviada()">
-                    <i class="bi bi-send me-1"></i> Marcar Enviada
-                </button>
-                <button class="btn btn-sm btn-success"   id="btnRecibida" disabled onclick="marcarRecibida()">
-                    <i class="bi bi-check-circle me-1"></i> Marcar Recibida
-                </button>
-                <button class="btn btn-sm btn-danger"    id="btnCancelar" disabled onclick="abrirCancelar()">
-                    <i class="bi bi-x-circle me-1"></i> Cancelar
-                </button>
-                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-arrow-left me-1"></i> Proveedores
-                </a>
-            </div>
-        </div>
+<div class="cf-filter-bar mb-3">
+    <form method="get" asp-action="Restock" class="d-flex align-items-center gap-2">
+        <label class="cf-label mb-0">Estado:</label>
+        <select name="estado" class="cf-select" style="width:150px;" onchange="this.form.submit()">
+            <option value="">Todas</option>
+            <option value="PENDIENTE" selected="@(ViewBag.Estado == "PENDIENTE" ? "selected" : null)">Pendiente</option>
+            <option value="ENVIADA"   selected="@(ViewBag.Estado == "ENVIADA"   ? "selected" : null)">Enviada</option>
+            <option value="RECIBIDA"  selected="@(ViewBag.Estado == "RECIBIDA"  ? "selected" : null)">Recibida</option>
+            <option value="CANCELADA" selected="@(ViewBag.Estado == "CANCELADA" ? "selected" : null)">Cancelada</option>
+        </select>
+        <a asp-action="Restock" class="cf-btn cf-btn-outline cf-btn-sm">Todas</a>
+    </form>
+    <div class="ms-auto d-flex gap-2">
+        <button class="cf-btn cf-btn-sm" id="btnEnviada" disabled onclick="abrirEnviada()"
+                style="background:#3B82F6;color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Marcar Enviada
+        </button>
+        <button class="cf-btn cf-btn-sm" id="btnRecibida" disabled onclick="marcarRecibida()"
+                style="background:#16a34a;color:#fff;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Marcar Recibida
+        </button>
+        <button class="cf-btn cf-btn-danger cf-btn-sm" id="btnCancelar" disabled onclick="abrirCancelar()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Cancelar
+        </button>
+        <a asp-action="Index" class="cf-btn cf-btn-outline cf-btn-sm">← Proveedores</a>
     </div>
 </div>
 
 <!-- Detalle proveedor seleccionado -->
-<div id="panelDetalle" class="alert alert-info d-none mb-3 py-2">
-    <small id="lblDetalle"></small>
-</div>
-
-<!-- Tabla ordenes -->
-<div class="card border-0 shadow-sm" style="border-radius:12px;">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead style="background:#f8f9fa;">
-                    <tr>
-                        <th class="ps-4">#</th>
-                        <th>Fecha</th>
-                        <th>Producto</th>
-                        <th class="text-center">Stock</th>
-                        <th class="text-center">Min</th>
-                        <th class="text-center">A Pedir</th>
-                        <th>Proveedor</th>
-                        <th>Telefono</th>
-                        <th class="text-center">Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (!ordenes.Any())
-                    {
-                        <tr><td colspan="9" class="text-center text-muted py-5">
-                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>No hay ordenes de restock.
-                        </td></tr>
-                    }
-                    @foreach (var o in ordenes)
-                    {
-                        <tr class="orden-row"
-                            style="cursor:pointer;"
-                            data-id="@o.IdOrden"
-                            data-estado="@o.Estado"
-                            data-producto="@o.Producto"
-                            data-cantidad="@o.CantidadSolicit"
-                            data-proveedor="@o.Proveedor"
-                            data-tel="@o.TelProveedor"
-                            data-correo="@o.CorreoProveedor"
-                            data-contacto="@o.ContactoProveedor"
-                            onclick="seleccionar(this)"
-                            class="@(o.Estado == "PENDIENTE" ? "table-warning" :
-                                     o.Estado == "ENVIADA"   ? "table-info" :
-                                     o.Estado == "RECIBIDA"  ? "table-success" : "")">
-                            <td class="ps-4 text-muted small">@o.IdOrden</td>
-                            <td class="small">@o.FechaGenerada.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td class="fw-semibold">@o.Producto</td>
-                            <td class="text-center"><span class="badge bg-danger">@o.StockActual</span></td>
-                            <td class="text-center text-muted">@o.StockMinimo</td>
-                            <td class="text-center fw-bold">@o.CantidadSolicit</td>
-                            <td>@o.Proveedor</td>
-                            <td class="small">@o.TelProveedor</td>
-                            <td class="text-center">
-                                @if (o.Estado == "PENDIENTE")
-                                { <span class="badge bg-warning text-dark">Pendiente</span> }
-                                else if (o.Estado == "ENVIADA")
-                                { <span class="badge bg-primary">Enviada</span> }
-                                else if (o.Estado == "RECIBIDA")
-                                { <span class="badge bg-success">Recibida</span> }
-                                else
-                                { <span class="badge bg-secondary">Cancelada</span> }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+<div id="panelDetalle" class="d-none mb-3">
+    <div class="cf-card p-3" style="border-left:3px solid var(--cf-green);">
+        <div style="font-size:12px;color:var(--cf-gray-400);" id="lblDetalle"></div>
     </div>
 </div>
 
-<!-- MODAL Confirmar Envio -->
+<!-- Tabla -->
+<div class="cf-card">
+    <div class="table-responsive">
+        <table class="cf-table">
+            <thead>
+                <tr>
+                    <th style="padding-left:20px;width:50px;">#</th>
+                    <th>Fecha</th>
+                    <th>Producto</th>
+                    <th class="text-center">Stock</th>
+                    <th class="text-center">Min</th>
+                    <th class="text-center">A Pedir</th>
+                    <th>Proveedor</th>
+                    <th>Teléfono</th>
+                    <th class="text-center">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!ordenes.Any())
+                {
+                    <tr><td colspan="9" class="text-center py-5" style="color:var(--cf-gray-400);">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.3;display:block;margin:0 auto 8px;">
+                            <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                        </svg>
+                        No hay ordenes de restock.
+                    </td></tr>
+                }
+                @foreach (var o in ordenes)
+                {
+                    string rowStyle = o.Estado == "PENDIENTE" ? "background:#FFFBEB;"
+                                    : o.Estado == "ENVIADA"   ? "background:#EFF6FF;"
+                                    : o.Estado == "RECIBIDA"  ? "background:rgba(141,198,63,.05);"
+                                    : "";
+                    <tr class="orden-row" style="cursor:pointer;@rowStyle"
+                        data-id="@o.IdOrden" data-estado="@o.Estado"
+                        data-producto="@o.Producto" data-cantidad="@o.CantidadSolicit"
+                        data-proveedor="@o.Proveedor" data-tel="@o.TelProveedor"
+                        data-correo="@o.CorreoProveedor" data-contacto="@o.ContactoProveedor"
+                        onclick="seleccionar(this)">
+                        <td style="padding-left:20px;color:var(--cf-gray-400);font-size:12px;">@o.IdOrden</td>
+                        <td style="font-size:12px;color:var(--cf-gray-400);">@o.FechaGenerada.ToString("dd/MM/yy HH:mm")</td>
+                        <td><strong>@o.Producto</strong></td>
+                        <td class="text-center"><span class="cf-badge cf-badge-red">@o.StockActual</span></td>
+                        <td class="text-center" style="color:var(--cf-gray-400);font-size:13px;">@o.StockMinimo</td>
+                        <td class="text-center"><strong>@o.CantidadSolicit</strong></td>
+                        <td style="font-size:13px;">@o.Proveedor</td>
+                        <td style="font-size:12px;color:var(--cf-gray-400);">@o.TelProveedor</td>
+                        <td class="text-center">
+                            @if (o.Estado == "PENDIENTE")
+                            { <span class="cf-badge cf-badge-yellow">Pendiente</span> }
+                            else if (o.Estado == "ENVIADA")
+                            { <span class="cf-badge cf-badge-blue">Enviada</span> }
+                            else if (o.Estado == "RECIBIDA")
+                            { <span class="cf-badge cf-badge-green">Recibida</span> }
+                            else
+                            { <span class="cf-badge cf-badge-gray">Cancelada</span> }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL Envío -->
 <div class="modal fade" id="modalEnviada" tabindex="-1">
     <div class="modal-dialog modal-sm">
-        <div class="modal-content" style="border-radius:12px;">
-            <div class="modal-header border-0 pb-0">
-                <h6 class="modal-title fw-bold">Confirmar Envio</h6>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Envío</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p class="small mb-2" id="lblEnviadaInfo"></p>
-                <label class="form-label fw-semibold small">Cantidad a pedir</label>
-                <input type="number" id="numCantidad" class="form-control" min="1" value="1" />
+                <p style="font-size:13px;color:var(--cf-gray-400);" id="lblEnviadaInfo"></p>
+                <label class="cf-label">Cantidad a pedir</label>
+                <input type="number" id="numCantidad" class="cf-input w-100" min="1" value="1" />
             </div>
-            <div class="modal-footer border-0">
-                <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary btn-sm" onclick="confirmarEnviada()">Confirmar</button>
+            <div class="modal-footer">
+                <button class="cf-btn cf-btn-outline" data-bs-dismiss="modal">Cancelar</button>
+                <button class="cf-btn cf-btn-primary" onclick="confirmarEnviada()">Confirmar</button>
             </div>
         </div>
     </div>
@@ -134,18 +131,18 @@
 <!-- MODAL Cancelar -->
 <div class="modal fade" id="modalCancelar" tabindex="-1">
     <div class="modal-dialog modal-sm">
-        <div class="modal-content" style="border-radius:12px;">
-            <div class="modal-header border-0 pb-0">
-                <h6 class="modal-title fw-bold">Cancelar Orden</h6>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancelar Orden</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <label class="form-label fw-semibold small">Motivo</label>
-                <input type="text" id="txtMotivo" class="form-control" placeholder="Motivo de cancelacion..." />
+                <label class="cf-label">Motivo</label>
+                <input type="text" id="txtMotivo" class="cf-input w-100" placeholder="Motivo de cancelación..." />
             </div>
-            <div class="modal-footer border-0">
-                <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Volver</button>
-                <button class="btn btn-danger btn-sm" onclick="confirmarCancelar()">Cancelar orden</button>
+            <div class="modal-footer">
+                <button class="cf-btn cf-btn-outline" data-bs-dismiss="modal">Volver</button>
+                <button class="cf-btn cf-btn-danger" onclick="confirmarCancelar()">Cancelar orden</button>
             </div>
         </div>
     </div>
@@ -157,13 +154,12 @@
     let ordenSel = null;
 
     function seleccionar(row) {
-        document.querySelectorAll('.orden-row').forEach(r => r.classList.remove('fw-bold'));
-        row.classList.add('fw-bold');
+        document.querySelectorAll('.orden-row').forEach(r => r.classList.remove('selected'));
+        row.classList.add('selected');
         ordenSel = row.dataset;
 
-        // Mostrar detalle proveedor
         document.getElementById('lblDetalle').textContent =
-            `Proveedor: ${ordenSel.proveedor}   Contacto: ${ordenSel.contacto}   Tel: ${ordenSel.tel}   Correo: ${ordenSel.correo}`;
+            `Proveedor: ${ordenSel.proveedor}  ·  Contacto: ${ordenSel.contacto}  ·  Tel: ${ordenSel.tel}  ·  Correo: ${ordenSel.correo}`;
         document.getElementById('panelDetalle').classList.remove('d-none');
 
         document.getElementById('btnEnviada').disabled  = ordenSel.estado !== 'PENDIENTE';
@@ -174,7 +170,7 @@
     function abrirEnviada() {
         if (!ordenSel) return;
         document.getElementById('lblEnviadaInfo').textContent =
-            `Producto: ${ordenSel.producto} — Proveedor: ${ordenSel.proveedor}`;
+            `${ordenSel.producto} — ${ordenSel.proveedor}`;
         document.getElementById('numCantidad').value = ordenSel.cantidad;
         new bootstrap.Modal(document.getElementById('modalEnviada')).show();
     }
@@ -185,19 +181,17 @@
             body: `idOrden=${ordenSel.id}&cantidad=${document.getElementById('numCantidad').value}&__RequestVerificationToken=${getToken()}`
         }).then(r => r.json()).then(data => {
             bootstrap.Modal.getInstance(document.getElementById('modalEnviada')).hide();
-            if (data.ok) location.reload();
-            else alert(data.mensaje);
+            if (data.ok) location.reload(); else alert(data.mensaje);
         });
     }
 
     function marcarRecibida() {
-        if (!ordenSel || !confirm('Marcar esta orden como RECIBIDA?')) return;
+        if (!ordenSel || !confirm('¿Marcar esta orden como RECIBIDA?')) return;
         fetch('@Url.Action("MarcarRecibida","Proveedores")', {
             method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'},
             body: `idOrden=${ordenSel.id}&__RequestVerificationToken=${getToken()}`
         }).then(r => r.json()).then(data => {
-            if (data.ok) location.reload();
-            else alert(data.mensaje);
+            if (data.ok) location.reload(); else alert(data.mensaje);
         });
     }
 
@@ -213,8 +207,7 @@
             body: `idOrden=${ordenSel.id}&motivo=${encodeURIComponent(document.getElementById('txtMotivo').value)}&__RequestVerificationToken=${getToken()}`
         }).then(r => r.json()).then(data => {
             bootstrap.Modal.getInstance(document.getElementById('modalCancelar')).hide();
-            if (data.ok) location.reload();
-            else alert(data.mensaje);
+            if (data.ok) location.reload(); else alert(data.mensaje);
         });
     }
 

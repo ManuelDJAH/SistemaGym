@@ -200,10 +200,21 @@
                                 <td><span class="cf-badge @badgeClass">@a.TipoDescripcion</span></td>
                                 <td style="font-size:13px;color:var(--cf-gray-400);">@a.Mensaje</td>
                                 <td style="text-align:center;">
-                                    <button class="cf-btn cf-btn-outline cf-btn-sm"
-                                            onclick="atenderAlerta(@a.AlertaID, this)">
-                                        Atender
-                                    </button>
+                                    @if (a.TipoAlerta == "STOCK_BAJO")
+                                    {
+                                        <a asp-controller="Inventario" asp-action="Movimientos"
+                                           class="cf-btn cf-btn-primary cf-btn-sm"
+                                           onclick="atenderAlerta(@a.AlertaID, this); return false;">
+                                            Registrar entrada →
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button class="cf-btn cf-btn-outline cf-btn-sm"
+                                                onclick="atenderAlerta(@a.AlertaID, this)">
+                                            Atender
+                                        </button>
+                                    }
                                 </td>
                             </tr>
                         }
@@ -257,7 +268,8 @@
                                 </td>
                                 <td style="text-align:center;">
                                     <a asp-controller="Proveedores" asp-action="Restock"
-                                       class="cf-btn cf-btn-outline cf-btn-sm">Ver →</a>
+                                       asp-route-estado="PENDIENTE"
+                                       class="cf-btn cf-btn-primary cf-btn-sm">Gestionar →</a>
                                 </td>
                             </tr>
                         }
@@ -272,9 +284,6 @@
 <form style="display:none">@Html.AntiForgeryToken()</form>
 <script>
 function atenderAlerta(id, btn) {
-    if (!confirm('¿Marcar esta alerta como atendida?')) return;
-    btn.disabled = true;
-    btn.textContent = '...';
     fetch('@Url.Action("AtenderAlerta","Notificaciones")', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -282,8 +291,16 @@ function atenderAlerta(id, btn) {
     })
     .then(r => r.json())
     .then(d => {
-        if (d.ok) btn.closest('tr').style.opacity = '0.4';
-        else { btn.disabled = false; btn.textContent = 'Atender'; alert(d.mensaje); }
+        if (d.ok) {
+            btn.closest('tr').style.opacity = '0.4';
+            // Si es link (stock bajo), navegar después de marcar
+            if (btn.tagName === 'A') {
+                setTimeout(() => window.location.href = btn.href, 400);
+            }
+        } else {
+            if (btn.tagName !== 'A') { btn.disabled = false; btn.textContent = 'Atender'; }
+            alert(d.mensaje);
+        }
     });
 }
 function getToken() {
