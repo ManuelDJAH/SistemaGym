@@ -16,7 +16,7 @@
                     Bienvenido, @ViewBag.Usuario
                 </div>
                 <div style="color:rgba(255,255,255,.45);font-size:13px;">
-                    @DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy") — Rol: <span style="color:var(--cf-green);font-weight:600;">@ViewBag.Rol</span>
+                    <span id="fecha-dashboard">—</span> — Rol: <span style="color:var(--cf-green);font-weight:600;">@ViewBag.Rol</span>
                 </div>
             </div>
         </div>
@@ -95,3 +95,13 @@
         </div>
     }
 </div>
+
+@section Scripts {
+<script>
+    // Fecha local del cliente
+    const ahora = new Date();
+    const opts  = { weekday:'long', day:'numeric', month:'long', year:'numeric' };
+    document.getElementById('fecha-dashboard').textContent =
+        ahora.toLocaleDateString('es-MX', opts);
+</script>
+}

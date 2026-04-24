@@ -659,15 +659,65 @@ h1, h2, h3, h4, h5, h6,
 
 /* ── Responsive ───────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  #cf-sidebar {
-    width: var(--cf-sidebar-w-collapsed);
-  }
-  #cf-main {
-    margin-left: var(--cf-sidebar-w-collapsed);
-  }
-  #cf-content { padding: 16px; }
-  #cf-topbar { padding: 0 16px; }
-  .cf-filter-bar { flex-direction: column; align-items: stretch; }
+
+    /* Sidebar: drawer oculto fuera de pantalla por defecto */
+    #cf-sidebar {
+        transform: translateX(-100%);
+        width: var(--cf-sidebar-w) !important;
+        transition: transform var(--cf-transition);
+        z-index: 1100;
+    }
+
+        /* Sidebar abierto en móvil */
+        #cf-sidebar.mobile-open {
+            transform: translateX(0);
+        }
+
+    /* El contenido ocupa todo el ancho */
+    #cf-main {
+        margin-left: 0 !important;
+    }
+
+    /* Overlay oscuro al abrir sidebar */
+    #cf-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.5);
+        z-index: 1050;
+    }
+
+        #cf-overlay.visible {
+            display: block;
+        }
+
+    /* Botón hamburguesa en topbar (solo móvil) */
+    #btn-menu-mobile {
+        display: flex !important;
+    }
+
+    #cf-content {
+        padding: 16px;
+    }
+
+    #cf-topbar {
+        padding: 0 16px;
+    }
+
+    .cf-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+@media (min-width: 769px) {
+    #btn-menu-mobile {
+        display: none !important;
+    }
+
+    #cf-overlay {
+        display: none !important;
+    }
 }
 
 /* ══ AGREGAR AL FINAL DE ctrl-fitness.css ══════════════════════════ */

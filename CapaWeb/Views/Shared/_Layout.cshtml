@@ -12,6 +12,9 @@
 </head>
 <body>
 
+<!-- Overlay para móvil -->
+<div id="cf-overlay" onclick="cerrarSidebarMobile()"></div>
+
 <!-- ══ SIDEBAR ══════════════════════════════════════════════════ -->
 <nav id="cf-sidebar">
 
@@ -133,6 +136,15 @@
 
     <!-- Topbar -->
     <header id="cf-topbar">
+        <!-- Botón hamburguesa solo en móvil -->
+        <button id="btn-menu-mobile" onclick="abrirSidebarMobile()"
+                style="display:none;background:none;border:none;cursor:pointer;padding:4px;margin-right:12px;align-items:center;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--cf-dark)" stroke-width="2.5">
+                <line x1="3" y1="6"  x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
         <span class="cf-page-title">@ViewData["Title"]</span>
         <div class="cf-topbar-right">
             <span class="cf-date-badge d-none d-sm-inline" id="topbar-fecha">
@@ -169,6 +181,16 @@
             });
         }
     })();
+
+    // ── Móvil: abrir/cerrar sidebar como drawer ──────────────
+    function abrirSidebarMobile() {
+        document.getElementById('cf-sidebar').classList.add('mobile-open');
+        document.getElementById('cf-overlay').classList.add('visible');
+    }
+    function cerrarSidebarMobile() {
+        document.getElementById('cf-sidebar').classList.remove('mobile-open');
+        document.getElementById('cf-overlay').classList.remove('visible');
+    }
 
     // Sidebar toggle con persistencia
     function toggleSidebar() {
